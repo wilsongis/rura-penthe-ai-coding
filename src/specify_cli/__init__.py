@@ -1587,10 +1587,12 @@ def install_ai_skills(
     else:
         templates_dir = project_path / commands_subdir
 
-    # Only consider speckit.*.md templates so that user-authored command
+    from .config import COMMAND_NAMESPACE
+
+    # Only consider namespace-specific templates so that user-authored command
     # files (e.g. custom slash commands, agent files) coexisting in the
     # same commands directory are not incorrectly converted into skills.
-    template_glob = "speckit.*.md"
+    template_glob = f"{COMMAND_NAMESPACE}.*.md"
 
     if not templates_dir.exists() or not any(templates_dir.glob(template_glob)):
         # Fallback: try the repo-relative path (for running from source checkout)
@@ -1654,12 +1656,15 @@ def install_ai_skills(
             # SKILL_DESCRIPTIONS lookups work.
             if command_name.startswith("speckit."):
                 command_name = command_name[len("speckit."):]
+            if command_name.startswith(f"{COMMAND_NAMESPACE}."):
+                command_name = command_name[len(f"{COMMAND_NAMESPACE}."):]
+                
             if command_name.endswith(".agent"):
                 command_name = command_name[:-len(".agent")]
             if selected_ai == "kimi":
-                skill_name = f"speckit.{command_name}"
+                skill_name = f"{COMMAND_NAMESPACE}.{command_name}"
             else:
-                skill_name = f"speckit-{command_name}"
+                skill_name = f"{COMMAND_NAMESPACE}-{command_name}"
 
             # Create skill directory (additive — never removes existing content)
             skill_dir = skills_dir / skill_name
@@ -1678,6 +1683,8 @@ def install_ai_skills(
             source_name = command_file.name
             if source_name.startswith("speckit."):
                 source_name = source_name[len("speckit."):]
+            if source_name.startswith(f"{COMMAND_NAMESPACE}."):
+                source_name = source_name[len(f"{COMMAND_NAMESPACE}."):]
             if source_name.endswith(".agent.md"):
                 source_name = source_name[:-len(".agent.md")] + ".md"
 
@@ -1738,7 +1745,8 @@ def _has_bundled_skills(project_path: Path, selected_ai: str) -> bool:
     if not skills_dir.is_dir():
         return False
 
-    pattern = "speckit.*/SKILL.md" if selected_ai == "kimi" else "speckit-*/SKILL.md"
+    from .config import COMMAND_NAMESPACE
+    pattern = f"{COMMAND_NAMESPACE}.*/SKILL.md" if selected_ai == "kimi" else f"{COMMAND_NAMESPACE}-*/SKILL.md"
     return any(skills_dir.glob(pattern))
 
 
@@ -2312,12 +2320,14 @@ def init(
     native_skill_mode = codex_skill_mode or kimi_skill_mode
     usage_label = "skills" if native_skill_mode else "slash commands"
 
+    from .config import COMMAND_NAMESPACE
+
     def _display_cmd(name: str) -> str:
         if codex_skill_mode:
-            return f"$speckit-{name}"
+            return f"${COMMAND_NAMESPACE}-{name}"
         if kimi_skill_mode:
-            return f"/skill:speckit.{name}"
-        return f"/speckit.{name}"
+            return f"/skill:{COMMAND_NAMESPACE}.{name}"
+        return f"/{COMMAND_NAMESPACE}.{name}"
 
     steps_lines.append(f"{step_num}. Start using {usage_label} with your AI agent:")
 

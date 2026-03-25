@@ -1,11 +1,11 @@
 <div align="center">
     <img src="./media/logo_large.webp" alt="Spec Kit Logo" width="200" height="200"/>
-    <h1>🌱 Spec Kit</h1>
-    <h3><em>Build high-quality software faster.</em></h3>
+    <h1>🛡️ Rura Penthe AI Coding (Spec Kit Warden)</h1>
+    <h3><em>Safety-critical, highly constrained Spec-Driven Development.</em></h3>
 </div>
 
 <p align="center">
-    <strong>An open source toolkit that allows you to focus on product scenarios and predictable outcomes instead of vibe coding every piece from scratch.</strong>
+    <strong>A targeted fork of GitHub Spec Kit designed to reduce context bloat, enforce rigorous Python compliance (Power of 11), and maintain upstream compatibility through a dynamic /warden namespace.</strong>
 </p>
 
 <p align="center">
@@ -44,22 +44,22 @@
 
 Spec-Driven Development **flips the script** on traditional software development. For decades, code has been king — specifications were just scaffolding we built and discarded once the "real work" of coding began. Spec-Driven Development changes this: **specifications become executable**, directly generating working implementations rather than just guiding them.
 
+This fork ("Rura Penthe AI Coding") adds critical safety and optimization gates to Spec Kit. By enforcing the **Power of 11 rules**, strictly validating all outputs through Pyright and Ruff, and employing dynamic Token Optimization via LLMLingua, it eliminates agent hallucination, unverified dependencies, and massive context-window bills.
+
 ## ⚡ Get Started
 
 ### 1. Install Specify CLI
 
 Choose your preferred installation method:
 
-#### Option 1: Persistent Installation (Recommended)
+#### Option 1: Local Source Installation (Recommended)
 
-Install once and use everywhere. Pin a specific release tag for stability (check [Releases](https://github.com/github/spec-kit/releases) for the latest):
+Since this is a custom fork enforcing safety principles, install the `specify-cli` toolkit directly from the cloned repository source:
 
 ```bash
-# Install a specific stable release (recommended — replace vX.Y.Z with the latest tag)
-uv tool install specify-cli --from git+https://github.com/github/spec-kit.git@vX.Y.Z
-
-# Or install latest from main (may include unreleased changes)
-uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
+# First, enter the project root directory
+# Run the installation using the highly performant `uv` tool
+uv tool install specify-cli --from .
 ```
 
 Then use the tool directly:
@@ -77,24 +77,24 @@ specify init --here --ai claude --profile b
 specify check
 ```
 
-To upgrade Specify, see the [Upgrade Guide](./docs/upgrade.md) for detailed instructions. Quick upgrade:
+To forcibly upgrade or refresh the tool after pulling upstream branch updates, simply re-run the `uv tool install` command over the directory:
 
 ```bash
-uv tool install specify-cli --force --from git+https://github.com/github/spec-kit.git@vX.Y.Z
+uv tool install specify-cli --force --from .
 ```
 
-#### Option 2: One-time Usage
+#### Option 2: Live Repository Installation
 
-Run directly without installing:
+Install using raw git URLs if you've pushed this fork to your own repository:
 
 ```bash
-# Create new project (pinned to a stable release — replace vX.Y.Z with the latest tag)
-uvx --from git+https://github.com/github/spec-kit.git@vX.Y.Z specify init <PROJECT_NAME>
+# Create new project 
+uvx --from git+https://github.com/your-username/rura-penthe-ai-coding.git specify init <PROJECT_NAME>
 
-# Or initialize in existing project
-uvx --from git+https://github.com/github/spec-kit.git@vX.Y.Z specify init . --ai claude
+# Or initialize in an existing project
+uvx --from git+https://github.com/your-username/rura-penthe-ai-coding.git specify init . --ai claude --profile a
 # or
-uvx --from git+https://github.com/github/spec-kit.git@vX.Y.Z specify init --here --ai claude
+uvx --from git+https://github.com/your-username/rura-penthe-ai-coding.git specify init --here --ai claude --profile b
 ```
 
 **Benefits of persistent installation:**
@@ -110,44 +110,44 @@ If your environment blocks access to PyPI or GitHub, see the [Enterprise / Air-G
 
 ### 2. Establish project principles
 
-Launch your AI assistant in the project directory. Most agents expose spec-kit as `/speckit.*` slash commands; Codex CLI in skills mode uses `$speckit-*` instead.
+Launch your AI assistant in the project directory. Most agents expose this toolkit as **`/warden.*`** slash commands (decoupled to prevent upstream merge failures); Codex CLI in skills mode uses `$warden-*` instead.
 
-Use the **`/speckit.constitution`** command to create your project's governing principles and development guidelines that will guide all subsequent development.
+Use the **`/warden.constitution`** command to establish the strict Power of 11 governing principles that enforce code safety requirements on the agent:
 
 ```bash
-/speckit.constitution Create principles focused on code quality, testing standards, user experience consistency, and performance requirements
+/warden.constitution Initialize our mandatory safety-critical environment principles.
 ```
 
 ### 3. Create the spec
 
-Use the **`/speckit.specify`** command to describe what you want to build. Focus on the **what** and **why**, not the tech stack.
+Use the **`/warden.specify`** command to describe what you want to build. Focus on the **what** and **why**, not the tech stack.
 
 ```bash
-/speckit.specify Build an application that can help me organize my photos in separate photo albums. Albums are grouped by date and can be re-organized by dragging and dropping on the main page. Albums are never in other nested albums. Within each album, photos are previewed in a tile-like interface.
+/warden.specify Build an application that can help me organize my photos in separate photo albums. Albums are grouped by date and can be re-organized by dragging and dropping on the main page. Albums are never in other nested albums. Within each album, photos are previewed in a tile-like interface.
 ```
 
 ### 4. Create a technical implementation plan
 
-Use the **`/speckit.plan`** command to provide your tech stack and architecture choices.
+Use the **`/warden.plan`** command to provide your architecture choices and ensure enforcement of standard tool paths.
 
 ```bash
-/speckit.plan The application uses Vite with minimal number of libraries. Use vanilla HTML, CSS, and JavaScript as much as possible. Images are not uploaded anywhere and metadata is stored in a local SQLite database.
+/warden.plan The application uses Vite. Use vanilla HTML, CSS, and JavaScript. Images are stored in a local SQLite database that is properly type-hinted and linted.
 ```
 
 ### 5. Break down into tasks
 
-Use **`/speckit.tasks`** to create an actionable task list from your implementation plan.
+Use **`/warden.tasks`** to create an actionable, token-friendly task list from your implementation plan.
 
 ```bash
-/speckit.tasks
+/warden.tasks
 ```
 
 ### 6. Execute implementation
 
-Use **`/speckit.implement`** to execute all tasks and build your feature according to the plan.
+Use **`/warden.implement`** to safely execute all tasks piece by piece through the Token Optimization Interceptor layer.
 
 ```bash
-/speckit.implement
+/warden.implement
 ```
 
 For detailed step-by-step instructions, see our [comprehensive guide](./spec-driven.md).

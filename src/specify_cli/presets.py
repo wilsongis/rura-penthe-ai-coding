@@ -642,14 +642,19 @@ class PresetManager:
             if not source_file.exists():
                 continue
 
+            from .config import COMMAND_NAMESPACE
+            
             # Derive the short command name (e.g. "specify" from "speckit.specify")
             short_name = cmd_name
             if short_name.startswith("speckit."):
                 short_name = short_name[len("speckit."):]
+            if short_name.startswith(f"{COMMAND_NAMESPACE}."):
+                short_name = short_name[len(f"{COMMAND_NAMESPACE}."):]
+                
             if selected_ai == "kimi":
-                skill_name = f"speckit.{short_name}"
+                skill_name = f"{COMMAND_NAMESPACE}.{short_name}"
             else:
-                skill_name = f"speckit-{short_name}"
+                skill_name = f"{COMMAND_NAMESPACE}-{short_name}"
 
             # Only overwrite if the skill already exists (i.e. --ai-skills was used)
             skill_subdir = skills_dir / skill_name
@@ -727,11 +732,18 @@ class PresetManager:
 
         for skill_name in skill_names:
             # Derive command name from skill name (speckit-specify -> specify)
+            from .config import COMMAND_NAMESPACE
+
             short_name = skill_name
             if short_name.startswith("speckit-"):
                 short_name = short_name[len("speckit-"):]
             elif short_name.startswith("speckit."):
                 short_name = short_name[len("speckit."):]
+                
+            if short_name.startswith(f"{COMMAND_NAMESPACE}-"):
+                short_name = short_name[len(f"{COMMAND_NAMESPACE}-"):]
+            elif short_name.startswith(f"{COMMAND_NAMESPACE}."):
+                short_name = short_name[len(f"{COMMAND_NAMESPACE}."):]
 
             skill_subdir = skills_dir / skill_name
             skill_file = skill_subdir / "SKILL.md"

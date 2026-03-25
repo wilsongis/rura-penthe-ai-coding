@@ -397,11 +397,15 @@ class CommandRegistrar:
         if agent_config["extension"] != "/SKILL.md":
             return cmd_name
 
+        from .config import COMMAND_NAMESPACE
+
         short_name = cmd_name
         if short_name.startswith("speckit."):
             short_name = short_name[len("speckit."):]
+        if short_name.startswith(f"{COMMAND_NAMESPACE}."):
+            short_name = short_name[len(f"{COMMAND_NAMESPACE}."):]
 
-        return f"speckit.{short_name}" if agent_name == "kimi" else f"speckit-{short_name}"
+        return f"{COMMAND_NAMESPACE}.{short_name}" if agent_name == "kimi" else f"{COMMAND_NAMESPACE}-{short_name}"
 
     def register_commands(
         self,

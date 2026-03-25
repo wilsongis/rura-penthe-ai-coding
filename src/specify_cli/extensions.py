@@ -591,13 +591,18 @@ class ExtensionManager:
             # presets.py: strip the leading "speckit." prefix, then form:
             #   Kimi  → "speckit.{short_name}"  (dot preserved for Kimi agent)
             #   other → "speckit-{short_name}"  (hyphen separator)
+            from .config import COMMAND_NAMESPACE
+
             short_name_raw = cmd_name
             if short_name_raw.startswith("speckit."):
                 short_name_raw = short_name_raw[len("speckit."):]
+            if short_name_raw.startswith(f"{COMMAND_NAMESPACE}."):
+                short_name_raw = short_name_raw[len(f"{COMMAND_NAMESPACE}."):]
+
             if selected_ai == "kimi":
-                skill_name = f"speckit.{short_name_raw}"
+                skill_name = f"{COMMAND_NAMESPACE}.{short_name_raw}"
             else:
-                skill_name = f"speckit-{short_name_raw}"
+                skill_name = f"{COMMAND_NAMESPACE}-{short_name_raw}"
 
             # Check if skill already exists before creating the directory
             skill_subdir = skills_dir / skill_name
@@ -656,6 +661,8 @@ class ExtensionManager:
             short_name = cmd_name
             if short_name.startswith("speckit."):
                 short_name = short_name[len("speckit."):]
+            if short_name.startswith(f"{COMMAND_NAMESPACE}."):
+                short_name = short_name[len(f"{COMMAND_NAMESPACE}."):]
             title_name = short_name.replace(".", " ").replace("-", " ").title()
 
             skill_content = (
