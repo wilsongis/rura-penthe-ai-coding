@@ -69,9 +69,9 @@ Then use the tool directly:
 specify init <PROJECT_NAME>
 
 # Or initialize in existing project
-specify init . --ai claude
+specify init . --ai claude --profile a
 # or
-specify init --here --ai claude
+specify init --here --ai claude --profile b
 
 # Check installed tools
 specify check
@@ -294,6 +294,7 @@ The `specify` command supports the following options:
 | `--github-token`       | Option   | GitHub token for API requests (or set GH_TOKEN/GITHUB_TOKEN env variable)                                                                                                                                                                                                                                                                                                                 |
 | `--ai-skills`          | Flag     | Install Prompt.MD templates as agent skills in agent-specific `skills/` directory (requires `--ai`). Extension commands are also auto-registered as skills when extensions are added later.                                                                                                                                                                                               |
 | `--branch-numbering`   | Option   | Branch numbering strategy: `sequential` (default — `001`, `002`, `003`) or `timestamp` (`YYYYMMDD-HHMMSS`). Timestamp mode is useful for distributed teams to avoid numbering conflicts                                                                                                                                                                                                  |
+| `--profile`            | Option   | Safety-Critical Profile: `a` (CPython/Mission-Compute) or `b` (MicroPython/Embedded). If omitted, an interactive menu will prompt you to select an architecture profile during initialization.                                                                                                                                                                                          |
 
 ### Examples
 
@@ -339,6 +340,9 @@ specify init my-project --ai agy --ai-skills
 
 # Initialize with an unsupported agent (generic / bring your own agent)
 specify init my-project --ai generic --ai-commands-dir .myagent/commands/
+
+# Initialize with a specific Power of 11 architecture profile (bypass interactive prompt)
+specify init my-project --ai claude --profile b
 
 # Initialize with PowerShell scripts (Windows/cross-platform)
 specify init my-project --ai copilot --script ps
@@ -556,7 +560,7 @@ specify init --here --force
 
 ![Specify CLI bootstrapping a new project in the terminal](./media/specify_cli.gif)
 
-You will be prompted to select the AI agent you are using. You can also proactively specify it directly in the terminal:
+You will be prompted to select the AI agent you are using and your preferred **Power of 11 Architectural Profile** (Profile A for CPython/Mission Compute, or Profile B for MicroPython/Embedded). You can also proactively specify these directly in the terminal:
 
 ```bash
 specify init <project_name> --ai claude

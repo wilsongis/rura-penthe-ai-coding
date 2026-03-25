@@ -275,105 +275,29 @@ The templates transform the LLM from a creative writer into a disciplined specif
 
 At the heart of SDD lies a constitution—a set of immutable principles that govern how specifications become code. The constitution (`memory/constitution.md`) acts as the architectural DNA of the system, ensuring that every generated implementation maintains consistency, simplicity, and quality.
 
-### The Nine Articles of Development
+### The Power of 11: Safety-Critical Directives
 
-The constitution defines nine articles that shape every aspect of the development process:
+The system utilizes the stringent "Power of 11" methodology to mathematically bind the LLM outputs to safe control-execution paradigms. These directives define explicit constraints preventing algorithmic sprawl, recursive overflows, and unpredictable runtime outcomes.
 
-#### Article I: Library-First Principle
+#### Dual-Path Provisioning
+Different embedded environments demand varying tiers of language constraints. Spec-Driven Development provides two distinct deployment profiles natively resolved via `specify init . --profile [a/b]`:
 
-Every feature must begin as a standalone library—no exceptions. This forces modular design from the start:
+- **Profile A (Mission Compute):** Target architecture for robust Edge environments (CPython 3.11+, Raspberry Pi, Jetson). Permits bounded high-level abstractions like Pydantic typing and verified immutable `frozen` dataclasses, while strictly banning unbounded nested recursive evaluations and exceptions framing logic flow.
+- **Profile B (Embedded Control):** Target architecture for low-level systems (MicroPython). Complete prohibition of C-extensions. Exhaustively mandates Python 3.10+ structured `match/case` handling against predictable `Result` state-return tuples to eliminate dynamic execution unpredictability entirely.
 
-```text
-Every feature in Specify MUST begin its existence as a standalone library.
-No feature shall be implemented directly within application code without
-first being abstracted into a reusable library component.
-```
+#### Core Mechanized Integrity
 
-This principle ensures that specifications generate modular, reusable code rather than monolithic applications. When the LLM generates an implementation plan, it must structure features as libraries with clear boundaries and minimal dependencies.
+Rather than merely suggesting constraints, SDD computationally enforces:
 
-#### Article II: CLI Interface Mandate
-
-Every library must expose its functionality through a command-line interface:
-
-```text
-All CLI interfaces MUST:
-- Accept text as input (via stdin, arguments, or files)
-- Produce text as output (via stdout)
-- Support JSON format for structured data exchange
-```
-
-This enforces observability and testability. The LLM cannot hide functionality inside opaque classes—everything must be accessible and verifiable through text-based interfaces.
-
-#### Article III: Test-First Imperative
-
-The most transformative article—no code before tests:
-
-```text
-This is NON-NEGOTIABLE: All implementation MUST follow strict Test-Driven Development.
-No implementation code shall be written before:
-1. Unit tests are written
-2. Tests are validated and approved by the user
-3. Tests are confirmed to FAIL (Red phase)
-```
-
-This completely inverts traditional AI code generation. Instead of generating code and hoping it works, the LLM must first generate comprehensive tests that define behavior, get them approved, and only then generate implementation.
-
-#### Articles VII & VIII: Simplicity and Anti-Abstraction
-
-These paired articles combat over-engineering:
-
-```text
-Section 7.3: Minimal Project Structure
-- Maximum 3 projects for initial implementation
-- Additional projects require documented justification
-
-Section 8.1: Framework Trust
-- Use framework features directly rather than wrapping them
-```
-
-When an LLM might naturally create elaborate abstractions, these articles force it to justify every layer of complexity. The implementation plan template's "Phase -1 Gates" directly enforce these principles.
-
-#### Article IX: Integration-First Testing
-
-Prioritizes real-world testing over isolated unit tests:
-
-```text
-Tests MUST use realistic environments:
-- Prefer real databases over mocks
-- Use actual service instances over stubs
-- Contract tests mandatory before implementation
-```
-
-This ensures generated code works in practice, not just in theory.
-
-### Constitutional Enforcement Through Templates
-
-The implementation plan template operationalizes these articles through concrete checkpoints:
-
-```markdown
-### Phase -1: Pre-Implementation Gates
-
-#### Simplicity Gate (Article VII)
-
-- [ ] Using ≤3 projects?
-- [ ] No future-proofing?
-
-#### Anti-Abstraction Gate (Article VIII)
-
-- [ ] Using framework directly?
-- [ ] Single model representation?
-
-#### Integration-First Gate (Article IX)
-
-- [ ] Contracts defined?
-- [ ] Contract tests written?
-```
-
-These gates act as compile-time checks for architectural principles. The LLM cannot proceed without either passing the gates or documenting justified exceptions in the "Complexity Tracking" section.
+**1. Cognitive Bounds:** Functions must not exceed explicitly enforced physical boundaries (e.g., complexity constraints bounded mathematically via `Ruff C901` and statement volumes via `PLR0915`). Logic complexity exceeding these physical limits halts generation flows enforcing compositional refactoring.
+**2. Deterministic Memory:** Pre-allocation over dynamic scaling. The instantiation of `__slots__` arrays guarantees static RAM footprint maps preventing Out-Of-Memory cascades under prolonged operational cycles.
+**3. Total Type Control:** Structural input boundaries are completely type-frozen (either by Pydantic validation via Profile A, or Match/Case parsing via Profile B). Pyright Strict constraints maintain typing alignment natively across the codebase.
+**4. Supply Chain Security:** Generative tools are entirely stripped of the ability to run native `pip install` permutations on-the-fly. They are mechanically bound to execute deterministic `uv add <dependency>` procedures backed by Continuous Security `pip-audit` integrations.
+**5. Artifact Defense:** Broad vector exploitations via un-sandboxed objects (`pickle`, `.pt`) are structurally forbidden, enforcing zero-trust tensor serialization natively through `safetensors`.
 
 ### The Power of Immutable Principles
 
-The constitution's power lies in its immutability. While implementation details can evolve, the core principles remain constant. This provides:
+The constitution's power lies in its immutability. While implementation details can evolve, the core safety mechanisms remain constant. This provides:
 
 1. **Consistency Across Time**: Code generated today follows the same principles as code generated next year
 2. **Consistency Across LLMs**: Different AI models produce architecturally compatible code

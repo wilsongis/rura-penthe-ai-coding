@@ -1425,10 +1425,18 @@ def ensure_executable_scripts(project_path: Path, tracker: StepTracker | None = 
             for f in failures:
                 console.print(f"  - {f}")
 
-def ensure_constitution_from_template(project_path: Path, tracker: StepTracker | None = None) -> None:
+def ensure_constitution_from_template(project_path: Path, tracker: StepTracker | None = None, profile: str = "a") -> None:
     """Copy constitution template to memory if it doesn't exist (preserves existing constitution on reinitialization)."""
     memory_constitution = project_path / ".specify" / "memory" / "constitution.md"
-    template_constitution = project_path / ".specify" / "templates" / "constitution-template.md"
+    
+    # Default to Selected Profile
+    template_constitution = project_path / ".specify" / "templates" / f"constitution-profile-{profile.lower()}.md"
+
+    # Fallback to legacy constitution if Profile A is not found
+    if not template_constitution.exists():
+        legacy_template = project_path / ".specify" / "templates" / "constitution-template.md"
+        if legacy_template.exists():
+            template_constitution = legacy_template
 
     # If constitution already exists in memory, preserve it
     if memory_constitution.exists():
@@ -1782,6 +1790,7 @@ def init(
     offline: bool = typer.Option(False, "--offline", help="Use assets bundled in the specify-cli package instead of downloading from GitHub (no network access required). Bundled assets will become the default in v0.6.0 and this flag will be removed."),
     preset: str = typer.Option(None, "--preset", help="Install a preset during initialization (by preset ID)"),
     branch_numbering: str = typer.Option(None, "--branch-numbering", help="Branch numbering strategy: 'sequential' (001, 002, ...) or 'timestamp' (YYYYMMDD-HHMMSS)"),
+    profile: str = typer.Option(None, "--profile", help="Safety-Critical Profile: 'a' (CPython/Mission-Compute) or 'b' (MicroPython/Embedded)"),
 ):
     """
     Initialize a new Specify project.
@@ -1983,6 +1992,25 @@ def init(
     console.print(f"[cyan]Selected AI assistant:[/cyan] {selected_ai}")
     console.print(f"[cyan]Selected script type:[/cyan] {selected_script}")
 
+    PROFILE_CHOICES = {
+        "a": "Profile A: Edge / Mission Compute (CPython, Pydantic, Try/Except)",
+        "b": "Profile B: Embedded / Low-Level Control (MicroPython, strict Result tuples)"
+    }
+    if profile:
+        profile = profile.lower()
+        if profile not in PROFILE_CHOICES:
+            console.print(f"[red]Error:[/red] Invalid profile '{profile}'. Choose from: a, b")
+            raise typer.Exit(1)
+        selected_profile = profile
+    else:
+        default_profile = "a"
+        if sys.stdin.isatty():
+            selected_profile = select_with_arrows(PROFILE_CHOICES, "Choose Architecture Profile (or press Enter)", default_profile)
+        else:
+            selected_profile = default_profile
+
+    console.print(f"[cyan]Selected Profile:[/cyan] {selected_profile}")
+
     tracker = StepTracker("Initialize Specify Project")
 
     sys._specify_tracker_active = True
@@ -2025,7 +2053,7 @@ def init(
 
     for key, label in [
         ("chmod", "Ensure scripts executable"),
-        ("constitution", "Constitution setup"),
+        ("constitution", f"Constitution setup (Profile {selected_profile.upper()})"),
     ]:
         tracker.add(key, label)
     if ai_skills:
@@ -2092,7 +2120,7 @@ def init(
 
             ensure_executable_scripts(project_path, tracker=tracker)
 
-            ensure_constitution_from_template(project_path, tracker=tracker)
+            ensure_constitution_from_template(project_path, tracker=tracker, profile=selected_profile)
 
             if ai_skills:
                 if selected_ai in NATIVE_SKILLS_AGENTS:

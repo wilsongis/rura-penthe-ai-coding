@@ -1,0 +1,41 @@
+[project]
+name = "safety-critical-app"
+version = "0.1.0"
+description = "Safety-Critical Python Project"
+requires-python = ">=3.11"
+dependencies = [
+    # Dependencies must be added via `uv add <package>` to generate `uv.lock`.
+]
+
+[tool.pyright]
+typeCheckingMode = "strict"
+reportMissingImports = true
+reportMissingTypeStubs = true
+
+[tool.ruff]
+# Target Python version
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+# Select specific high-priority security/complexity rule sets
+select = [
+    "E",       # pycodestyle errors
+    "F",       # pyflakes
+    "C90",     # mccabe complexity
+    "S",       # flake8-bandit (security checks like banning assert)
+    "PLR",     # Pylint refactor (complexity/function length constraints)
+    "ASYNC",   # flake8-async (concurrency safety)
+]
+
+ignore = []
+
+[tool.ruff.lint.mccabe]
+# Strict cyclomatic complexity bound (Power of 11: Rule 4/10)
+max-complexity = 10
+
+[tool.ruff.lint.pylint]
+# Function length and parameter constraints
+max-statements = 50
+max-args = 7
+max-branches = 12

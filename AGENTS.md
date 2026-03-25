@@ -1,5 +1,15 @@
 # AGENTS.md
 
+## Architectural Safety Directives (Power of 11)
+
+All speculative projects generated MUST adhere to the **Power of 11** constraints natively embedded within the initial templates:
+1. **Mechanical Enforcement**: Utilize the pre-configured `pyproject.toml`. Pyright must be strictly enforced. All code must pass `ruff` with high-priority security constraints (e.g., PLR0915, S101, C901).
+2. **Dependency Vetting**: `pip install` is strictly **forbidden**. Exclusively use `uv add <package>` to generate deterministically reproducible, cryptographically hashed lockfiles (`uv.lock`). Construct a CI/CD pre-commit hook integrating `pip-audit`.
+3. **GenAI Artifact Handling**: The native Python `pickle` module (and PyTorch `.pt` format) is explicitly forbidden. All tensor serialization and deserialization MUST use the `safetensors` format structure.
+4. **Google Style Document Standard**: Exhaustive semantic metadata is mandatory. All functions, classes, and modules must follow the Google Style Docstring format (comprehensively documenting inputs, yields, `Raises:`, and side effects).
+
+---
+
 ## About Spec Kit and Specify
 
 **GitHub Spec Kit** is a comprehensive toolkit for implementing Spec-Driven Development (SDD) - a methodology that emphasizes creating clear specifications before implementation. The toolkit includes templates, scripts, and workflows that guide development teams through a structured approach to building software.
