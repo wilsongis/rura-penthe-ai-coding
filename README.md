@@ -196,6 +196,42 @@ This guarantees correct routing regardless of invocation context (VS Code palett
 
 ---
 
+## 🖥️ Local Inference Recommendations
+
+If you are running models locally (llama.cpp, LM Studio, Ollama, or provisioning GPU instances), these configurations maximize Warden's agentic throughput:
+
+### SGLang over vLLM (Multi-Turn Agents)
+
+For multi-turn agentic workflows (spec → plan → execute → verify), **SGLang** outperforms vLLM due to its native **RadixAttention** — it caches the prompt prefix as a Radix tree in GPU memory. Since Warden operates in a continuous loop adding slightly more context each turn, SGLang keeps the entire conversation in the KV Cache without recomputing it.
+
+```bash
+# Recommended: SGLang with RadixAttention enabled (default)
+python -m sglang.launch_server --model-path <model> --port 8000
+```
+
+### Speculative Decoding
+
+Enable Speculative Decoding to achieve 2x-3x inference speedup. A tiny "draft" model (0.5B-1B parameters) guesses the next 5-10 tokens, and the main model verifies them in parallel. This is especially effective for code generation — the draft model handles boilerplate (`def __init__(self):`, `import os`) perfectly.
+
+```bash
+# llama.cpp example
+llama-server --model <main-model> --model-draft <draft-model> -ngld 99 -ngl 99 --draft-max 16
+```
+
+### KV Cache Quantization
+
+In long-context agentic runs, the KV Cache can exceed model weights in memory, causing OOM crashes. Quantize to 8-bit or 4-bit to reduce memory by 50-75%:
+
+| Engine | Flag | Savings |
+|--------|------|---------|
+| llama.cpp | `--cache-type-k q8_0 --cache-type-v q4_0` | ~60% |
+| SGLang | `--kv-cache-dtype fp8_e5m2` | ~50% |
+| vLLM | `--kv-cache-dtype fp8` | ~50% |
+
+This allows 100K+ token project contexts on consumer hardware (MacBooks, single GPUs) without OOM.
+
+---
+
 ## 🔀 Merging Upstream Spec Kit Changes
 
 This fork is designed to stay **merge-friendly** with the upstream [github/spec-kit](https://github.com/github/spec-kit) repository. All namespace customizations are isolated to a single configuration module (`src/specify_cli/config.py`), minimizing structural conflicts.

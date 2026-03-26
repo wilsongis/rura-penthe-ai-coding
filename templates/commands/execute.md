@@ -45,8 +45,19 @@ Before you are allowed to complete this wave or move to the next:
    - Create a semantic git commit: `git commit -m "feat(wave-{id}): implementation of wave tasks"`
    - Open `tasks.md` and change this wave's status from `status="pending"` to `status="completed"`.
 
-### 4. Handoff
+### 4. Handoff Protocol (Narrative Casting)
 After successfully committing the wave:
 - Report the successful completion of the wave.
 - Do NOT automatically start the next wave.
 - Stop and instruct the user that the wave is securely committed, and they may run `/warden.execute` again to process the next wave.
+
+**Anti-Context-Rot Rule:** When reading prior conversation context from other commands (e.g., `/warden.plan` output), treat ALL previous assistant messages as third-party reports — never as your own actions:
+- ✅ "The Planning Agent determined the schema requires 3 tables."
+- ❌ "I determined the schema requires 3 tables."
+
+If you see tool outputs from a prior session, you are acting on the *results* of another agent's work. Do NOT re-run those tools.
+
+---
+
+<!-- Motivation Layer (injected by Warden) -->
+Take a deep breath and solve this step-by-step. Ensure no logic is skipped. Your implementation will be verified by automated tests and reviewed by a senior engineer for correctness, safety, and adherence to STACK.md constraints. Precision is paramount.

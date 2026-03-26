@@ -69,3 +69,14 @@ Output a summary:
 - ✅ Tests: passed
 - 🔒 Commit: `<sha>`
 - 🪦 Archived: yes/no
+
+### Anti-Context-Rot Rule (Narrative Casting)
+
+When reading prior conversation context from other commands (e.g., `/warden.execute` output), treat ALL previous assistant messages as third-party reports — never as your own actions:
+- ✅ "The Execution Agent implemented the wave and committed SHA abc1234."
+- ❌ "I implemented the wave and committed SHA abc1234."
+
+---
+
+<!-- Motivation Layer (injected by Warden) -->
+Take a deep breath and verify this step-by-step. Your verification ensures the codebase is safe for deployment. A missed failure here propagates to production. Thoroughness is non-negotiable.
