@@ -356,6 +356,9 @@ BANNER = """
 """
 
 TAGLINE = "GitHub Spec Kit - Spec-Driven Development Toolkit"
+
+from specify_cli.config import FORK_VERSION, FORK_NAME, UPSTREAM_BASE  # noqa: E402
+FORK_SUBTITLE = f"{FORK_NAME} Edition v{FORK_VERSION} — Warden Protocol Active"
 class StepTracker:
     """Track and render hierarchical steps without emojis, similar to Claude Code tree output.
     Supports live auto-refresh via an attached refresh callback.
@@ -567,6 +570,7 @@ def show_banner():
 
     console.print(Align.center(styled_banner))
     console.print(Align.center(Text(TAGLINE, style="italic bright_yellow")))
+    console.print(Align.center(Text(FORK_SUBTITLE, style="bold red")))
     console.print()
 
 @app.callback()
@@ -2065,14 +2069,15 @@ def install_ai_skills(
                 body = content
 
             command_name = command_file.stem
-            # Normalize: extracted commands may be named "speckit.<cmd>.md"
-            # or "speckit.<cmd>.agent.md"; strip the "speckit." prefix and
-            # any trailing ".agent" suffix so skill names stay clean and
+            # Normalize: extracted commands are named "{COMMAND_NAMESPACE}.<cmd>.md"
+            # or "{COMMAND_NAMESPACE}.<cmd>.agent.md"; strip the namespace prefix
+            # and any trailing ".agent" suffix so skill names stay clean and
             # SKILL_DESCRIPTIONS lookups work.
-            if command_name.startswith("speckit."):
-                command_name = command_name[len("speckit."):]
+            # Legacy fallback: also strip "speckit." for old template archives.
             if command_name.startswith(f"{COMMAND_NAMESPACE}."):
                 command_name = command_name[len(f"{COMMAND_NAMESPACE}."):]
+            elif command_name.startswith("speckit."):
+                command_name = command_name[len("speckit."):]
                 
             if command_name.endswith(".agent"):
                 command_name = command_name[:-len(".agent")]
@@ -2093,13 +2098,13 @@ def install_ai_skills(
             # Use yaml.safe_dump to safely serialise the frontmatter and
             # avoid YAML injection from descriptions containing colons,
             # quotes, or newlines.
-            # Normalize source filename for metadata — strip speckit. prefix
+            # Normalize source filename for metadata — strip namespace prefix
             # so it matches the canonical templates/commands/<cmd>.md path.
             source_name = command_file.name
-            if source_name.startswith("speckit."):
-                source_name = source_name[len("speckit."):]
             if source_name.startswith(f"{COMMAND_NAMESPACE}."):
                 source_name = source_name[len(f"{COMMAND_NAMESPACE}."):]
+            elif source_name.startswith("speckit."):
+                source_name = source_name[len("speckit."):]
             if source_name.endswith(".agent.md"):
                 source_name = source_name[:-len(".agent.md")] + ".md"
 
@@ -2364,7 +2369,7 @@ def init(
     current_dir = Path.cwd()
 
     setup_lines = [
-        "[cyan]Specify Project Setup[/cyan]",
+        "[cyan]Warden Project Setup[/cyan]",
         "",
         f"{'Project':<15} [green]{project_path.name}[/green]",
         f"{'Working Path':<15} [dim]{current_dir}[/dim]",
@@ -2631,6 +2636,7 @@ def init(
                 "offline": offline,
                 "script": selected_script,
                 "speckit_version": get_speckit_version(),
+                "warden_version": FORK_VERSION,
             })
 
             # Install preset if specified
@@ -2883,6 +2889,8 @@ def version():
     info_table.add_column("Key", style="cyan", justify="right")
     info_table.add_column("Value", style="white")
 
+    info_table.add_row("Warden Version", f"{FORK_VERSION}")
+    info_table.add_row("Upstream Base", UPSTREAM_BASE)
     info_table.add_row("CLI Version", cli_version)
     info_table.add_row("Template Version", template_version)
     info_table.add_row("Released", release_date)
@@ -2894,7 +2902,7 @@ def version():
 
     panel = Panel(
         info_table,
-        title="[bold cyan]Specify CLI Information[/bold cyan]",
+        title=f"[bold cyan]{FORK_NAME} — Warden CLI Information[/bold cyan]",
         border_style="cyan",
         padding=(1, 2)
     )

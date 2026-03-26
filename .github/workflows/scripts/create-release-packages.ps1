@@ -58,6 +58,10 @@ if (Test-Path $GenReleasesDir) {
 }
 New-Item -ItemType Directory -Path $GenReleasesDir -Force | Out-Null
 
+# Command namespace prefix for generated filenames (e.g. warden.plan.md).
+# Change this value to match fork-specific configuration.
+$CmdNamespace = "warden"
+
 function Rewrite-Paths {
     param([string]$Content)
 
@@ -160,7 +164,7 @@ function Generate-Commands {
         $body = Rewrite-Paths -Content $body
 
         # Generate output file based on extension
-        $outputFile = Join-Path $OutputDir "speckit.$name.$Extension"
+        $outputFile = Join-Path $OutputDir "$CmdNamespace.$name.$Extension"
 
         switch ($Extension) {
             'toml' {
@@ -186,7 +190,7 @@ function Generate-CopilotPrompts {
 
     New-Item -ItemType Directory -Path $PromptsDir -Force | Out-Null
 
-    $agentFiles = Get-ChildItem -Path "$AgentsDir/speckit.*.agent.md" -File -ErrorAction SilentlyContinue
+    $agentFiles = Get-ChildItem -Path "$AgentsDir/$CmdNamespace.*.agent.md" -File -ErrorAction SilentlyContinue
 
     foreach ($agentFile in $agentFiles) {
         $basename = $agentFile.Name -replace '\.agent\.md$', ''
@@ -202,8 +206,8 @@ agent: $basename
 }
 
 # Create skills in <skills_dir>\<name>\SKILL.md format.
-# Most agents use hyphenated names (e.g. speckit-plan); Kimi is the
-# current dotted-name exception (e.g. speckit.plan).
+# Most agents use hyphenated names (e.g. warden-plan); Kimi is the
+# current dotted-name exception (e.g. warden.plan).
 #
 # Technical debt note:
 # Keep SKILL.md frontmatter aligned with `install_ai_skills()` and extension
@@ -220,7 +224,7 @@ function New-Skills {
 
     foreach ($template in $templates) {
         $name = [System.IO.Path]::GetFileNameWithoutExtension($template.Name)
-        $skillName = "speckit${Separator}$name"
+        $skillName = "${CmdNamespace}${Separator}$name"
         $skillDir = Join-Path $SkillsDir $skillName
         New-Item -ItemType Directory -Force -Path $skillDir | Out-Null
 

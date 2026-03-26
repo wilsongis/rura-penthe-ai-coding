@@ -44,3 +44,10 @@ def _resolve_command_namespace() -> str:
     return os.getenv("SPEC_COMMAND_NAMESPACE", "warden")
 
 COMMAND_NAMESPACE = _resolve_command_namespace()
+
+# Rura Penthe fork versioning — independent of upstream spec-kit.
+# Bump FORK_VERSION for fork-specific releases.
+# Update UPSTREAM_BASE when rebasing on a new upstream tag.
+FORK_VERSION = "1.0.0"
+FORK_NAME = "Rura Penthe"
+UPSTREAM_BASE = "0.4.2"  # upstream spec-kit version this fork is based on

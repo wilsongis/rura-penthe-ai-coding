@@ -46,6 +46,7 @@ from specify_cli import (
     _locate_core_pack,
     scaffold_from_core_pack,
 )
+from specify_cli.config import COMMAND_NAMESPACE
 
 _REPO_ROOT = Path(__file__).parent.parent
 _RELEASE_SCRIPT = _REPO_ROOT / ".github" / "workflows" / "scripts" / "create-release-packages.sh"
@@ -159,9 +160,9 @@ def _list_command_files(cmd_dir: Path, agent: str) -> list[Path]:
     """List generated command files, handling skills-based directory layouts."""
     if agent in _SKILL_AGENTS:
         sep = _SKILL_AGENTS[agent]
-        return sorted(cmd_dir.glob(f"speckit{sep}*/SKILL.md"))
+        return sorted(cmd_dir.glob(f"{COMMAND_NAMESPACE}{sep}*/SKILL.md"))
     ext = _expected_ext(agent)
-    return sorted(cmd_dir.glob(f"speckit.*.{ext}"))
+    return sorted(cmd_dir.glob(f"{COMMAND_NAMESPACE}.*.{ext}"))
 
 
 def _collect_relative_files(root: Path) -> dict[str, bytes]:
@@ -277,17 +278,17 @@ def test_scaffold_command_file_count(agent, scaffolded_sh, source_template_stems
 
 @pytest.mark.parametrize("agent", _TESTABLE_AGENTS)
 def test_scaffold_command_file_names(agent, scaffolded_sh, source_template_stems):
-    """Each source template stem maps to a corresponding speckit.<stem>.<ext> file."""
+    """Each source template stem maps to a corresponding {COMMAND_NAMESPACE}.<stem>.<ext> file."""
     project = scaffolded_sh(agent)
 
     cmd_dir = _expected_cmd_dir(project, agent)
     for stem in source_template_stems:
         if agent in _SKILL_AGENTS:
             sep = _SKILL_AGENTS[agent]
-            expected = cmd_dir / f"speckit{sep}{stem}" / "SKILL.md"
+            expected = cmd_dir / f"{COMMAND_NAMESPACE}{sep}{stem}" / "SKILL.md"
         else:
             ext = _expected_ext(agent)
-            expected = cmd_dir / f"speckit.{stem}.{ext}"
+            expected = cmd_dir / f"{COMMAND_NAMESPACE}.{stem}.{ext}"
         assert expected.is_file(), (
             f"Agent '{agent}': expected file '{expected.name}' not found in '{cmd_dir}'"
         )
@@ -362,10 +363,10 @@ def test_argument_token_format(agent, scaffolded_sh):
         # Recover the stem from the file path
         if agent in _SKILL_AGENTS:
             sep = _SKILL_AGENTS[agent]
-            stem = f.parent.name.removeprefix(f"speckit{sep}")
+            stem = f.parent.name.removeprefix(f"{COMMAND_NAMESPACE}{sep}")
         else:
             ext = _expected_ext(agent)
-            stem = f.name.removeprefix("speckit.").removesuffix(f".{ext}")
+            stem = f.name.removeprefix(f"{COMMAND_NAMESPACE}.").removesuffix(f".{ext}")
         if stem not in _TEMPLATES_WITH_ARGS:
             continue  # this template has no argument token
 
@@ -421,7 +422,7 @@ def test_toml_format_valid(agent, scaffolded_sh):
     project = scaffolded_sh(agent)
 
     cmd_dir = _expected_cmd_dir(project, agent)
-    for f in cmd_dir.glob("speckit.*.toml"):
+    for f in cmd_dir.glob(f"{COMMAND_NAMESPACE}.*.toml"):
         content = f.read_text(encoding="utf-8")
         assert 'description = "' in content, (
             f"Missing 'description' in '{f.name}' for agent '{agent}'"
@@ -463,14 +464,14 @@ def test_markdown_has_frontmatter(agent, scaffolded_sh):
 # ---------------------------------------------------------------------------
 
 def test_copilot_companion_prompt_files(scaffolded_sh, source_template_stems):
-    """Copilot: a speckit.<stem>.prompt.md companion is created for every .agent.md file."""
+    """Copilot: a {COMMAND_NAMESPACE}.<stem>.prompt.md companion is created for every .agent.md file."""
     project = scaffolded_sh("copilot")
 
     prompts_dir = project / ".github" / "prompts"
     assert prompts_dir.is_dir(), ".github/prompts/ not created for copilot"
 
     for stem in source_template_stems:
-        prompt_file = prompts_dir / f"speckit.{stem}.prompt.md"
+        prompt_file = prompts_dir / f"{COMMAND_NAMESPACE}.{stem}.prompt.md"
         assert prompt_file.is_file(), (
             f"Companion prompt file '{prompt_file.name}' missing for copilot"
         )
@@ -482,10 +483,10 @@ def test_copilot_prompt_file_content(scaffolded_sh, source_template_stems):
 
     prompts_dir = project / ".github" / "prompts"
     for stem in source_template_stems:
-        f = prompts_dir / f"speckit.{stem}.prompt.md"
+        f = prompts_dir / f"{COMMAND_NAMESPACE}.{stem}.prompt.md"
         content = f.read_text(encoding="utf-8")
-        assert f"agent: speckit.{stem}" in content, (
-            f"Companion '{f.name}' does not reference 'speckit.{stem}'"
+        assert f"agent: {COMMAND_NAMESPACE}.{stem}" in content, (
+            f"Companion '{f.name}' does not reference '{COMMAND_NAMESPACE}.{stem}'"
         )
 
 

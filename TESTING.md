@@ -7,7 +7,7 @@ Any change that affects a slash command's behavior requires manually testing tha
 1. **Identify affected commands** — use the [prompt below](#determining-which-tests-to-run) to have your agent analyze your changed files and determine which commands need testing.
 2. **Set up a test project** — scaffold from your local branch (see [Setup](#setup)).
 3. **Run each affected command** — invoke it in your agent, verify it completes successfully, and confirm it produces the expected output (files created, scripts executed, artifacts populated).
-4. **Run prerequisites first** — commands that depend on earlier commands (e.g., `/speckit.tasks` requires `/speckit.plan` which requires `/speckit.specify`) must be run in order.
+4. **Run prerequisites first** — commands that depend on earlier commands (e.g., `/warden.tasks` requires `/warden.plan` which requires `/warden.specify`) must be run in order.
 5. **Report results** — paste the [reporting template](#reporting-results) into your PR with pass/fail for each command tested.
 
 ## Setup
@@ -37,7 +37,7 @@ Paste this into your PR:
 
 | Command tested | Notes |
 |----------------|-------|
-| `/speckit.command` | |
+| `/warden.command` | |
 ~~~
 
 ## Determining which tests to run
@@ -53,7 +53,7 @@ invokes. Use these mapping rules:
 - templates/commands/X.md → the command it defines
 - scripts/bash/Y.sh or scripts/powershell/Y.ps1 → every command that invokes that script (grep templates/commands/ for the script name). Also check transitive dependencies: if the changed script is sourced by other scripts (e.g., common.sh is sourced by create-new-feature.sh, check-prerequisites.sh, setup-plan.sh, update-agent-context.sh), then every command invoking those downstream scripts is also affected
 - templates/Z-template.md → every command that consumes that template during execution
-- src/specify_cli/*.py → CLI commands (`specify init`, `specify check`, `specify extension *`, `specify preset *`); test the affected CLI command and, for init/scaffolding changes, at minimum test /speckit.specify
+- src/specify_cli/*.py → CLI commands (`specify init`, `specify check`, `specify extension *`, `specify preset *`); test the affected CLI command and, for init/scaffolding changes, at minimum test /warden.specify
 - extensions/X/commands/* → the extension command it defines
 - extensions/X/scripts/* → every extension command that invokes that script
 - extensions/X/extension.yml or config-template.yml → every command in that extension. Also check if the manifest defines hooks (look for `hooks:` entries like `before_specify`, `after_implement`, etc.) — if so, the core commands those hooks attach to are also affected
@@ -74,6 +74,6 @@ Output in this format:
 
 Number each test sequentially (T1, T2, ...). List prerequisite tests first.
 
-- T1: /speckit.command — (reason)
-- T2: /speckit.command — (reason)
+- T1: /warden.command — (reason)
+- T2: /warden.command — (reason)
 ~~~
