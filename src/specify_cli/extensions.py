@@ -144,15 +144,18 @@ class ExtensionManifest:
             raise ValidationError("Extension must provide at least one command")
 
         # Validate commands
+        from .config import COMMAND_NAMESPACE
+
         for cmd in provides["commands"]:
             if "name" not in cmd or "file" not in cmd:
                 raise ValidationError("Command missing 'name' or 'file'")
 
             # Validate command name format
-            if not re.match(r'^speckit\.[a-z0-9-]+\.[a-z0-9-]+$', cmd["name"]):
+            pattern = rf'^{re.escape(COMMAND_NAMESPACE)}\.[a-z0-9-]+\.[a-z0-9-]+$'
+            if not re.match(pattern, cmd["name"]):
                 raise ValidationError(
                     f"Invalid command name '{cmd['name']}': "
-                    "must follow pattern 'speckit.{extension}.{command}'"
+                    f"must follow pattern '{COMMAND_NAMESPACE}.{{extension}}.{{command}}'"
                 )
 
     @property
@@ -588,14 +591,12 @@ class ExtensionManager:
                 continue
 
             # Derive skill name from command name, matching the convention used by
-            # presets.py: strip the leading "speckit." prefix, then form:
-            #   Kimi  → "speckit.{short_name}"  (dot preserved for Kimi agent)
-            #   other → "speckit-{short_name}"  (hyphen separator)
+            # presets.py: strip the leading COMMAND_NAMESPACE prefix, then form:
+            #   Kimi  → "{NAMESPACE}.{short_name}"  (dot preserved for Kimi agent)
+            #   other → "{NAMESPACE}-{short_name}"  (hyphen separator)
             from .config import COMMAND_NAMESPACE
 
             short_name_raw = cmd_name
-            if short_name_raw.startswith("speckit."):
-                short_name_raw = short_name_raw[len("speckit."):]
             if short_name_raw.startswith(f"{COMMAND_NAMESPACE}."):
                 short_name_raw = short_name_raw[len(f"{COMMAND_NAMESPACE}."):]
 
@@ -659,8 +660,6 @@ class ExtensionManager:
 
             # Derive a human-friendly title from the command name
             short_name = cmd_name
-            if short_name.startswith("speckit."):
-                short_name = short_name[len("speckit."):]
             if short_name.startswith(f"{COMMAND_NAMESPACE}."):
                 short_name = short_name[len(f"{COMMAND_NAMESPACE}."):]
             title_name = short_name.replace(".", " ").replace("-", " ").title()

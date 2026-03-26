@@ -57,12 +57,12 @@ def valid_manifest_data():
         },
         "requires": {
             "speckit_version": ">=0.1.0",
-            "commands": ["speckit.tasks"],
+            "commands": ["warden.tasks"],
         },
         "provides": {
             "commands": [
                 {
-                    "name": "speckit.test.hello",
+                    "name": "warden.test.hello",
                     "file": "commands/hello.md",
                     "description": "Test command",
                 }
@@ -70,7 +70,7 @@ def valid_manifest_data():
         },
         "hooks": {
             "after_tasks": {
-                "command": "speckit.test.hello",
+                "command": "warden.test.hello",
                 "optional": True,
                 "prompt": "Run test?",
             }
@@ -188,7 +188,7 @@ class TestExtensionManifest:
         assert manifest.version == "1.0.0"
         assert manifest.description == "A test extension"
         assert len(manifest.commands) == 1
-        assert manifest.commands[0]["name"] == "speckit.test.hello"
+        assert manifest.commands[0]["name"] == "warden.test.hello"
 
     def test_missing_required_field(self, temp_dir):
         """Test manifest missing required field."""
@@ -776,10 +776,10 @@ $ARGUMENTS
         )
 
         assert len(registered) == 1
-        assert "speckit.test.hello" in registered
+        assert "warden.test.hello" in registered
 
         # Check command file was created
-        cmd_file = claude_dir / "speckit.test.hello.md"
+        cmd_file = claude_dir / "warden.test.hello.md"
         assert cmd_file.exists()
 
         content = cmd_file.read_text()
@@ -809,9 +809,9 @@ $ARGUMENTS
             "provides": {
                 "commands": [
                     {
-                        "name": "speckit.alias.cmd",
+                        "name": "warden.alias.cmd",
                         "file": "commands/cmd.md",
-                        "aliases": ["speckit.shortcut"],
+                        "aliases": ["warden.shortcut"],
                     }
                 ]
             },
@@ -831,27 +831,27 @@ $ARGUMENTS
         registered = registrar.register_commands_for_claude(manifest, ext_dir, project_dir)
 
         assert len(registered) == 2
-        assert "speckit.alias.cmd" in registered
-        assert "speckit.shortcut" in registered
-        assert (claude_dir / "speckit.alias.cmd.md").exists()
-        assert (claude_dir / "speckit.shortcut.md").exists()
+        assert "warden.alias.cmd" in registered
+        assert "warden.shortcut" in registered
+        assert (claude_dir / "warden.alias.cmd.md").exists()
+        assert (claude_dir / "warden.shortcut.md").exists()
 
     def test_unregister_commands_for_codex_skills_uses_mapped_names(self, project_dir):
         """Codex skill cleanup should use the same mapped names as registration."""
         skills_dir = project_dir / ".agents" / "skills"
-        (skills_dir / "speckit-specify").mkdir(parents=True)
-        (skills_dir / "speckit-specify" / "SKILL.md").write_text("body")
-        (skills_dir / "speckit-shortcut").mkdir(parents=True)
-        (skills_dir / "speckit-shortcut" / "SKILL.md").write_text("body")
+        (skills_dir / "warden-specify").mkdir(parents=True)
+        (skills_dir / "warden-specify" / "SKILL.md").write_text("body")
+        (skills_dir / "warden-shortcut").mkdir(parents=True)
+        (skills_dir / "warden-shortcut" / "SKILL.md").write_text("body")
 
         registrar = CommandRegistrar()
         registrar.unregister_commands(
-            {"codex": ["speckit.specify", "speckit.shortcut"]},
+            {"codex": ["warden.specify", "warden.shortcut"]},
             project_dir,
         )
 
-        assert not (skills_dir / "speckit-specify" / "SKILL.md").exists()
-        assert not (skills_dir / "speckit-shortcut" / "SKILL.md").exists()
+        assert not (skills_dir / "warden-specify" / "SKILL.md").exists()
+        assert not (skills_dir / "warden-shortcut" / "SKILL.md").exists()
 
     def test_register_commands_for_all_agents_distinguishes_codex_from_amp(self, extension_dir, project_dir):
         """A Codex project under .agents/skills should not implicitly activate Amp."""
@@ -875,11 +875,11 @@ $ARGUMENTS
         registrar = CommandRegistrar()
         registrar.register_commands_for_agent("codex", manifest, extension_dir, project_dir)
 
-        skill_file = skills_dir / "speckit-test.hello" / "SKILL.md"
+        skill_file = skills_dir / "warden-test.hello" / "SKILL.md"
         assert skill_file.exists()
 
         content = skill_file.read_text()
-        assert "name: speckit-test.hello" in content
+        assert "name: warden-test.hello" in content
         assert "description: Test hello command" in content
         assert "compatibility:" in content
         assert "metadata:" in content
@@ -906,7 +906,7 @@ $ARGUMENTS
             "provides": {
                 "commands": [
                     {
-                        "name": "speckit.test.plan",
+                        "name": "warden.test.plan",
                         "file": "commands/plan.md",
                         "description": "Scripted command",
                     }
@@ -944,7 +944,7 @@ Agent __AGENT__
         registrar = CommandRegistrar()
         registrar.register_commands_for_agent("codex", manifest, ext_dir, project_dir)
 
-        skill_file = skills_dir / "speckit-test.plan" / "SKILL.md"
+        skill_file = skills_dir / "warden-test.plan" / "SKILL.md"
         assert skill_file.exists()
 
         content = skill_file.read_text()
@@ -975,9 +975,9 @@ Agent __AGENT__
             "provides": {
                 "commands": [
                     {
-                        "name": "speckit.alias.cmd",
+                        "name": "warden.alias.cmd",
                         "file": "commands/cmd.md",
-                        "aliases": ["speckit.shortcut"],
+                        "aliases": ["warden.shortcut"],
                     }
                 ]
             },
@@ -994,13 +994,13 @@ Agent __AGENT__
         registrar = CommandRegistrar()
         registrar.register_commands_for_agent("codex", manifest, ext_dir, project_dir)
 
-        primary = skills_dir / "speckit-alias.cmd" / "SKILL.md"
-        alias = skills_dir / "speckit-shortcut" / "SKILL.md"
+        primary = skills_dir / "warden-alias.cmd" / "SKILL.md"
+        alias = skills_dir / "warden-shortcut" / "SKILL.md"
 
         assert primary.exists()
         assert alias.exists()
-        assert "name: speckit-alias.cmd" in primary.read_text()
-        assert "name: speckit-shortcut" in alias.read_text()
+        assert "name: warden-alias.cmd" in primary.read_text()
+        assert "name: warden-shortcut" in alias.read_text()
 
     def test_codex_skill_registration_uses_fallback_script_variant_without_init_options(
         self, project_dir, temp_dir
@@ -1024,7 +1024,7 @@ Agent __AGENT__
             "provides": {
                 "commands": [
                     {
-                        "name": "speckit.fallback.plan",
+                        "name": "warden.fallback.plan",
                         "file": "commands/plan.md",
                     }
                 ]
@@ -1056,7 +1056,7 @@ Then {AGENT_SCRIPT}
         registrar = CommandRegistrar()
         registrar.register_commands_for_agent("codex", manifest, ext_dir, project_dir)
 
-        skill_file = skills_dir / "speckit-fallback.plan" / "SKILL.md"
+        skill_file = skills_dir / "warden-fallback.plan" / "SKILL.md"
         assert skill_file.exists()
 
         content = skill_file.read_text()
@@ -1089,7 +1089,7 @@ Then {AGENT_SCRIPT}
             "provides": {
                 "commands": [
                     {
-                        "name": "speckit.windows.plan",
+                        "name": "warden.windows.plan",
                         "file": "commands/plan.md",
                     }
                 ]
@@ -1121,7 +1121,7 @@ Then {AGENT_SCRIPT}
         registrar = CommandRegistrar()
         registrar.register_commands_for_agent("codex", manifest, ext_dir, project_dir)
 
-        skill_file = skills_dir / "speckit-windows.plan" / "SKILL.md"
+        skill_file = skills_dir / "warden-windows.plan" / "SKILL.md"
         assert skill_file.exists()
 
         content = skill_file.read_text()
@@ -1143,14 +1143,14 @@ Then {AGENT_SCRIPT}
         )
 
         assert len(registered) == 1
-        assert "speckit.test.hello" in registered
+        assert "warden.test.hello" in registered
 
         # Verify command file uses .agent.md extension
-        cmd_file = agents_dir / "speckit.test.hello.agent.md"
+        cmd_file = agents_dir / "warden.test.hello.agent.md"
         assert cmd_file.exists()
 
         # Verify NO plain .md file was created
-        plain_md_file = agents_dir / "speckit.test.hello.md"
+        plain_md_file = agents_dir / "warden.test.hello.md"
         assert not plain_md_file.exists()
 
         content = cmd_file.read_text()
@@ -1170,12 +1170,12 @@ Then {AGENT_SCRIPT}
         )
 
         # Verify companion .prompt.md file exists
-        prompt_file = project_dir / ".github" / "prompts" / "speckit.test.hello.prompt.md"
+        prompt_file = project_dir / ".github" / "prompts" / "warden.test.hello.prompt.md"
         assert prompt_file.exists()
 
         # Verify content has correct agent frontmatter
         content = prompt_file.read_text()
-        assert content == "---\nagent: speckit.test.hello\n---\n"
+        assert content == "---\nagent: warden.test.hello\n---\n"
 
     def test_copilot_aliases_get_companion_prompts(self, project_dir, temp_dir):
         """Test that aliases also get companion .prompt.md files for Copilot."""
@@ -1196,9 +1196,9 @@ Then {AGENT_SCRIPT}
             "provides": {
                 "commands": [
                     {
-                        "name": "speckit.alias-copilot.cmd",
+                        "name": "warden.alias-copilot.cmd",
                         "file": "commands/cmd.md",
-                        "aliases": ["speckit.shortcut-copilot"],
+                        "aliases": ["warden.shortcut-copilot"],
                     }
                 ]
             },
@@ -1225,8 +1225,8 @@ Then {AGENT_SCRIPT}
 
         # Both primary and alias get companion .prompt.md
         prompts_dir = project_dir / ".github" / "prompts"
-        assert (prompts_dir / "speckit.alias-copilot.cmd.prompt.md").exists()
-        assert (prompts_dir / "speckit.shortcut-copilot.prompt.md").exists()
+        assert (prompts_dir / "warden.alias-copilot.cmd.prompt.md").exists()
+        assert (prompts_dir / "warden.shortcut-copilot.prompt.md").exists()
 
     def test_non_copilot_agent_no_companion_file(self, extension_dir, project_dir):
         """Test that non-copilot agents do NOT create .prompt.md files."""
@@ -1299,7 +1299,7 @@ class TestIntegration:
         assert installed[0]["id"] == "test-ext"
 
         # Verify command registered
-        cmd_file = project_dir / ".claude" / "commands" / "speckit.test.hello.md"
+        cmd_file = project_dir / ".claude" / "commands" / "warden.test.hello.md"
         assert cmd_file.exists()
 
         # Verify registry has registered commands (now a dict keyed by agent)
@@ -1307,7 +1307,7 @@ class TestIntegration:
         registered_commands = metadata["registered_commands"]
         # Check that the command is registered for at least one agent
         assert any(
-            "speckit.test.hello" in cmds
+            "warden.test.hello" in cmds
             for cmds in registered_commands.values()
         )
 
@@ -1333,8 +1333,8 @@ class TestIntegration:
         assert "copilot" in metadata["registered_commands"]
 
         # Verify files exist before cleanup
-        agent_file = agents_dir / "speckit.test.hello.agent.md"
-        prompt_file = project_dir / ".github" / "prompts" / "speckit.test.hello.prompt.md"
+        agent_file = agents_dir / "warden.test.hello.agent.md"
+        prompt_file = project_dir / ".github" / "prompts" / "warden.test.hello.prompt.md"
         assert agent_file.exists()
         assert prompt_file.exists()
 
@@ -1366,7 +1366,7 @@ class TestIntegration:
                 "provides": {
                     "commands": [
                         {
-                            "name": f"speckit.ext{i}.cmd",
+                            "name": f"warden.ext{i}.cmd",
                             "file": "commands/cmd.md",
                         }
                     ]
@@ -2644,7 +2644,7 @@ class TestExtensionUpdateCLI:
             "provides": {
                 "commands": [
                     {
-                        "name": "speckit.test.hello",
+                        "name": "warden.test.hello",
                         "file": "commands/hello.md",
                         "description": "Test command",
                     }
@@ -2652,7 +2652,7 @@ class TestExtensionUpdateCLI:
             },
             "hooks": {
                 "after_tasks": {
-                    "command": "speckit.test.hello",
+                    "command": "warden.test.hello",
                     "optional": True,
                 }
             },
@@ -2681,7 +2681,7 @@ class TestExtensionUpdateCLI:
                 "description": "A test extension",
             },
             "requires": {"speckit_version": ">=0.1.0"},
-            "provides": {"commands": [{"name": "speckit.test.hello", "file": "commands/hello.md"}]},
+            "provides": {"commands": [{"name": "warden.test.hello", "file": "commands/hello.md"}]},
         }
 
         with zipfile.ZipFile(zip_path, "w") as zf:

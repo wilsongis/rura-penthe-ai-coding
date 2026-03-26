@@ -38,8 +38,11 @@ packages = ["src/specify_cli"]
 "templates/spec-template.md" = "specify_cli/core_pack/templates/spec-template.md"
 "templates/tasks-template.md" = "specify_cli/core_pack/templates/tasks-template.md"
 "templates/vscode-settings.json" = "specify_cli/core_pack/templates/vscode-settings.json"
+"templates/pyproject-template.toml" = "specify_cli/core_pack/templates/pyproject-template.toml"
 # Command templates
 "templates/commands" = "specify_cli/core_pack/commands"
+# Git hook templates
+"templates/hooks" = "specify_cli/core_pack/hooks"
 "scripts/bash" = "specify_cli/core_pack/scripts/bash"
 "scripts/powershell" = "specify_cli/core_pack/scripts/powershell"
 ".github/workflows/scripts/create-release-packages.sh" = "specify_cli/core_pack/release_scripts/create-release-packages.sh"

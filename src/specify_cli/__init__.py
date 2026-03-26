@@ -1296,6 +1296,9 @@ def scaffold_from_core_pack(
                 for f in templates_dir.iterdir():
                     if f.is_file():
                         shutil.copy2(f, tmpl_root / f.name)
+                    elif f.is_dir() and f.name != "commands":
+                        # Recursively copy subdirectories (e.g. hooks/)
+                        shutil.copytree(f, tmpl_root / f.name, dirs_exist_ok=True)
 
             # Scripts (bash/ and powershell/)
             for subdir in ("bash", "powershell"):
@@ -1468,6 +1471,374 @@ def ensure_constitution_from_template(project_path: Path, tracker: StepTracker |
         else:
             console.print(f"[yellow]Warning: Could not initialize constitution: {e}[/yellow]")
 
+
+def ensure_stack_from_template(project_path: Path, tracker: StepTracker | None = None, profile: str = "a") -> None:
+    """Bootstrap the centralized STACK.md file with explicit Negative Constraints.
+
+    Args:
+        project_path: Root directory of the new project.
+        tracker: Optional step tracker for CLI progress display.
+        profile: Architecture profile ('a' for CPython/Mission, 'b' for MicroPython/Embedded).
+    """
+    stack_path = project_path / "STACK.md"
+    
+    if stack_path.exists():
+        if tracker:
+            tracker.add("stack", "Tech Stack Architecture setup")
+            tracker.skip("stack", "existing file preserved")
+        return
+
+    if profile.lower() == "b":
+        stack_content = """# Project Tech Stack (Profile B: Embedded / MicroPython)
+
+*The Rura Penthe subagents MUST read this file to understand the strictly enforced dependencies, linters, and architectural constraints of this specific project.*
+
+## Global Standard
+- **Runtime:** Strictly MicroPython. Do not use CPython-only libraries.
+- **Package Manager:** Strictly `uv` for host tooling. Do not use `pip` or `poetry`.
+- **Error Handling:** Strictly Result tuples `(ok, err)`. Do not use try/except for control flow.
+- **Networking:** Strictly `urequests` or raw sockets. Do not use `httpx`, `requests`, or `aiohttp`.
+- **Data Format:** Strictly `ujson`. Do not use `pickle`, `yaml`, or `toml` on-device.
+- **Linting:** Strictly Ruff on host (`just lint`). Do not use flake8, black, or pylint.
+- **Task Runner:** Strictly `just`. Do not use Make.
+
+## Core Rules
+1. Never use `pip` or `poetry`. Always use `uv` for host-side tooling.
+2. All on-device code must be MicroPython-compatible. Do not import CPython-only standard library modules.
+3. Memory is constrained. Do not allocate large buffers or use generators excessively.
+4. Every test must be executed via `just test`.
+5. Do NOT use `PYTHONPATH="$PWD"`, simply rely on `uv run`.
+"""
+    else:
+        stack_content = """# Project Tech Stack (Profile A: Mission Compute / CPython)
+
+*The Rura Penthe subagents MUST read this file to understand the strictly enforced dependencies, linters, and architectural constraints of this specific project.*
+
+## Global Standard
+- **Package Manager:** Strictly `uv`. Do not use `pip` or `poetry`.
+- **Backend:** Strictly Python + FastAPI. Do not use Django or Flask.
+- **Frontend:** Strictly HTMX / Tailwind / Vanilla HTML/JS. Do not use React, Vue, Svelte, or heavy client-side JavaScript.
+- **Database:** Strictly PostgreSQL. Do not use SQLite or MongoDB.
+- **Linting:** Strictly Ruff (`just lint` and `just lint-fix`). Do not use flake8, black, or pylint.
+- **Task Runner:** Strictly `just`. Do not use Make.
+
+## Core Rules
+1. Never use `pip` or `poetry`. Always use `uv`.
+2. Rely STRICTLY on the defined stack. Do not install any external technologies (e.g., Node, perl, rust) unless explicitly specified in this repository.
+3. Do not write monolithic endpoints; split logic cleanly.
+4. Every test must be executed via `just test`.
+5. Do NOT use `PYTHONPATH="$PWD"`, simply rely on `uv run`.
+"""
+    
+    try:
+        stack_path.write_text(stack_content, encoding="utf-8")
+        if tracker:
+            tracker.add("stack", "Tech Stack Architecture setup")
+            tracker.complete("stack", f"scaffolded STACK.md (Profile {profile.upper()}) with negative constraints")
+        else:
+            console.print("[cyan]Initialized STACK.md[/cyan]")
+    except Exception as e:
+        if tracker:
+            tracker.add("stack", "Tech Stack Architecture setup")
+            tracker.error("stack", str(e))
+        else:
+            console.print(f"[yellow]Warning: Could not initialize STACK.md: {e}[/yellow]")
+
+
+def ensure_rura_config(project_path: Path, tracker: StepTracker | None = None) -> None:
+    """Scaffold the .rura/config.json file for bulletproof namespace routing.
+
+    Args:
+        project_path: Root directory of the new project.
+        tracker: Optional step tracker for CLI progress display.
+    """
+    config_dir = project_path / ".rura"
+    config_path = config_dir / "config.json"
+
+    if config_path.exists():
+        if tracker:
+            tracker.add("rura-config", "Rura config setup")
+            tracker.skip("rura-config", "existing file preserved")
+        return
+
+    config_content = '{\n  "command_namespace": "warden"\n}\n'
+
+    try:
+        config_dir.mkdir(parents=True, exist_ok=True)
+        config_path.write_text(config_content, encoding="utf-8")
+        if tracker:
+            tracker.add("rura-config", "Rura config setup")
+            tracker.complete("rura-config", "scaffolded .rura/config.json")
+        else:
+            console.print("[cyan]Initialized .rura/config.json[/cyan]")
+    except Exception as e:
+        if tracker:
+            tracker.add("rura-config", "Rura config setup")
+            tracker.error("rura-config", str(e))
+        else:
+            console.print(f"[yellow]Warning: Could not initialize .rura/config.json: {e}[/yellow]")
+
+
+def ensure_justfile(project_path: Path, tracker: StepTracker | None = None, profile: str = "a") -> None:
+    """Scaffold a profile-aware justfile with pre-baked recipes.
+
+    Eliminates AI token consumption by providing ready-to-use lint, test,
+    typecheck, verify, container, and wave-status recipes out of the box.
+
+    Args:
+        project_path: Root directory of the new project.
+        tracker: Optional step tracker for CLI progress display.
+        profile: Architecture profile ('a' for CPython/Mission, 'b' for MicroPython/Embedded).
+    """
+    justfile_path = project_path / "justfile"
+
+    if justfile_path.exists():
+        if tracker:
+            tracker.add("justfile", "Task runner setup")
+            tracker.skip("justfile", "existing file preserved")
+        return
+
+    common_header = """# Rura Penthe – Safety-Critical Task Runner
+# All development commands are routed through `just`.
+# Do NOT use Make. Do NOT call tools directly — use these recipes.
+
+set dotenv-load
+
+"""
+
+    common_recipes = """# ─── Container Management ──────────────────────────────────────────
+
+# Build and start the container (idempotent — skips if already running)
+start:
+    @docker compose up -d --build 2>/dev/null || echo "No docker-compose.yml found. Skipping container start."
+
+# Start the development server (if present)
+run:
+    @if [ -f "docker-compose.yml" ]; then \\
+        docker compose up; \\
+    elif [ -f "manage.py" ]; then \\
+        uv run python manage.py runserver; \\
+    else \\
+        echo "No runnable server detected. Add a docker-compose.yml or manage.py."; \\
+    fi
+
+# ─── Wave Execution Status ─────────────────────────────────────────
+
+# Show XML wave completion status from tasks.md (zero AI tokens)
+wave-status:
+    @uv run python -c "\\
+import re, sys, pathlib; \\
+f = next(pathlib.Path('.').rglob('tasks.md'), None); \\
+f or sys.exit('No tasks.md found'); \\
+txt = f.read_text(); \\
+waves = re.findall(r'<wave[^>]*id=\"(\\d+)\"[^>]*status=\"(\\w+)\"', txt); \\
+waves or sys.exit('No <wave> blocks found'); \\
+print('Wave | Status'); \\
+print('-----|-------'); \\
+[print(f'  {i}  | {s}') for i,s in waves]; \\
+p = sum(1 for _,s in waves if s=='pending'); \\
+c = sum(1 for _,s in waves if s=='completed'); \\
+print(f'\\n{c}/{len(waves)} completed, {p} pending')"
+
+# ─── Dependency Auditing (Power of 11: Rule 2) ────────────────────
+
+# Audit dependencies for known vulnerabilities
+audit:
+    uv run pip-audit
+
+# ─── Combined Verification Gate ────────────────────────────────────
+
+# Full pre-flight check: lint + typecheck + test (used by /warden.verify)
+verify: lint typecheck test
+    @echo "✅ All checks passed."
+
+# ─── Release & Upstream Helpers ────────────────────────────────────
+
+# Generate CHANGELOG.md from semantic wave commits
+changelog:
+    @./scripts/bash/generate-changelog.sh --append
+
+# Check upstream spec-kit changes before merging (requires 'upstream' remote)
+upstream-report:
+    @./scripts/bash/upstream-diff-report.sh
+"""
+
+    if profile.lower() == "b":
+        profile_recipes = """# ─── Profile B: MicroPython / Embedded ─────────────────────────────
+
+# Lint all host-side code with Ruff
+lint:
+    uv run ruff check .
+
+# Auto-fix lint issues
+lint-fix:
+    uv run ruff check --fix .
+
+# Format code with Ruff
+format:
+    uv run ruff format .
+
+# Type-check host-side code
+typecheck:
+    uv run pyright
+
+# Run tests (host-side only; on-device tests require hardware)
+test:
+    uv run pytest -x -q
+
+# Flash firmware to a connected MicroPython board (customize per board)
+flash:
+    @echo "Override this recipe with your board-specific flash command."
+    @echo "Example: mpremote connect auto cp main.py :"
+
+"""
+    else:
+        profile_recipes = """# ─── Profile A: CPython / Mission Compute ──────────────────────────
+
+# Lint all code with Ruff
+lint:
+    uv run ruff check .
+
+# Auto-fix lint issues
+lint-fix:
+    uv run ruff check --fix .
+
+# Format code with Ruff
+format:
+    uv run ruff format .
+
+# Type-check with Pyright (strict mode via pyproject.toml)
+typecheck:
+    uv run pyright
+
+# Run the test suite
+test:
+    uv run pytest -x -q
+
+"""
+
+    justfile_content = common_header + profile_recipes + common_recipes
+
+    try:
+        justfile_path.write_text(justfile_content, encoding="utf-8")
+        if tracker:
+            tracker.add("justfile", "Task runner setup")
+            tracker.complete("justfile", f"scaffolded justfile (Profile {profile.upper()})")
+        else:
+            console.print("[cyan]Initialized justfile[/cyan]")
+    except Exception as e:
+        if tracker:
+            tracker.add("justfile", "Task runner setup")
+            tracker.error("justfile", str(e))
+        else:
+            console.print(f"[yellow]Warning: Could not initialize justfile: {e}[/yellow]")
+
+
+def ensure_goals_md(project_path: Path, tracker: StepTracker | None = None) -> None:
+    """Scaffold a GOALS.md skeleton for goal-alignment auditing.
+
+    Args:
+        project_path: Root directory of the new project.
+        tracker: Optional step tracker for CLI progress display.
+    """
+    goals_path = project_path / "GOALS.md"
+
+    if goals_path.exists():
+        if tracker:
+            tracker.add("goals", "Project goals setup")
+            tracker.skip("goals", "existing file preserved")
+        return
+
+    goals_content = """# Project Goals
+
+*This file is read by `/warden.audit` to cross-reference proposed features against project intent.*
+
+## Primary Objective
+
+<!-- Replace with your project's primary goal -->
+- Build a [describe your application] that [solves what problem].
+
+## Non-Goals (Explicit Exclusions)
+
+<!-- These prevent scope creep. The agent MUST NOT work on anything listed here. -->
+- Do NOT build a user authentication system (out of scope for MVP).
+- Do NOT add analytics or telemetry to the application itself.
+
+## Success Criteria
+
+<!-- Measurable outcomes that define "done" -->
+- [ ] All waves in `tasks.md` are `status="completed"`.
+- [ ] `just verify` passes with zero errors.
+- [ ] Documentation is up to date.
+"""
+
+    try:
+        goals_path.write_text(goals_content, encoding="utf-8")
+        if tracker:
+            tracker.add("goals", "Project goals setup")
+            tracker.complete("goals", "scaffolded GOALS.md skeleton")
+        else:
+            console.print("[cyan]Initialized GOALS.md[/cyan]")
+    except Exception as e:
+        if tracker:
+            tracker.add("goals", "Project goals setup")
+            tracker.error("goals", str(e))
+        else:
+            console.print(f"[yellow]Warning: Could not initialize GOALS.md: {e}[/yellow]")
+
+
+def ensure_precommit_hook(project_path: Path, tracker: StepTracker | None = None) -> None:
+    """Install the pip-detection pre-commit hook (Power of 11, Rule 2).
+
+    Copies the pre-commit hook template into .git/hooks/ if a git repo exists.
+
+    Args:
+        project_path: Root directory of the new project.
+        tracker: Optional step tracker for CLI progress display.
+    """
+    git_hooks_dir = project_path / ".git" / "hooks"
+    hook_target = git_hooks_dir / "pre-commit"
+
+    # Only install if this is a git repository
+    if not (project_path / ".git").is_dir():
+        if tracker:
+            tracker.add("pre-commit", "Pre-commit hook setup")
+            tracker.skip("pre-commit", "not a git repository")
+        return
+
+    if hook_target.exists():
+        if tracker:
+            tracker.add("pre-commit", "Pre-commit hook setup")
+            tracker.skip("pre-commit", "existing hook preserved")
+        return
+
+    # Look for the hook template in the extracted templates
+    hook_source = project_path / ".specify" / "hooks" / "pre-commit"
+    if not hook_source.exists():
+        # Fallback: look in templates/hooks/
+        hook_source = Path(__file__).parent.parent.parent / "templates" / "hooks" / "pre-commit"
+
+    if not hook_source.exists():
+        if tracker:
+            tracker.add("pre-commit", "Pre-commit hook setup")
+            tracker.error("pre-commit", "hook template not found")
+        return
+
+    try:
+        git_hooks_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(hook_source, hook_target)
+        hook_target.chmod(0o755)
+        if tracker:
+            tracker.add("pre-commit", "Pre-commit hook setup")
+            tracker.complete("pre-commit", "installed pip-detection hook (Power of 11, Rule 2)")
+        else:
+            console.print("[cyan]Installed pre-commit hook[/cyan]")
+    except Exception as e:
+        if tracker:
+            tracker.add("pre-commit", "Pre-commit hook setup")
+            tracker.error("pre-commit", str(e))
+        else:
+            console.print(f"[yellow]Warning: Could not install pre-commit hook: {e}[/yellow]")
 
 INIT_OPTIONS_FILE = ".specify/init-options.json"
 
@@ -2062,6 +2433,7 @@ def init(
     for key, label in [
         ("chmod", "Ensure scripts executable"),
         ("constitution", f"Constitution setup (Profile {selected_profile.upper()})"),
+        ("stack", "Tech Stack Architecture setup"),
     ]:
         tracker.add(key, label)
     if ai_skills:
@@ -2129,6 +2501,11 @@ def init(
             ensure_executable_scripts(project_path, tracker=tracker)
 
             ensure_constitution_from_template(project_path, tracker=tracker, profile=selected_profile)
+            ensure_stack_from_template(project_path, tracker=tracker, profile=selected_profile)
+            ensure_rura_config(project_path, tracker=tracker)
+            ensure_justfile(project_path, tracker=tracker, profile=selected_profile)
+            ensure_goals_md(project_path, tracker=tracker)
+            ensure_precommit_hook(project_path, tracker=tracker)
 
             if ai_skills:
                 if selected_ai in NATIVE_SKILLS_AGENTS:
@@ -2479,6 +2856,57 @@ def version():
     )
 
     console.print(panel)
+    console.print()
+
+
+@app.command()
+def status():
+    """Show wave execution progress from tasks.md."""
+    import re
+
+    show_banner()
+
+    # Find tasks.md in the project
+    cwd = Path.cwd()
+    tasks_files = list(cwd.rglob("tasks.md"))
+
+    if not tasks_files:
+        console.print("[yellow]No tasks.md found in the current directory tree.[/yellow]")
+        console.print("[dim]Run /warden.tasks to generate a task breakdown first.[/dim]")
+        raise typer.Exit(1)
+
+    tasks_path = tasks_files[0]
+    content = tasks_path.read_text(encoding="utf-8")
+
+    # Parse XML wave blocks
+    wave_pattern = re.compile(r'<wave[^>]*id="(\d+)"[^>]*status="(\w+)"')
+    waves = wave_pattern.findall(content)
+
+    if not waves:
+        console.print("[yellow]No <wave> blocks found in tasks.md.[/yellow]")
+        console.print("[dim]Ensure tasks.md uses XML wave format (run /warden.tasks).[/dim]")
+        raise typer.Exit(1)
+
+    # Build status table
+    status_table = Table(title=f"Wave Progress — {tasks_path.relative_to(cwd)}", border_style="cyan")
+    status_table.add_column("Wave", style="bold", justify="center")
+    status_table.add_column("Status", justify="center")
+
+    completed = 0
+    pending = 0
+    for wave_id, wave_status in waves:
+        if wave_status == "completed":
+            status_table.add_row(f"Wave {wave_id}", "[green]✅ completed[/green]")
+            completed += 1
+        elif wave_status == "pending":
+            status_table.add_row(f"Wave {wave_id}", "[yellow]⏳ pending[/yellow]")
+            pending += 1
+        else:
+            status_table.add_row(f"Wave {wave_id}", f"[red]{wave_status}[/red]")
+
+    console.print(status_table)
+    console.print()
+    console.print(f"  [bold]{completed}[/bold]/{len(waves)} completed, [bold]{pending}[/bold] pending")
     console.print()
 
 

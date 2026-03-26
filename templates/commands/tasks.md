@@ -5,9 +5,9 @@ handoffs:
     agent: warden.analyze
     prompt: Run a project analysis for consistency
     send: true
-  - label: Implement Project
-    agent: warden.implement
-    prompt: Start the implementation in phases
+  - label: Execute Waves
+    agent: warden.execute
+    prompt: Start the XML wave state machine
     send: true
 scripts:
   sh: scripts/bash/check-prerequisites.sh --json
@@ -76,26 +76,17 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Create parallel execution examples per user story
    - Validate task completeness (each user story has all needed tasks, independently testable)
 
-4. **Generate tasks.md**: Use `templates/tasks-template.md` as structure, fill with:
+4. **Generate tasks.md**: Fill with:
    - Correct feature name from plan.md
    - Phase 1: Setup tasks (project initialization)
-   - Phase 2: Foundational tasks (blocking prerequisites for all user stories)
+   - Phase 2: Foundational tasks
    - Phase 3+: One phase per user story (in priority order from spec.md)
-   - Each phase includes: story goal, independent test criteria, tests (if requested), implementation tasks
-   - Final Phase: Polish & cross-cutting concerns
-   - All tasks must follow the strict checklist format (see Task Generation Rules below)
-   - Clear file paths for each task
-   - Dependencies section showing story completion order
-   - Parallel execution examples per story
-   - Implementation strategy section (MVP first, incremental delivery)
+   - **CRITICAL**: Do NOT output standard markdown checkboxes. All tasks must be output inside XML `<wave>` blocks (combining 3-4 dependent tasks into batch blocks) optimized for execution.
 
 5. **Report**: Output path to generated tasks.md and summary:
    - Total task count
-   - Task count per user story
-   - Parallel opportunities identified
-   - Independent test criteria for each story
-   - Suggested MVP scope (typically just User Story 1)
-   - Format validation: Confirm ALL tasks follow the checklist format (checkbox, ID, labels, file paths)
+   - Total XML `<wave>` count
+   - Format validation: Confirm ALL tasks follow the strict XML `<wave>` format.
 
 6. **Check for extension hooks**: After tasks.md is generated, check if `.specify/extensions.yml` exists in the project root.
    - If it exists, read it and look for entries under the `hooks.after_tasks` key
@@ -132,41 +123,37 @@ The tasks.md should be immediately executable - each task must be specific enoug
 
 ## Task Generation Rules
 
-**CRITICAL**: Tasks MUST be organized by user story to enable independent implementation and testing.
+**CRITICAL**: Tasks MUST be completely encapsulated in XML `<wave>` blocks to facilitate rapid execution via context-safe mini-sprints.
 
 **Tests are OPTIONAL**: Only generate test tasks if explicitly requested in the feature specification or if user requests TDD approach.
 
-### Checklist Format (REQUIRED)
+### XML Wave Format (REQUIRED)
 
-Every task MUST strictly follow this format:
+Every execution block MUST strictly follow this XML configuration. Group 3-4 dependent `<task>` elements into a single `<wave>`.
 
-```text
-- [ ] [TaskID] [P?] [Story?] Description with file path
+```xml
+<wave id="1" status="pending">
+  <task id="T001" type="setup" story="US1">
+    <name>Create project structure</name>
+    <files>src/api/auth.py</files>
+    <action>Implement the feature logic.</action>
+    <verify>just test</verify>
+  </task>
+  <task id="T002" type="core" story="US1">
+    <name>Implement auth middleware</name>
+    <files>src/middleware/auth.py</files>
+    <action>Write JWT logic.</action>
+    <verify>just test</verify>
+  </task>
+</wave>
 ```
 
 **Format Components**:
-
-1. **Checkbox**: ALWAYS start with `- [ ]` (markdown checkbox)
-2. **Task ID**: Sequential number (T001, T002, T003...) in execution order
-3. **[P] marker**: Include ONLY if task is parallelizable (different files, no dependencies on incomplete tasks)
-4. **[Story] label**: REQUIRED for user story phase tasks only
-   - Format: [US1], [US2], [US3], etc. (maps to user stories from spec.md)
-   - Setup phase: NO story label
-   - Foundational phase: NO story label  
-   - User Story phases: MUST have story label
-   - Polish phase: NO story label
-5. **Description**: Clear action with exact file path
-
-**Examples**:
-
-- ✅ CORRECT: `- [ ] T001 Create project structure per implementation plan`
-- ✅ CORRECT: `- [ ] T005 [P] Implement authentication middleware in src/middleware/auth.py`
-- ✅ CORRECT: `- [ ] T012 [P] [US1] Create User model in src/models/user.py`
-- ✅ CORRECT: `- [ ] T014 [US1] Implement UserService in src/services/user_service.py`
-- ❌ WRONG: `- [ ] Create User model` (missing ID and Story label)
-- ❌ WRONG: `T001 [US1] Create model` (missing checkbox)
-- ❌ WRONG: `- [ ] [US1] Create User model` (missing Task ID)
-- ❌ WRONG: `- [ ] T001 [US1] Create model` (missing file path)
+1. **`<wave>`**: Assign sequential IDs (`1`, `2`, `3`). Set initial status to `"pending"`.
+   - Setup phase tasks go in Wave 1.
+   - Core implementation spans subsequent logic waves.
+2. **`<task>`**: Sequential ID `T001..`, `type` attribute (`setup`, `core`, `test`), `story` mapping (`US1`, `US2`).
+3. **Internal Nodes**: Must specify `<name>`, accurate `<files>` paths, explicit `<action>`, and command to `<verify>`.
 
 ### Task Organization
 

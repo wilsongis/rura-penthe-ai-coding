@@ -21,6 +21,8 @@
 
 - [🤔 What is Spec-Driven Development?](#-what-is-spec-driven-development)
 - [⚡ Get Started](#-get-started)
+- [🗡️ Token-Killer Architecture](#️-token-killer-architecture)
+- [🔀 Merging Upstream Spec Kit Changes](#-merging-upstream-spec-kit-changes)
 - [📽️ Video Overview](#️-video-overview)
 - [🧩 Community Extensions](#-community-extensions)
 - [🎨 Community Presets](#-community-presets)
@@ -136,21 +138,125 @@ Use the **`/warden.plan`** command to provide your architecture choices and ensu
 
 ### 5. Break down into tasks
 
-Use **`/warden.tasks`** to create an actionable, token-friendly task list from your implementation plan.
+Use **`/warden.tasks`** to create an actionable, XML wave-based task list from your implementation plan. Tasks are grouped into discrete `<wave>` blocks (3-4 dependent tasks each) instead of monolithic checklists.
 
 ```bash
 /warden.tasks
 ```
 
-### 6. Execute implementation
+### 6. Execute implementation (Wave State Machine)
 
-Use **`/warden.implement`** to safely execute all tasks piece by piece through the Token Optimization Interceptor layer.
+Use **`/warden.execute`** to process one `<wave>` at a time through a strict state machine. Each wave is verified (`just test && just lint`), committed with a semantic message (`feat(wave-N): ...`), and locked before the next wave unlocks.
 
 ```bash
-/warden.implement
+/warden.execute
 ```
 
+Repeat `/warden.execute` for each subsequent wave until all waves are `status="completed"`.
+
 For detailed step-by-step instructions, see our [comprehensive guide](./spec-driven.md).
+
+## 🗡️ Token-Killer Architecture
+
+This fork includes a suite of **Token-Killer Utilities** designed to drastically reduce context-window consumption and API costs:
+
+| Utility | Command | Description |
+|---------|---------|-------------|
+| **STACK.md Centralization** | `specify init` | Bootstraps a `STACK.md` file with explicit **Negative Constraints** (e.g., "Do not use pip", "Do not use Django") to stop LLM dependency drift. |
+| **Wave Execution** | `/warden.execute` | Processes XML `<wave>` blocks one at a time. Each wave is verified and committed before the next unlocks, preventing context rot. |
+| **Cascading Config Loader** | Automatic | Reads the command namespace from `.rura/config.json` → `pyproject.toml [tool.rura]` → `SPEC_COMMAND_NAMESPACE` env var → `"warden"` default. Immune to VS Code environment variable inheritance failures. |
+| **Pre-flight Verify** | `/warden.verify` | Runs `just test && just lint`, auto-commits on success, and archives spec branch files to `.grave/`. |
+| **Context Compression** | `/warden.compress` | (Planned) Hardware-accelerated LLMLingua daemon for ~70% file compression before agent parsing. |
+| **Telemetry** | Automatic | (Planned) SQLite-based token savings tracker at `~/.rura/telemetry.db`. |
+| **Goal Audit** | `/warden.audit` | (Planned) Cross-references proposed features against `GOALS.md` using lower-cost models. |
+
+### STACK.md — Fighting Hallucination with Negative Constraints
+
+When `specify init` scaffolds a new project, it generates a `STACK.md` at the project root. This file uses **explicit Negative Constraints** to counter LLM training biases:
+
+```markdown
+## Global Standard
+- **Package Manager:** Strictly `uv`. Do not use `pip` or `poetry`.
+- **Backend:** Strictly Python + FastAPI. Do not use Django or Flask.
+- **Database:** Strictly PostgreSQL. Do not use SQLite or MongoDB.
+```
+
+The agent's master prompt forcefully points to this document, acting as an ironclad anchor against dependency drift. Users should customize `STACK.md` to match their actual project stack after initialization.
+
+### Cascading Configuration
+
+The command namespace (`warden` by default) is resolved through a bulletproof cascade:
+
+1. `.rura/config.json` → `{ "command_namespace": "warden" }`
+2. `pyproject.toml` → `[tool.rura] command_namespace = "warden"`
+3. Environment variable → `SPEC_COMMAND_NAMESPACE=warden`
+4. Hardcoded default → `"warden"`
+
+This guarantees correct routing regardless of invocation context (VS Code palette, integrated terminal, CI/CD, or container).
+
+---
+
+## 🔀 Merging Upstream Spec Kit Changes
+
+This fork is designed to stay **merge-friendly** with the upstream [github/spec-kit](https://github.com/github/spec-kit) repository. All namespace customizations are isolated to a single configuration module (`src/specify_cli/config.py`), minimizing structural conflicts.
+
+### Initial Setup (One-Time)
+
+```bash
+# Add the upstream remote (if you haven't already)
+git remote add upstream https://github.com/github/spec-kit.git
+git fetch upstream
+```
+
+### Merging Upstream Updates
+
+```bash
+# 1. Fetch the latest upstream changes
+git fetch upstream
+
+# 2. Create a merge branch from your current main
+git checkout main
+git checkout -b merge/upstream-sync
+
+# 3. Merge upstream main into your branch
+git merge upstream/main
+
+# 4. Resolve any conflicts
+#    - src/specify_cli/config.py   → Keep YOUR cascading loader version.
+#    - templates/commands/*.md     → Keep YOUR /warden.* handoff references.
+#    - src/specify_cli/agents.py   → Keep YOUR dynamic COMMAND_NAMESPACE import.
+#    - README.md                   → Keep YOUR fork's branding/docs.
+#    - Most other files will auto-merge cleanly.
+
+# 5. Verify the build
+uv tool install specify-cli --force --from .
+specify check
+
+# 6. Run a quick sanity test
+cd /tmp && specify init test-merge --ai copilot --profile a && rm -rf test-merge && cd -
+
+# 7. Complete the merge
+git add .
+git commit -m "chore: merge upstream spec-kit changes"
+git checkout main
+git merge merge/upstream-sync
+git branch -d merge/upstream-sync
+```
+
+### Why Conflicts Are Minimal
+
+| File | Risk | Reason |
+|------|------|--------|
+| `src/specify_cli/config.py` | Low | This file is **new** to the fork; upstream doesn't have it. |
+| `src/specify_cli/agents.py` | Low | Only a single `from .config import COMMAND_NAMESPACE` import and one function body differ. Git auto-merges around it. |
+| `src/specify_cli/__init__.py` | Low | The `COMMAND_NAMESPACE` variable usage is isolated to a few lines. Upstream additions to other functions merge cleanly. |
+| `templates/commands/*.md` | Medium | If upstream modifies the same YAML frontmatter `handoffs` block, manual resolution is required. |
+| `README.md` | Medium | Fork branding diverges heavily; always keep the fork's version. |
+
+> [!TIP]
+> If upstream adds a **new** `speckit.*` command, it will register as `speckit.new_cmd` in your environment. You can spot it and update the template's handoff to `warden.new_cmd` in a follow-up commit.
+
+---
 
 ## 📽️ Video Overview
 
@@ -272,10 +378,12 @@ The `specify` command supports the following options:
 
 ### Commands
 
-| Command | Description                                                                                                                                                                                                                                                                              |
-| ------- |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `init`  | Initialize a new Specify project from the latest template                                                                                                                                                                                                                                |
-| `check` | Check for installed tools: `git` plus all CLI-based agents configured in `AGENT_CONFIG` (for example: `claude`, `gemini`, `code`/`code-insiders`, `cursor-agent`, `windsurf`, `junie`, `qwen`, `opencode`, `codex`, `kiro-cli`, `shai`, `qodercli`, `vibe`, `kimi`, `iflow`, `pi`, etc.) |
+| Command  | Description                                                                                                                                                                                                                                                                              |
+| -------- |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `init`   | Initialize a new Specify project from the latest template                                                                                                                                                                                                                                |
+| `check`  | Check for installed tools: `git` plus all CLI-based agents configured in `AGENT_CONFIG` (for example: `claude`, `gemini`, `code`/`code-insiders`, `cursor-agent`, `windsurf`, `junie`, `qwen`, `opencode`, `codex`, `kiro-cli`, `shai`, `qodercli`, `vibe`, `kimi`, `iflow`, `pi`, etc.) |
+| `status` | Show wave execution progress from `tasks.md` (counts pending/completed XML `<wave>` blocks)                                                                                                                                                                                              |
+| `version`| Display version and system information                                                                                                                                                                                                                                                   |
 
 ### `specify init` Arguments & Options
 
@@ -383,35 +491,36 @@ specify check
 
 After running `specify init`, your AI coding agent will have access to these slash commands for structured development.
 
-For Codex CLI, `--ai-skills` installs spec-kit as agent skills instead of slash-command prompt files. In Codex skills mode, invoke spec-kit as `$speckit-constitution`, `$speckit-specify`, `$speckit-plan`, `$speckit-tasks`, and `$speckit-implement`.
+For Codex CLI, `--ai-skills` installs spec-kit as agent skills instead of slash-command prompt files. In Codex skills mode, invoke spec-kit as `$warden-constitution`, `$warden-specify`, `$warden-plan`, `$warden-tasks`, and `$warden-execute`.
 
 #### Core Commands
 
 Essential commands for the Spec-Driven Development workflow:
 
-| Command                 | Description                                                              |
-| ----------------------- | ------------------------------------------------------------------------ |
-| `/speckit.constitution` | Create or update project governing principles and development guidelines |
-| `/speckit.specify`      | Define what you want to build (requirements and user stories)            |
-| `/speckit.plan`         | Create technical implementation plans with your chosen tech stack        |
-| `/speckit.tasks`        | Generate actionable task lists for implementation                        |
-| `/speckit.implement`    | Execute all tasks to build the feature according to the plan             |
+| Command                 | Description                                                                          |
+| ----------------------- | ------------------------------------------------------------------------------------ |
+| `/warden.constitution`  | Create or update project governing principles and development guidelines             |
+| `/warden.specify`       | Define what you want to build (requirements and user stories)                        |
+| `/warden.plan`          | Create technical implementation plans with your chosen tech stack                    |
+| `/warden.tasks`         | Generate XML `<wave>`-based task lists for implementation                            |
+| `/warden.execute`       | Execute one pending `<wave>` at a time through the strict state machine              |
 
 #### Optional Commands
 
 Additional commands for enhanced quality and validation:
 
-| Command              | Description                                                                                                                          |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `/speckit.clarify`   | Clarify underspecified areas (recommended before `/speckit.plan`; formerly `/quizme`)                                                |
-| `/speckit.analyze`   | Cross-artifact consistency & coverage analysis (run after `/speckit.tasks`, before `/speckit.implement`)                             |
-| `/speckit.checklist` | Generate custom quality checklists that validate requirements completeness, clarity, and consistency (like "unit tests for English") |
+| Command              | Description                                                                                                                        |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `/warden.clarify`    | Clarify underspecified areas (recommended before `/warden.plan`; formerly `/quizme`)                                               |
+| `/warden.analyze`    | Cross-artifact consistency & coverage analysis (run after `/warden.tasks`, before `/warden.execute`)                               |
+| `/warden.checklist`  | Generate custom quality checklists that validate requirements completeness, clarity, and consistency (like "unit tests for English") |
+| `/warden.verify`     | Pre-flight validation gate: runs `just test && just lint`, auto-commits, archives specs to `.grave/`                               |
 
 ### Environment Variables
 
 | Variable          | Description                                                                                                                                                                                                                                                                                            |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `SPECIFY_FEATURE` | Override feature detection for non-Git repositories. Set to the feature directory name (e.g., `001-photo-albums`) to work on a specific feature when not using Git branches.<br/>\*\*Must be set in the context of the agent you're working with prior to using `/speckit.plan` or follow-up commands. |
+| `SPECIFY_FEATURE` | Override feature detection for non-Git repositories. Set to the feature directory name (e.g., `001-photo-albums`) to work on a specific feature when not using Git branches.<br/>\*\*Must be set in the context of the agent you're working with prior to using `/warden.plan` or follow-up commands. |
 
 ## 🧩 Making Spec Kit Your Own: Extensions & Presets
 
@@ -594,19 +703,19 @@ Go to the project folder and run your AI agent. In our example, we're using `cla
 
 ![Bootstrapping Claude Code environment](./media/bootstrap-claude-code.gif)
 
-You will know that things are configured correctly if you see the `/speckit.constitution`, `/speckit.specify`, `/speckit.plan`, `/speckit.tasks`, and `/speckit.implement` commands available.
+You will know that things are configured correctly if you see the `/warden.constitution`, `/warden.specify`, `/warden.plan`, `/warden.tasks`, and `/warden.execute` commands available.
 
-The first step should be establishing your project's governing principles using the `/speckit.constitution` command. This helps ensure consistent decision-making throughout all subsequent development phases:
+The first step should be establishing your project's governing principles using the `/warden.constitution` command. This helps ensure consistent decision-making throughout all subsequent development phases:
 
 ```text
-/speckit.constitution Create principles focused on code quality, testing standards, user experience consistency, and performance requirements. Include governance for how these principles should guide technical decisions and implementation choices.
+/warden.constitution Create principles focused on code quality, testing standards, user experience consistency, and performance requirements. Include governance for how these principles should guide technical decisions and implementation choices.
 ```
 
 This step creates or updates the `.specify/memory/constitution.md` file with your project's foundational guidelines that the AI agent will reference during specification, planning, and implementation phases.
 
 ### **STEP 2:** Create project specifications
 
-With your project principles established, you can now create the functional specifications. Use the `/speckit.specify` command and then provide the concrete requirements for the project you want to develop.
+With your project principles established, you can now create the functional specifications. Use the `/warden.specify` command and then provide the concrete requirements for the project you want to develop.
 
 > [!IMPORTANT]
 > Be as explicit as possible about *what* you are trying to build and *why*. **Do not focus on the tech stack at this point**.
@@ -667,12 +776,12 @@ You should run the structured clarification workflow **before** creating a techn
 
 Preferred order:
 
-1. Use `/speckit.clarify` (structured) – sequential, coverage-based questioning that records answers in a Clarifications section.
+1. Use `/warden.clarify` (structured) – sequential, coverage-based questioning that records answers in a Clarifications section.
 2. Optionally follow up with ad-hoc free-form refinement if something still feels vague.
 
 If you intentionally want to skip clarification (e.g., spike or exploratory prototype), explicitly state that so the agent doesn't block on missing clarifications.
 
-Example free-form refinement prompt (after `/speckit.clarify` if still needed):
+Example free-form refinement prompt (after `/warden.clarify` if still needed):
 
 ```text
 For each sample project or project that you create there should be a variable number of tasks between 5 and 15
@@ -690,7 +799,7 @@ It's important to use the interaction with Claude Code as an opportunity to clar
 
 ### **STEP 4:** Generate a plan
 
-You can now be specific about the tech stack and other technical requirements. You can use the `/speckit.plan` command that is built into the project template with a prompt like this:
+You can now be specific about the tech stack and other technical requirements. You can use the `/warden.plan` command that is built into the project template with a prompt like this:
 
 ```text
 We are going to generate this using .NET Aspire, using Postgres as the database. The frontend should use
@@ -774,45 +883,46 @@ You can also ask Claude Code (if you have the [GitHub CLI](https://docs.github.c
 > [!NOTE]
 > Before you have the agent implement it, it's also worth prompting Claude Code to cross-check the details to see if there are any over-engineered pieces (remember - it can be over-eager). If over-engineered components or decisions exist, you can ask Claude Code to resolve them. Ensure that Claude Code follows the [constitution](base/memory/constitution.md) as the foundational piece that it must adhere to when establishing the plan.
 
-### **STEP 6:** Generate task breakdown with /speckit.tasks
+### **STEP 6:** Generate task breakdown with /warden.tasks
 
-With the implementation plan validated, you can now break down the plan into specific, actionable tasks that can be executed in the correct order. Use the `/speckit.tasks` command to automatically generate a detailed task breakdown from your implementation plan:
+With the implementation plan validated, you can now break down the plan into specific, actionable tasks. Use the `/warden.tasks` command to automatically generate an XML `<wave>`-based task breakdown from your implementation plan:
 
 ```text
-/speckit.tasks
+/warden.tasks
 ```
 
 This step creates a `tasks.md` file in your feature specification directory that contains:
 
-- **Task breakdown organized by user story** - Each user story becomes a separate implementation phase with its own set of tasks
-- **Dependency management** - Tasks are ordered to respect dependencies between components (e.g., models before services, services before endpoints)
-- **Parallel execution markers** - Tasks that can run in parallel are marked with `[P]` to optimize development workflow
-- **File path specifications** - Each task includes the exact file paths where implementation should occur
-- **Test-driven development structure** - If tests are requested, test tasks are included and ordered to be written before implementation
-- **Checkpoint validation** - Each user story phase includes checkpoints to validate independent functionality
+- **XML `<wave>` blocks** — Tasks are grouped into discrete waves (3-4 dependent tasks each) instead of monolithic checklists
+- **Dependency management** — Tasks within a wave are ordered by internal dependency; waves are sequential
+- **Structured XML schema** — Each `<task>` element specifies `id`, `type`, `story`, `<name>`, `<files>`, `<action>`, and `<verify>`
+- **File path specifications** — Each task includes the exact file paths where implementation should occur
+- **Compact context** — Wave-based structure keeps each execution cycle's context pristine
 
-The generated tasks.md provides a clear roadmap for the `/speckit.implement` command, ensuring systematic implementation that maintains code quality and allows for incremental delivery of user stories.
+The generated `tasks.md` provides a clear roadmap for the `/warden.execute` command.
 
-### **STEP 7:** Implementation
+### **STEP 7:** Execute implementation waves
 
-Once ready, use the `/speckit.implement` command to execute your implementation plan:
+Once ready, use the `/warden.execute` command to process **one wave at a time** through a strict state machine:
 
 ```text
-/speckit.implement
+/warden.execute
 ```
 
-The `/speckit.implement` command will:
+The `/warden.execute` command will:
 
-- Validate that all prerequisites are in place (constitution, spec, plan, and tasks)
-- Parse the task breakdown from `tasks.md`
-- Execute tasks in the correct order, respecting dependencies and parallel execution markers
-- Follow the TDD approach defined in your task plan
-- Provide progress updates and handle errors appropriately
+1. Parse `tasks.md` and identify the first `<wave>` with `status="pending"`
+2. Read `STACK.md` to enforce Negative Constraints on the agent
+3. Execute all `<task>` elements within that single wave
+4. Run the `<verify>` command (e.g., `just test && just lint`)
+5. If verification **fails**: trap the agent in a fix loop until it passes (no other waves are touched)
+6. If verification **passes**: stage, commit with `feat(wave-N): ...`, and mark the wave as `status="completed"`
+7. **Stop** and report — the user must invoke `/warden.execute` again for the next wave
 
 > [!IMPORTANT]
 > The AI agent will execute local CLI commands (such as `dotnet`, `npm`, etc.) - make sure you have the required tools installed on your machine.
 
-Once the implementation is complete, test the application and resolve any runtime errors that may not be visible in CLI logs (e.g., browser console errors). You can copy and paste such errors back to your AI agent for resolution.
+Once all waves are completed, test the application and resolve any runtime errors that may not be visible in CLI logs (e.g., browser console errors). You can copy and paste such errors back to your AI agent for resolution.
 
 </details>
 

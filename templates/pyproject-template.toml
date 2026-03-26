@@ -18,7 +18,7 @@ target-version = "py311"
 line-length = 100
 
 [tool.ruff.lint]
-# Select specific high-priority security/complexity rule sets
+# Select specific high-priority security/complexity rule sets (Power of 11)
 select = [
     "E",       # pycodestyle errors
     "F",       # pyflakes
@@ -26,9 +26,19 @@ select = [
     "S",       # flake8-bandit (security checks like banning assert)
     "PLR",     # Pylint refactor (complexity/function length constraints)
     "ASYNC",   # flake8-async (concurrency safety)
+    "UP",      # pyupgrade (enforce modern Python syntax)
+    "B",       # flake8-bugbear (common bug patterns)
+    "SIM",     # flake8-simplify (code simplification)
+    "RUF",     # Ruff-specific rules
+    "I",       # isort (import ordering)
 ]
 
 ignore = []
+
+[tool.ruff.lint.per-file-ignores]
+# Allow assert in test files (S101 bans assert globally for production safety)
+"tests/**/*.py" = ["S101"]
+"test_*.py" = ["S101"]
 
 [tool.ruff.lint.mccabe]
 # Strict cyclomatic complexity bound (Power of 11: Rule 4/10)
@@ -39,3 +49,9 @@ max-complexity = 10
 max-statements = 50
 max-args = 7
 max-branches = 12
+
+[tool.rura]
+# Command namespace for the Warden fork (used by the cascading config loader).
+# This ensures the /warden.* commands route correctly regardless of environment.
+command_namespace = "warden"
+

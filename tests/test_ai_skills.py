@@ -64,12 +64,12 @@ def templates_dir(project_dir):
     tpl_root.mkdir(parents=True, exist_ok=True)
 
     # Template with valid YAML frontmatter
-    (tpl_root / "speckit.specify.md").write_text(
+    (tpl_root / "warden.specify.md").write_text(
         "---\n"
         "description: Create or update the feature specification.\n"
         "handoffs:\n"
         "  - label: Build Plan\n"
-        "    agent: speckit.plan\n"
+        "    agent: warden.plan\n"
         "scripts:\n"
         "  sh: scripts/bash/create-new-feature.sh\n"
         "---\n"
@@ -81,7 +81,7 @@ def templates_dir(project_dir):
     )
 
     # Template with minimal frontmatter
-    (tpl_root / "speckit.plan.md").write_text(
+    (tpl_root / "warden.plan.md").write_text(
         "---\n"
         "description: Generate implementation plan.\n"
         "---\n"
@@ -93,7 +93,7 @@ def templates_dir(project_dir):
     )
 
     # Template with no frontmatter
-    (tpl_root / "speckit.tasks.md").write_text(
+    (tpl_root / "warden.tasks.md").write_text(
         "# Tasks Command\n"
         "\n"
         "Body without frontmatter.\n",
@@ -101,7 +101,7 @@ def templates_dir(project_dir):
     )
 
     # Template with empty YAML frontmatter (yaml.safe_load returns None)
-    (tpl_root / "speckit.empty_fm.md").write_text(
+    (tpl_root / "warden.empty_fm.md").write_text(
         "---\n"
         "---\n"
         "\n"
@@ -119,7 +119,7 @@ def commands_dir_claude(project_dir):
     """Create a populated .claude/commands directory simulating template extraction."""
     cmd_dir = project_dir / ".claude" / "commands"
     cmd_dir.mkdir(parents=True, exist_ok=True)
-    for name in ["speckit.specify.md", "speckit.plan.md", "speckit.tasks.md"]:
+    for name in ["warden.specify.md", "warden.plan.md", "warden.tasks.md"]:
         (cmd_dir / name).write_text(f"# {name}\nContent here\n")
     return cmd_dir
 
@@ -129,7 +129,7 @@ def commands_dir_gemini(project_dir):
     """Create a populated .gemini/commands directory (TOML format)."""
     cmd_dir = project_dir / ".gemini" / "commands"
     cmd_dir.mkdir(parents=True)
-    for name in ["speckit.specify.toml", "speckit.plan.toml", "speckit.tasks.toml"]:
+    for name in ["warden.specify.toml", "warden.plan.toml", "warden.tasks.toml"]:
         (cmd_dir / name).write_text(f'[command]\nname = "{name}"\n')
     return cmd_dir
 
@@ -139,7 +139,7 @@ def commands_dir_qwen(project_dir):
     """Create a populated .qwen/commands directory (Markdown format)."""
     cmd_dir = project_dir / ".qwen" / "commands"
     cmd_dir.mkdir(parents=True, exist_ok=True)
-    for name in ["speckit.specify.md", "speckit.plan.md", "speckit.tasks.md"]:
+    for name in ["warden.specify.md", "warden.plan.md", "warden.tasks.md"]:
         (cmd_dir / name).write_text(f"# {name}\nContent here\n")
     return cmd_dir
 
@@ -227,19 +227,19 @@ class TestInstallAiSkills:
 
         # Check that skill directories were created
         skill_dirs = sorted([d.name for d in skills_dir.iterdir() if d.is_dir()])
-        assert "speckit-plan" in skill_dirs
-        assert "speckit-specify" in skill_dirs
-        assert "speckit-tasks" in skill_dirs
-        assert "speckit-empty_fm" in skill_dirs
+        assert "warden-plan" in skill_dirs
+        assert "warden-specify" in skill_dirs
+        assert "warden-tasks" in skill_dirs
+        assert "warden-empty_fm" in skill_dirs
 
-        # Verify SKILL.md content for speckit-specify
-        skill_file = skills_dir / "speckit-specify" / "SKILL.md"
+        # Verify SKILL.md content for warden-specify
+        skill_file = skills_dir / "warden-specify" / "SKILL.md"
         assert skill_file.exists()
         content = skill_file.read_text()
 
         # Check agentskills.io frontmatter
         assert content.startswith("---\n")
-        assert "name: speckit-specify" in content
+        assert "name: warden-specify" in content
         assert "description:" in content
         assert "compatibility:" in content
         assert "metadata:" in content
@@ -254,7 +254,7 @@ class TestInstallAiSkills:
         """Generated SKILL.md should contain valid, parseable YAML frontmatter."""
         install_ai_skills(project_dir, "claude")
 
-        skill_file = project_dir / ".claude" / "skills" / "speckit-specify" / "SKILL.md"
+        skill_file = project_dir / ".claude" / "skills" / "warden-specify" / "SKILL.md"
         content = skill_file.read_text()
 
         # Extract and parse frontmatter
@@ -264,7 +264,7 @@ class TestInstallAiSkills:
         parsed = yaml.safe_load(parts[1])
         assert isinstance(parsed, dict)
         assert "name" in parsed
-        assert parsed["name"] == "speckit-specify"
+        assert parsed["name"] == "warden-specify"
         assert "description" in parsed
 
     def test_empty_yaml_frontmatter(self, project_dir, templates_dir):
@@ -273,17 +273,17 @@ class TestInstallAiSkills:
 
         assert result is True
 
-        skill_file = project_dir / ".claude" / "skills" / "speckit-empty_fm" / "SKILL.md"
+        skill_file = project_dir / ".claude" / "skills" / "warden-empty_fm" / "SKILL.md"
         assert skill_file.exists()
         content = skill_file.read_text()
-        assert "name: speckit-empty_fm" in content
+        assert "name: warden-empty_fm" in content
         assert "Body with empty frontmatter." in content
 
     def test_enhanced_descriptions_used_when_available(self, project_dir, templates_dir):
         """SKILL_DESCRIPTIONS take precedence over template frontmatter descriptions."""
         install_ai_skills(project_dir, "claude")
 
-        skill_file = project_dir / ".claude" / "skills" / "speckit-specify" / "SKILL.md"
+        skill_file = project_dir / ".claude" / "skills" / "warden-specify" / "SKILL.md"
         content = skill_file.read_text()
 
         # Parse the generated YAML to compare the description value
@@ -298,12 +298,12 @@ class TestInstallAiSkills:
         """Templates without YAML frontmatter should still produce valid skills."""
         install_ai_skills(project_dir, "claude")
 
-        skill_file = project_dir / ".claude" / "skills" / "speckit-tasks" / "SKILL.md"
+        skill_file = project_dir / ".claude" / "skills" / "warden-tasks" / "SKILL.md"
         assert skill_file.exists()
         content = skill_file.read_text()
 
         # Should still have valid SKILL.md structure
-        assert "name: speckit-tasks" in content
+        assert "name: warden-tasks" in content
         assert "Body without frontmatter." in content
 
     def test_missing_templates_directory(self, project_dir):
@@ -344,7 +344,7 @@ class TestInstallAiSkills:
         cmds_dir = project_dir / ".claude" / "commands"
         cmds_dir.mkdir(parents=True)
 
-        (cmds_dir / "speckit.broken.md").write_text(
+        (cmds_dir / "warden.broken.md").write_text(
             "---\n"
             "description: [unclosed bracket\n"
             "  invalid: yaml: content: here\n"
@@ -392,8 +392,8 @@ class TestInstallAiSkills:
         # Simulate gemini template extraction: .gemini/commands/ with .toml files only
         cmds_dir = project_dir / ".gemini" / "commands"
         cmds_dir.mkdir(parents=True)
-        (cmds_dir / "speckit.specify.toml").write_text('[command]\nname = "specify"\n')
-        (cmds_dir / "speckit.plan.toml").write_text('[command]\nname = "plan"\n')
+        (cmds_dir / "warden.specify.toml").write_text('[command]\nname = "specify"\n')
+        (cmds_dir / "warden.plan.toml").write_text('[command]\nname = "plan"\n')
 
         # The __file__ fallback should find the real repo templates/commands/*.md
         result = install_ai_skills(project_dir, "gemini")
@@ -405,16 +405,16 @@ class TestInstallAiSkills:
         skill_dirs = [d.name for d in skills_dir.iterdir() if d.is_dir()]
         assert len(skill_dirs) >= 1
         # .toml commands should be untouched
-        assert (cmds_dir / "speckit.specify.toml").exists()
+        assert (cmds_dir / "warden.specify.toml").exists()
 
     def test_qwen_md_commands_dir_installs_skills(self, project_dir):
         """Qwen now uses Markdown format; skills should install directly from .qwen/commands/."""
         cmds_dir = project_dir / ".qwen" / "commands"
         cmds_dir.mkdir(parents=True)
-        (cmds_dir / "speckit.specify.md").write_text(
+        (cmds_dir / "warden.specify.md").write_text(
             "---\ndescription: Create or update the feature specification.\n---\n\n# Specify\n\nBody.\n"
         )
-        (cmds_dir / "speckit.plan.md").write_text(
+        (cmds_dir / "warden.plan.md").write_text(
             "---\ndescription: Generate implementation plan.\n---\n\n# Plan\n\nBody.\n"
         )
 
@@ -426,17 +426,17 @@ class TestInstallAiSkills:
         skill_dirs = [d.name for d in skills_dir.iterdir() if d.is_dir()]
         assert len(skill_dirs) >= 1
         # .md commands should be untouched
-        assert (cmds_dir / "speckit.specify.md").exists()
-        assert (cmds_dir / "speckit.plan.md").exists()
+        assert (cmds_dir / "warden.specify.md").exists()
+        assert (cmds_dir / "warden.plan.md").exists()
 
     def test_pi_prompt_dir_installs_skills(self, project_dir):
         """Pi should install skills directly from .pi/prompts/."""
         prompts_dir = project_dir / ".pi" / "prompts"
         prompts_dir.mkdir(parents=True)
-        (prompts_dir / "speckit.specify.md").write_text(
+        (prompts_dir / "warden.specify.md").write_text(
             "---\ndescription: Create or update the feature specification.\n---\n\n# Specify\n\nBody.\n"
         )
-        (prompts_dir / "speckit.plan.md").write_text(
+        (prompts_dir / "warden.plan.md").write_text(
             "---\ndescription: Generate implementation plan.\n---\n\n# Plan\n\nBody.\n"
         )
 
@@ -447,8 +447,8 @@ class TestInstallAiSkills:
         assert skills_dir.exists()
         skill_dirs = [d.name for d in skills_dir.iterdir() if d.is_dir()]
         assert len(skill_dirs) >= 1
-        assert (prompts_dir / "speckit.specify.md").exists()
-        assert (prompts_dir / "speckit.plan.md").exists()
+        assert (prompts_dir / "warden.specify.md").exists()
+        assert (prompts_dir / "warden.plan.md").exists()
 
     @pytest.mark.parametrize("agent_key", [k for k in AGENT_CONFIG.keys() if k != "generic"])
     def test_skills_install_for_all_agents(self, temp_dir, agent_key):
@@ -461,8 +461,8 @@ class TestInstallAiSkills:
         commands_subdir = AGENT_CONFIG[agent_key].get("commands_subdir", "commands")
         cmds_dir = proj / agent_folder.rstrip("/") / commands_subdir
         cmds_dir.mkdir(parents=True)
-        # Copilot uses speckit.*.agent.md templates; other agents use speckit.*.md
-        fname = "speckit.specify.agent.md" if agent_key == "copilot" else "speckit.specify.md"
+        # Copilot uses warden.*.agent.md templates; other agents use warden.*.md
+        fname = "warden.specify.agent.md" if agent_key == "copilot" else "warden.specify.md"
         (cmds_dir / fname).write_text(
             "---\ndescription: Test command\n---\n\n# Test\n\nBody.\n"
         )
@@ -474,7 +474,7 @@ class TestInstallAiSkills:
         assert skills_dir.exists()
         skill_dirs = [d.name for d in skills_dir.iterdir() if d.is_dir()]
         # Kimi uses dotted skill names; other agents use hyphen-separated names.
-        expected_skill_name = "speckit.specify" if agent_key == "kimi" else "speckit-specify"
+        expected_skill_name = "warden.specify" if agent_key == "kimi" else "warden-specify"
         assert expected_skill_name in skill_dirs
         assert (skills_dir / expected_skill_name / "SKILL.md").exists()
 
@@ -482,7 +482,7 @@ class TestInstallAiSkills:
         """Non-speckit markdown in .github/agents/ must not produce skills."""
         agents_dir = project_dir / ".github" / "agents"
         agents_dir.mkdir(parents=True, exist_ok=True)
-        (agents_dir / "speckit.plan.agent.md").write_text(
+        (agents_dir / "warden.plan.agent.md").write_text(
             "---\ndescription: Generate implementation plan.\n---\n\n# Plan\n\nBody.\n"
         )
         (agents_dir / "my-custom-agent.agent.md").write_text(
@@ -495,9 +495,9 @@ class TestInstallAiSkills:
         skills_dir = _get_skills_dir(project_dir, "copilot")
         assert skills_dir.exists()
         skill_dirs = [d.name for d in skills_dir.iterdir() if d.is_dir()]
-        assert "speckit-plan" in skill_dirs
-        assert "speckit-my-custom-agent.agent" not in skill_dirs
-        assert "speckit-my-custom-agent" not in skill_dirs
+        assert "warden-plan" in skill_dirs
+        assert "warden-my-custom-agent.agent" not in skill_dirs
+        assert "warden-my-custom-agent" not in skill_dirs
 
     @pytest.mark.parametrize("agent_key,custom_file", [
         ("claude", "review.md"),
@@ -513,7 +513,7 @@ class TestInstallAiSkills:
         commands_subdir = AGENT_CONFIG[agent_key].get("commands_subdir", "commands")
         cmds_dir = proj / agent_folder.rstrip("/") / commands_subdir
         cmds_dir.mkdir(parents=True)
-        (cmds_dir / "speckit.specify.md").write_text(
+        (cmds_dir / "warden.specify.md").write_text(
             "---\ndescription: Create spec.\n---\n\n# Specify\n\nBody.\n"
         )
         (cmds_dir / custom_file).write_text(
@@ -525,15 +525,15 @@ class TestInstallAiSkills:
         assert result is True
         skills_dir = _get_skills_dir(proj, agent_key)
         skill_dirs = [d.name for d in skills_dir.iterdir() if d.is_dir()]
-        assert "speckit-specify" in skill_dirs
+        assert "warden-specify" in skill_dirs
         custom_stem = Path(custom_file).stem
-        assert f"speckit-{custom_stem}" not in skill_dirs
+        assert f"warden-{custom_stem}" not in skill_dirs
 
     def test_copilot_fallback_when_only_non_speckit_agents(self, project_dir):
-        """Fallback to templates/commands/ when .github/agents/ has no speckit.*.md files."""
+        """Fallback to templates/commands/ when .github/agents/ has no warden.*.md files."""
         agents_dir = project_dir / ".github" / "agents"
         agents_dir.mkdir(parents=True, exist_ok=True)
-        # Only a user-authored agent, no speckit.* templates
+        # Only a user-authored agent, no warden.* templates
         (agents_dir / "my-custom-agent.agent.md").write_text(
             "---\ndescription: A user custom agent\n---\n\n# Custom\n\nBody.\n"
         )
@@ -546,12 +546,12 @@ class TestInstallAiSkills:
         assert skills_dir.exists()
         skill_dirs = [d.name for d in skills_dir.iterdir() if d.is_dir()]
         # Should have skills from fallback templates, not from the custom agent
-        assert "speckit-plan" in skill_dirs
+        assert "warden-plan" in skill_dirs
         assert not any("my-custom" in d for d in skill_dirs)
 
     @pytest.mark.parametrize("agent_key", ["claude", "cursor-agent", "qwen"])
     def test_fallback_when_only_non_speckit_commands(self, temp_dir, agent_key):
-        """Fallback to templates/commands/ when agent dir has no speckit.*.md files."""
+        """Fallback to templates/commands/ when agent dir has no warden.*.md files."""
         proj = temp_dir / f"proj-{agent_key}"
         proj.mkdir()
 
@@ -559,7 +559,7 @@ class TestInstallAiSkills:
         commands_subdir = AGENT_CONFIG[agent_key].get("commands_subdir", "commands")
         cmds_dir = proj / agent_folder.rstrip("/") / commands_subdir
         cmds_dir.mkdir(parents=True)
-        # Only a user-authored command, no speckit.* templates
+        # Only a user-authored command, no warden.* templates
         (cmds_dir / "my-custom-command.md").write_text(
             "---\ndescription: User custom command\n---\n\n# Custom\n\nBody.\n"
         )
@@ -583,33 +583,33 @@ class TestCommandCoexistence:
 
     def test_existing_commands_preserved_claude(self, project_dir, templates_dir, commands_dir_claude):
         """install_ai_skills must NOT remove pre-existing .claude/commands files."""
-        # Verify commands exist before (templates_dir adds 4 speckit.* files,
+        # Verify commands exist before (templates_dir adds 4 warden.* files,
         # commands_dir_claude overlaps with 3 of them)
-        before = list(commands_dir_claude.glob("speckit.*"))
+        before = list(commands_dir_claude.glob("warden.*"))
         assert len(before) >= 3
 
         install_ai_skills(project_dir, "claude")
 
         # Commands must still be there — install_ai_skills never touches them
-        remaining = list(commands_dir_claude.glob("speckit.*"))
+        remaining = list(commands_dir_claude.glob("warden.*"))
         assert len(remaining) == len(before)
 
     def test_existing_commands_preserved_gemini(self, project_dir, templates_dir, commands_dir_gemini):
         """install_ai_skills must NOT remove pre-existing .gemini/commands files."""
-        assert len(list(commands_dir_gemini.glob("speckit.*"))) == 3
+        assert len(list(commands_dir_gemini.glob("warden.*"))) == 3
 
         install_ai_skills(project_dir, "gemini")
 
-        remaining = list(commands_dir_gemini.glob("speckit.*"))
+        remaining = list(commands_dir_gemini.glob("warden.*"))
         assert len(remaining) == 3
 
     def test_existing_commands_preserved_qwen(self, project_dir, templates_dir, commands_dir_qwen):
         """install_ai_skills must NOT remove pre-existing .qwen/commands files."""
-        assert len(list(commands_dir_qwen.glob("speckit.*"))) == 3
+        assert len(list(commands_dir_qwen.glob("warden.*"))) == 3
 
         install_ai_skills(project_dir, "qwen")
 
-        remaining = list(commands_dir_qwen.glob("speckit.*"))
+        remaining = list(commands_dir_qwen.glob("warden.*"))
         assert len(remaining) == 3
 
     def test_commands_dir_not_removed(self, project_dir, templates_dir, commands_dir_claude):
@@ -643,7 +643,7 @@ class TestNewProjectCommandSkip:
         if agent_folder:
             cmds_dir = project_path / agent_folder.rstrip("/") / commands_subdir
             cmds_dir.mkdir(parents=True, exist_ok=True)
-            (cmds_dir / "speckit.specify.md").write_text("# spec")
+            (cmds_dir / "warden.specify.md").write_text("# spec")
 
     def test_new_project_commands_removed_after_skills_succeed(self, tmp_path):
         """For new projects, commands should be removed when skills succeed."""
@@ -703,7 +703,7 @@ class TestNewProjectCommandSkip:
         target = tmp_path / "new-codex-proj"
 
         def fake_download(project_path, *args, **kwargs):
-            skill_dir = project_path / ".agents" / "skills" / "speckit-specify"
+            skill_dir = project_path / ".agents" / "skills" / "warden-specify"
             skill_dir.mkdir(parents=True, exist_ok=True)
             (skill_dir / "SKILL.md").write_text("---\ndescription: Test skill\n---\n\nBody.\n")
 
@@ -720,7 +720,7 @@ class TestNewProjectCommandSkip:
 
         assert result.exit_code == 0
         mock_skills.assert_not_called()
-        assert (target / ".agents" / "skills" / "speckit-specify" / "SKILL.md").exists()
+        assert (target / ".agents" / "skills" / "warden-specify" / "SKILL.md").exists()
 
     def test_codex_native_skills_missing_falls_back_then_fails_cleanly(self, tmp_path):
         """Codex should attempt fallback conversion when bundled skills are missing."""
@@ -807,7 +807,7 @@ class TestNewProjectCommandSkip:
         archive = tmp_path / "codex-template.zip"
 
         with zipfile.ZipFile(archive, "w") as zf:
-            zf.writestr("template-root/.codex/prompts/speckit.specify.md", "legacy")
+            zf.writestr("template-root/.codex/prompts/warden.specify.md", "legacy")
             zf.writestr("template-root/.specify/templates/constitution-template.md", "constitution")
 
         fake_meta = {
@@ -886,7 +886,7 @@ class TestNewProjectCommandSkip:
         # Commands should still exist since skills failed
         cmds_dir = target / ".claude" / "commands"
         assert cmds_dir.exists()
-        assert (cmds_dir / "speckit.specify.md").exists()
+        assert (cmds_dir / "warden.specify.md").exists()
 
     def test_here_mode_commands_preserved(self, tmp_path, monkeypatch):
         """For --here on existing repos, commands must NOT be removed."""
@@ -899,7 +899,7 @@ class TestNewProjectCommandSkip:
         agent_folder = AGENT_CONFIG["claude"]["folder"]
         cmds_dir = target / agent_folder.rstrip("/") / "commands"
         cmds_dir.mkdir(parents=True)
-        (cmds_dir / "speckit.specify.md").write_text("# spec")
+        (cmds_dir / "warden.specify.md").write_text("# spec")
 
         # --here uses CWD, so chdir into the target
         monkeypatch.chdir(target)
@@ -918,7 +918,7 @@ class TestNewProjectCommandSkip:
         assert result.exit_code == 0
         # Commands must remain for --here
         assert cmds_dir.exists()
-        assert (cmds_dir / "speckit.specify.md").exists()
+        assert (cmds_dir / "warden.specify.md").exists()
 
 
 # ===== Skip-If-Exists Tests =====
@@ -928,8 +928,8 @@ class TestSkipIfExists:
 
     def test_existing_skill_not_overwritten(self, project_dir, templates_dir):
         """Pre-existing SKILL.md should not be replaced on re-run."""
-        # Pre-create a custom SKILL.md for speckit-specify
-        skill_dir = project_dir / ".claude" / "skills" / "speckit-specify"
+        # Pre-create a custom SKILL.md for warden-specify
+        skill_dir = project_dir / ".claude" / "skills" / "warden-specify"
         skill_dir.mkdir(parents=True)
         custom_content = "# My Custom Specify Skill\nUser-modified content\n"
         (skill_dir / "SKILL.md").write_text(custom_content)
@@ -941,8 +941,8 @@ class TestSkipIfExists:
 
         # But other skills should still be installed
         assert result is True
-        assert (project_dir / ".claude" / "skills" / "speckit-plan" / "SKILL.md").exists()
-        assert (project_dir / ".claude" / "skills" / "speckit-tasks" / "SKILL.md").exists()
+        assert (project_dir / ".claude" / "skills" / "warden-plan" / "SKILL.md").exists()
+        assert (project_dir / ".claude" / "skills" / "warden-tasks" / "SKILL.md").exists()
 
     def test_fresh_install_writes_all_skills(self, project_dir, templates_dir):
         """On first install (no pre-existing skills), all should be written."""
@@ -956,7 +956,7 @@ class TestSkipIfExists:
 
     def test_existing_skill_overwritten_when_enabled(self, project_dir, templates_dir):
         """When overwrite_existing=True, pre-existing SKILL.md should be replaced."""
-        skill_dir = project_dir / ".claude" / "skills" / "speckit-specify"
+        skill_dir = project_dir / ".claude" / "skills" / "warden-specify"
         skill_dir.mkdir(parents=True)
         custom_content = "# My Custom Specify Skill\nUser-modified content\n"
         skill_file = skill_dir / "SKILL.md"
@@ -967,7 +967,7 @@ class TestSkipIfExists:
         assert result is True
         updated_content = skill_file.read_text()
         assert updated_content != custom_content
-        assert "name: speckit-specify" in updated_content
+        assert "name: warden-specify" in updated_content
 
 
 # ===== SKILL_DESCRIPTIONS Coverage Tests =====
@@ -1100,7 +1100,7 @@ class TestCliValidation:
 
         def _fake_download(*args, **kwargs):
             project_path = Path(args[0])
-            skill_dir = project_path / ".agents" / "skills" / "speckit-specify"
+            skill_dir = project_path / ".agents" / "skills" / "warden-specify"
             skill_dir.mkdir(parents=True, exist_ok=True)
             (skill_dir / "SKILL.md").write_text("---\ndescription: Test skill\n---\n\nBody.\n")
 
@@ -1113,17 +1113,17 @@ class TestCliValidation:
             assert result.exit_code == 0
             assert "Custom prompt-based spec-kit initialization is deprecated for Codex CLI" not in result.output
             assert ".agents/skills" in result.output
-            assert "$speckit-constitution" in result.output
-            assert "/speckit.constitution" not in result.output
+            assert "$warden-constitution" in result.output
+            assert "/warden.constitution" not in result.output
             assert "Optional skills that you can use for your specs" in result.output
 
     def test_kimi_next_steps_show_skill_invocation(self, monkeypatch):
-        """Kimi next-steps guidance should display /skill:speckit.* usage."""
+        """Kimi next-steps guidance should display /skill:warden.* usage."""
         from typer.testing import CliRunner
 
         def _fake_download(*args, **kwargs):
             project_path = Path(args[0])
-            skill_dir = project_path / ".kimi" / "skills" / "speckit.specify"
+            skill_dir = project_path / ".kimi" / "skills" / "warden.specify"
             skill_dir.mkdir(parents=True, exist_ok=True)
             (skill_dir / "SKILL.md").write_text("---\ndescription: Test skill\n---\n\nBody.\n")
 
@@ -1137,8 +1137,8 @@ class TestCliValidation:
             )
 
             assert result.exit_code == 0
-            assert "/skill:speckit.constitution" in result.output
-            assert "/speckit.constitution" not in result.output
+            assert "/skill:warden.constitution" in result.output
+            assert "/warden.constitution" not in result.output
             assert "Optional skills that you can use for your specs" in result.output
 
     def test_ai_skills_flag_appears_in_help(self):

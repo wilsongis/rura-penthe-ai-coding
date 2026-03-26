@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Rura Penthe — Pre-commit Hook: pip detection (Power of 11, Rule 2)
+# Prevents accidental `pip install` usage in committed code.
+# Install: cp this file to .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+
+set -euo pipefail
+
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+# Check staged files for pip install usage
+VIOLATIONS=$(git diff --cached --name-only -z | xargs -0 grep -l -E '(pip install|pip3 install|python -m pip|python3 -m pip)' 2>/dev/null || true)
+
+if [ -n "$VIOLATIONS" ]; then
+    echo -e "${RED}╔══════════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${RED}║  BLOCKED: pip install detected in staged files              ║${NC}"
+    echo -e "${RED}║  Power of 11, Rule 2: Use 'uv add <package>' instead.      ║${NC}"
+    echo -e "${RED}╚══════════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+    echo "Offending files:"
+    echo "$VIOLATIONS" | while read -r file; do
+        echo "  ✗ $file"
+        git diff --cached "$file" | grep -n -E '(pip install|pip3 install|python -m pip|python3 -m pip)' | head -5 | while read -r line; do
+            echo "    → $line"
+        done
+    done
+    echo ""
+    echo "Fix: Replace 'pip install <pkg>' with 'uv add <pkg>'"
+    echo "Bypass (NOT recommended): git commit --no-verify"
+    exit 1
+fi

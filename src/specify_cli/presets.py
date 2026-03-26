@@ -516,13 +516,15 @@ class PresetManager:
             return {}
 
         # Filter out extension command overrides if the extension isn't installed.
-        # Command names follow the pattern: speckit.<ext-id>.<cmd-name>
-        # Core commands (e.g. speckit.specify) have only one dot — always register.
+        # Command names follow the pattern: {NAMESPACE}.<ext-id>.<cmd-name>
+        # Core commands (e.g. warden.specify) have only one dot — always register.
+        from .config import COMMAND_NAMESPACE
+
         extensions_dir = self.project_root / ".specify" / "extensions"
         filtered = []
         for cmd in command_templates:
             parts = cmd["name"].split(".")
-            if len(parts) >= 3 and parts[0] == "speckit":
+            if len(parts) >= 3 and parts[0] == COMMAND_NAMESPACE:
                 ext_id = parts[1]
                 if not (extensions_dir / ext_id).is_dir():
                     continue
@@ -644,10 +646,8 @@ class PresetManager:
 
             from .config import COMMAND_NAMESPACE
             
-            # Derive the short command name (e.g. "specify" from "speckit.specify")
+            # Derive the short command name (e.g. "specify" from "warden.specify")
             short_name = cmd_name
-            if short_name.startswith("speckit."):
-                short_name = short_name[len("speckit."):]
             if short_name.startswith(f"{COMMAND_NAMESPACE}."):
                 short_name = short_name[len(f"{COMMAND_NAMESPACE}."):]
                 
@@ -735,11 +735,6 @@ class PresetManager:
             from .config import COMMAND_NAMESPACE
 
             short_name = skill_name
-            if short_name.startswith("speckit-"):
-                short_name = short_name[len("speckit-"):]
-            elif short_name.startswith("speckit."):
-                short_name = short_name[len("speckit."):]
-                
             if short_name.startswith(f"{COMMAND_NAMESPACE}-"):
                 short_name = short_name[len(f"{COMMAND_NAMESPACE}-"):]
             elif short_name.startswith(f"{COMMAND_NAMESPACE}."):

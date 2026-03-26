@@ -65,17 +65,17 @@ provides:
 
     # Override a core command:
     - type: "command"
-      name: "speckit.specify"
-      file: "commands/speckit.specify.md"
+      name: "warden.specify"
+      file: "commands/warden.specify.md"
       description: "Custom specification command"
-      replaces: "speckit.specify"
+      replaces: "warden.specify"
 
     # Override an extension command (e.g. from the "myext" extension):
     - type: "command"
-      name: "speckit.myext.myextcmd"
-      file: "commands/speckit.myext.myextcmd.md"
+      name: "warden.myext.myextcmd"
+      file: "commands/warden.myext.myextcmd.md"
       description: "Override myext's myextcmd command with custom workflow"
-      replaces: "speckit.myext.myextcmd"
+      replaces: "warden.myext.myextcmd"
 
     # Script templates (reserved for future use)
     # - type: "script"

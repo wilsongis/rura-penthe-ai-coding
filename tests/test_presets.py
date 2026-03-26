@@ -1761,11 +1761,11 @@ class TestSelfTestPreset:
         manifest = PresetManifest(SELF_TEST_PRESET_DIR / "preset.yml")
         commands = [t for t in manifest.templates if t["type"] == "command"]
         assert len(commands) >= 1
-        assert commands[0]["name"] == "speckit.specify"
+        assert commands[0]["name"] == "warden.specify"
 
     def test_self_test_command_file_exists(self):
         """Verify the self-test command file exists on disk."""
-        cmd_path = SELF_TEST_PRESET_DIR / "commands" / "speckit.specify.md"
+        cmd_path = SELF_TEST_PRESET_DIR / "commands" / "warden.specify.md"
         assert cmd_path.exists()
         content = cmd_path.read_text()
         assert "preset:self-test" in content
@@ -1780,7 +1780,7 @@ class TestSelfTestPreset:
         manager.install_from_directory(SELF_TEST_PRESET_DIR, "0.1.5")
 
         # Check the command was registered
-        cmd_file = claude_dir / "speckit.specify.md"
+        cmd_file = claude_dir / "warden.specify.md"
         assert cmd_file.exists(), "Command not registered in .claude/commands/"
         content = cmd_file.read_text()
         assert "preset:self-test" in content
@@ -1795,7 +1795,7 @@ class TestSelfTestPreset:
         manager.install_from_directory(SELF_TEST_PRESET_DIR, "0.1.5")
 
         # Check the command was registered in TOML format
-        cmd_file = gemini_dir / "speckit.specify.toml"
+        cmd_file = gemini_dir / "warden.specify.toml"
         assert cmd_file.exists(), "Command not registered in .gemini/commands/"
         content = cmd_file.read_text()
         assert "prompt" in content  # TOML format has a prompt field
@@ -1809,7 +1809,7 @@ class TestSelfTestPreset:
         manager = PresetManager(project_dir)
         manager.install_from_directory(SELF_TEST_PRESET_DIR, "0.1.5")
 
-        cmd_file = claude_dir / "speckit.specify.md"
+        cmd_file = claude_dir / "warden.specify.md"
         assert cmd_file.exists()
 
         manager.remove("self-test")
@@ -1831,7 +1831,7 @@ class TestSelfTestPreset:
         preset_dir = temp_dir / "ext-override-preset"
         preset_dir.mkdir()
         (preset_dir / "commands").mkdir()
-        (preset_dir / "commands" / "speckit.fakeext.cmd.md").write_text(
+        (preset_dir / "commands" / "warden.fakeext.cmd.md").write_text(
             "---\ndescription: Override fakeext cmd\n---\nOverridden content"
         )
         manifest_data = {
@@ -1847,8 +1847,8 @@ class TestSelfTestPreset:
                 "templates": [
                     {
                         "type": "command",
-                        "name": "speckit.fakeext.cmd",
-                        "file": "commands/speckit.fakeext.cmd.md",
+                        "name": "warden.fakeext.cmd",
+                        "file": "commands/warden.fakeext.cmd.md",
                         "description": "Override fakeext cmd",
                     }
                 ]
@@ -1861,7 +1861,7 @@ class TestSelfTestPreset:
         manager.install_from_directory(preset_dir, "0.1.5")
 
         # Extension not installed — command should NOT be registered
-        cmd_file = claude_dir / "speckit.fakeext.cmd.md"
+        cmd_file = claude_dir / "warden.fakeext.cmd.md"
         assert not cmd_file.exists(), "Command registered for missing extension"
         metadata = manager.registry.get("ext-override")
         assert metadata["registered_commands"] == {}
@@ -1875,7 +1875,7 @@ class TestSelfTestPreset:
         preset_dir = temp_dir / "ext-override-preset2"
         preset_dir.mkdir()
         (preset_dir / "commands").mkdir()
-        (preset_dir / "commands" / "speckit.fakeext.cmd.md").write_text(
+        (preset_dir / "commands" / "warden.fakeext.cmd.md").write_text(
             "---\ndescription: Override fakeext cmd\n---\nOverridden content"
         )
         manifest_data = {
@@ -1891,8 +1891,8 @@ class TestSelfTestPreset:
                 "templates": [
                     {
                         "type": "command",
-                        "name": "speckit.fakeext.cmd",
-                        "file": "commands/speckit.fakeext.cmd.md",
+                        "name": "warden.fakeext.cmd",
+                        "file": "commands/warden.fakeext.cmd.md",
                         "description": "Override fakeext cmd",
                     }
                 ]
@@ -1904,7 +1904,7 @@ class TestSelfTestPreset:
         manager = PresetManager(project_dir)
         manager.install_from_directory(preset_dir, "0.1.5")
 
-        cmd_file = claude_dir / "speckit.fakeext.cmd.md"
+        cmd_file = claude_dir / "warden.fakeext.cmd.md"
         assert cmd_file.exists(), "Command not registered despite extension being present"
 
 
@@ -1960,30 +1960,30 @@ class TestPresetSkills:
         # Simulate --ai-skills having been used: write init-options + create skill
         self._write_init_options(project_dir, ai="claude")
         skills_dir = project_dir / ".claude" / "skills"
-        self._create_skill(skills_dir, "speckit-specify")
+        self._create_skill(skills_dir, "warden-specify")
 
         # Also create the claude commands dir so commands get registered
         (project_dir / ".claude" / "commands").mkdir(parents=True, exist_ok=True)
 
-        # Install self-test preset (has a command override for speckit.specify)
+        # Install self-test preset (has a command override for warden.specify)
         manager = PresetManager(project_dir)
         SELF_TEST_DIR = Path(__file__).parent.parent / "presets" / "self-test"
         manager.install_from_directory(SELF_TEST_DIR, "0.1.5")
 
-        skill_file = skills_dir / "speckit-specify" / "SKILL.md"
+        skill_file = skills_dir / "warden-specify" / "SKILL.md"
         assert skill_file.exists()
         content = skill_file.read_text()
         assert "preset:self-test" in content, "Skill should reference preset source"
 
         # Verify it was recorded in registry
         metadata = manager.registry.get("self-test")
-        assert "speckit-specify" in metadata.get("registered_skills", [])
+        assert "warden-specify" in metadata.get("registered_skills", [])
 
     def test_skill_not_updated_when_ai_skills_disabled(self, project_dir, temp_dir):
         """When --ai-skills was NOT used, preset install should not touch skills."""
         self._write_init_options(project_dir, ai="claude", ai_skills=False)
         skills_dir = project_dir / ".claude" / "skills"
-        self._create_skill(skills_dir, "speckit-specify", body="untouched")
+        self._create_skill(skills_dir, "warden-specify", body="untouched")
 
         (project_dir / ".claude" / "commands").mkdir(parents=True, exist_ok=True)
 
@@ -1991,14 +1991,14 @@ class TestPresetSkills:
         SELF_TEST_DIR = Path(__file__).parent.parent / "presets" / "self-test"
         manager.install_from_directory(SELF_TEST_DIR, "0.1.5")
 
-        skill_file = skills_dir / "speckit-specify" / "SKILL.md"
+        skill_file = skills_dir / "warden-specify" / "SKILL.md"
         content = skill_file.read_text()
         assert "untouched" in content, "Skill should not be modified when ai_skills=False"
 
     def test_skill_not_updated_without_init_options(self, project_dir, temp_dir):
         """When no init-options.json exists, preset install should not touch skills."""
         skills_dir = project_dir / ".claude" / "skills"
-        self._create_skill(skills_dir, "speckit-specify", body="untouched")
+        self._create_skill(skills_dir, "warden-specify", body="untouched")
 
         (project_dir / ".claude" / "commands").mkdir(parents=True, exist_ok=True)
 
@@ -2006,7 +2006,7 @@ class TestPresetSkills:
         SELF_TEST_DIR = Path(__file__).parent.parent / "presets" / "self-test"
         manager.install_from_directory(SELF_TEST_DIR, "0.1.5")
 
-        skill_file = skills_dir / "speckit-specify" / "SKILL.md"
+        skill_file = skills_dir / "warden-specify" / "SKILL.md"
         content = skill_file.read_text()
         assert "untouched" in content
 
@@ -2014,7 +2014,7 @@ class TestPresetSkills:
         """When a preset is removed, skills should be restored from core templates."""
         self._write_init_options(project_dir, ai="claude")
         skills_dir = project_dir / ".claude" / "skills"
-        self._create_skill(skills_dir, "speckit-specify")
+        self._create_skill(skills_dir, "warden-specify")
 
         (project_dir / ".claude" / "commands").mkdir(parents=True, exist_ok=True)
 
@@ -2028,7 +2028,7 @@ class TestPresetSkills:
         manager.install_from_directory(SELF_TEST_DIR, "0.1.5")
 
         # Verify preset content is in the skill
-        skill_file = skills_dir / "speckit-specify" / "SKILL.md"
+        skill_file = skills_dir / "warden-specify" / "SKILL.md"
         assert "preset:self-test" in skill_file.read_text()
 
         # Remove the preset
