@@ -168,7 +168,7 @@ This fork includes a suite of **Token-Killer Utilities** designed to drastically
 | **Pre-flight Verify** | `/warden.verify` | Runs `just test && just lint`, auto-commits on success, and archives spec branch files to `.grave/`. |
 | **Context Compression** | `/warden.compress` | (Planned) Hardware-accelerated LLMLingua daemon for ~70% file compression before agent parsing. |
 | **Telemetry** | Automatic | (Planned) SQLite-based token savings tracker at `~/.rura/telemetry.db`. |
-| **Goal Audit** | `/warden.audit` | (Planned) Cross-references proposed features against `GOALS.md` using lower-cost models. |
+| **Goal Audit** | `/warden.audit` | (Planned) Cross-references features against `GOALS.md` using lower-cost models. |
 
 ### STACK.md — Fighting Hallucination with Negative Constraints
 

@@ -1799,7 +1799,7 @@ def ensure_goals_md(project_path: Path, tracker: StepTracker | None = None) -> N
 
     goals_content = """# Project Goals
 
-*This file is read by `/warden.audit` to cross-reference proposed features against project intent.*
+*This file is read by `/warden.audit` to cross-reference features against project intent.*
 
 ## Primary Objective
 
