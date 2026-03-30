@@ -112,29 +112,53 @@ def compress_single_content(compressor, content: str, rate: float, enc) -> tuple
 
 def main():
     parser = argparse.ArgumentParser(description="Warden Context Compressor (LLMLingua-2)")
-    parser.add_argument("target", type=str, help="Target file or directory to compress")
+    parser.add_argument("target", type=str, nargs="?", default=None, help="Target file or directory to compress")
     parser.add_argument("--rate", type=float, default=0.3, help="Compression target rate (e.g. 0.3 for 30% retention)")
     parser.add_argument("--device", type=str, default="cpu", help="Device to run on (cpu, cuda, mps)")
     parser.add_argument("--output", "-o", type=str, default=None, help="Output file path for compressed content")
+    parser.add_argument("--warmup", action="store_true", help="Initialize ML models and exit (for first-time downloads)")
+    parser.add_argument("--stdin", action="store_true", help="Read text from standard input instead of a file")
     
     args = parser.parse_args()
-    
-    target_path = Path(args.target)
-    if not target_path.exists():
-        print(f"Error: Target path {args.target} does not exist.")
-        sys.exit(1)
-        
-    print(f"[*] Initializing LLMLingua-2 compressor on {args.device}...")
-    print("    (Note: The first run will download model weights (~2GB) and may take significant time)")
+    if not args.stdin:
+        print(f"[*] Initializing LLMLingua-2 compressor on {args.device}...")
+        print("    (Note: The first run will download model weights (~2GB) and may take significant time)")
     
     try:
+        # Hide loading print blocks from stdout if doing generic stdin piping
         compressor = PromptCompressor(
             model_name="microsoft/llmlingua-2-xlm-roberta-large-meetingbank",
             use_llmlingua2=True,
-            device_map=args.device
+            device_map=args.device,
         )
     except Exception as e:
-        print(f"Error initializing compressor: {e}")
+        if not args.stdin:
+            print(f"Error initializing compressor: {e}")
+        sys.exit(1)
+        
+    if args.warmup:
+        print("\n[+] Success! LLMLingua-2 models downloaded and cached.")
+        sys.exit(0)
+        
+    try:
+        enc = tiktoken.get_encoding("cl100k_base")
+    except Exception:
+        enc = None
+
+    if args.stdin:
+        content = sys.stdin.read()
+        compressed_text, orig, comp = compress_single_content(compressor, content, args.rate, enc)
+        # For standard input piping, ONLY print the raw outcome so CLI apps can intercept cleanly
+        print(compressed_text, end="")
+        sys.exit(0)
+        
+    if not args.target:
+        print("Error: you must supply a target file/directory unless using --warmup or --stdin")
+        sys.exit(1)
+        
+    target_path = Path(args.target)
+    if not target_path.exists():
+        print(f"Error: Target path {args.target} does not exist.")
         sys.exit(1)
         
     try:

@@ -1,4 +1,6 @@
 # src/rura_penthe/optimizer/base.py
+import subprocess
+from pathlib import Path
 from abc import ABC, abstractmethod
 from typing import List, Dict, Any
 
@@ -22,24 +24,43 @@ class ContextCompressor(ABC):
     @abstractmethod
     def compress(self, content: str) -> str:
         """
-        Strips redundant instructions, minimizes metadata, and optimizes text.
+        Strips redundant instructions.
         """
         pass
 
 class InterceptorMiddleware:
     """
-    The orchestrator that sits between the prompt generation and the API dispatch.
+    Orchestrates the LLMLingua compression pipeline natively from specify-cli,
+    specifically designed to intercept large string payloads (Markdown body text) 
+    before agent file generation.
     """
-    def __init__(self, optimizer: TokenOptimizer, llm_client: Any):
-        self.optimizer = optimizer
-        self.llm_client = llm_client
-
-    def chat_completion(self, messages: List[Dict[str, Any]], **kwargs) -> Any:
-        # 1. Intercept and Compress
-        optimized_messages = self.optimizer.optimize_payload(messages)
+    def __init__(self, project_root: Path):
+        self.project_root = Path(project_root)
+        self.compress_script = self.project_root / ".specify" / "scripts" / "python" / "compress.py"
         
-        # 2. Forward to LLM API
-        response = self.llm_client.chat_completion(messages=optimized_messages, **kwargs)
-        
-        # 3. Post-process (optional: map LLM response back if needed)
-        return response
+    def intercept_string(self, content: str) -> str:
+        """
+        Pipes large strings through the isolated uv environment script.
+        """
+        if len(content) < 2000:
+            return content
+            
+        if not self.compress_script.exists():
+            return content
+            
+        try:
+            # Squeeze through the isolated uv environment subprocess
+            # capturing strictly the stdout content to replace the original
+            proc = subprocess.run(
+                ["uv", "run", str(self.compress_script), "--stdin"],
+                input=content.encode("utf-8"),
+                capture_output=True,
+                check=False
+            )
+            if proc.returncode == 0:
+                compressed_stdout = proc.stdout.decode("utf-8")
+                if compressed_stdout.strip():
+                    return compressed_stdout
+            return content
+        except Exception:
+            return content

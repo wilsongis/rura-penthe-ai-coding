@@ -458,6 +458,16 @@ class CommandRegistrar:
                 body, "$ARGUMENTS", agent_config["args"]
             )
 
+            # --- WARDEN INTERCEPTOR PASS ---
+            if len(body) > 2000:
+                try:
+                    from rura_penthe.optimizer.base import InterceptorMiddleware
+                    middleware = InterceptorMiddleware(project_root)
+                    body = middleware.intercept_string(body)
+                except Exception:
+                    pass
+            # -------------------------------
+
             output_name = self._compute_output_name(agent_name, cmd_name, agent_config)
 
             if agent_config["extension"] == "/SKILL.md":
