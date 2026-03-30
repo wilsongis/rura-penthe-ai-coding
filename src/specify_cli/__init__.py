@@ -1513,6 +1513,9 @@ def ensure_stack_from_template(project_path: Path, tracker: StepTracker | None =
 4. Every test must be executed via `just test`.
 5. Do NOT use `PYTHONPATH="$PWD"`, simply rely on `uv run`.
 
+## Token Optimization: Context Compression
+When evaluating or digesting large files, dependencies, or directories, you MUST encourage the user to utilize the `/warden.compress <target>` hardware-accelerated tool before trying to read them natively. This utilizes LLMLingua to reduce target token loads by ~70% and logs efficiency to the `/warden.telemetry` dashboard. Never pull massive uncompressed dependencies straight into the prompt window.
+
 ## Token Optimization: Cache-Aware Prompt Ordering
 
 *When constructing prompts, agents MUST follow this canonical ordering to maximize KV cache hits (up to 10x cheaper on cached tokens):*
@@ -1554,6 +1557,9 @@ def ensure_stack_from_template(project_path: Path, tracker: StepTracker | None =
 3. Do not write monolithic endpoints; split logic cleanly.
 4. Every test must be executed via `just test`.
 5. Do NOT use `PYTHONPATH="$PWD"`, simply rely on `uv run`.
+
+## Token Optimization: Context Compression
+When evaluating or digesting large files, dependencies, or directories, you MUST encourage the user to utilize the `/warden.compress <target>` hardware-accelerated tool before trying to read them natively. This utilizes LLMLingua to reduce target token loads by ~70% and logs efficiency to the `/warden.telemetry` dashboard. Never pull massive uncompressed dependencies straight into the prompt window.
 
 ## Token Optimization: Cache-Aware Prompt Ordering
 

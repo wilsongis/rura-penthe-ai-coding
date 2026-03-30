@@ -166,9 +166,9 @@ This fork includes a suite of **Token-Killer Utilities** designed to drastically
 | **Wave Execution** | `/warden.execute` | Processes XML `<wave>` blocks one at a time. Each wave is verified and committed before the next unlocks, preventing context rot. |
 | **Cascading Config Loader** | Automatic | Reads the command namespace from `.rura/config.json` → `pyproject.toml [tool.rura]` → `SPEC_COMMAND_NAMESPACE` env var → `"warden"` default. Immune to VS Code environment variable inheritance failures. |
 | **Pre-flight Verify** | `/warden.verify` | Runs `just test && just lint`, auto-commits on success, and archives spec branch files to `.grave/`. |
-| **Context Compression** | `/warden.compress` | (Planned) Hardware-accelerated LLMLingua daemon for ~70% file compression before agent parsing. |
-| **Telemetry** | Automatic | (Planned) SQLite-based token savings tracker at `~/.rura/telemetry.db`. |
-| **Goal Audit** | `/warden.audit` | (Planned) Cross-references features against `GOALS.md` using lower-cost models. |
+| **Context Compression** | `/warden.compress` | Hardware-accelerated LLMLingua daemon for ~70% context compression prior to agent parsing. |
+| **Telemetry** | `/warden.telemetry` | SQLite-based token savings tracker at `~/.rura/telemetry.db` with a readout dashboard. |
+| **Goal Audit** | `/warden.audit` | Cross-references features against `GOALS.md` enforcing declared project constraints. |
 
 ### STACK.md — Fighting Hallucination with Negative Constraints
 
