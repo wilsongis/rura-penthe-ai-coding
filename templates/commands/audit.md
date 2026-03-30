@@ -7,6 +7,9 @@ handoffs:
   - label: Update Constitution
     agent: warden.constitution
     prompt: Update the project constitution to reflect audit findings
+scripts:
+  sh: scripts/bash/check-prerequisites.sh --json --paths-only
+  ps: scripts/powershell/check-prerequisites.ps1 -Json -PathsOnly
 ---
 
 ## User Input

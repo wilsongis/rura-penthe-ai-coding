@@ -4,6 +4,9 @@ handoffs:
   - label: Build Specification
     agent: warden.specify
     prompt: Implement the feature specification based on the updated constitution. I want to build...
+scripts:
+  sh: scripts/bash/check-prerequisites.sh --json --paths-only
+  ps: scripts/powershell/check-prerequisites.ps1 -Json -PathsOnly
 ---
 
 ## User Input
