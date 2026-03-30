@@ -323,6 +323,11 @@ function Build-Variant {
         $scriptsDestDir = Join-Path $specDir "scripts"
         New-Item -ItemType Directory -Path $scriptsDestDir -Force | Out-Null
 
+        if (Test-Path "scripts/python") {
+            Copy-Item -Path "scripts/python" -Destination $scriptsDestDir -Recurse -Force
+            Write-Host "Copied scripts/python -> .specify/scripts"
+        }
+
         switch ($Script) {
             'sh' {
                 if (Test-Path "scripts/bash") {

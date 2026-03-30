@@ -238,6 +238,7 @@ build_variant() {
   # Only copy the relevant script variant directory
   if [[ -d scripts ]]; then
     mkdir -p "$SPEC_DIR/scripts"
+    [[ -d scripts/python ]] && { cp -r scripts/python "$SPEC_DIR/scripts/"; echo "Copied scripts/python -> .specify/scripts"; }
     case $script in
       sh)
         [[ -d scripts/bash ]] && { cp -r scripts/bash "$SPEC_DIR/scripts/"; echo "Copied scripts/bash -> .specify/scripts"; }
