@@ -58,10 +58,6 @@ if (Test-Path $GenReleasesDir) {
 }
 New-Item -ItemType Directory -Path $GenReleasesDir -Force | Out-Null
 
-# Command namespace prefix for generated filenames (e.g. warden.plan.md).
-# Change this value to match fork-specific configuration.
-$CmdNamespace = "warden"
-
 function Rewrite-Paths {
     param([string]$Content)
 
@@ -164,7 +160,7 @@ function Generate-Commands {
         $body = Rewrite-Paths -Content $body
 
         # Generate output file based on extension
-        $outputFile = Join-Path $OutputDir "$CmdNamespace.$name.$Extension"
+        $outputFile = Join-Path $OutputDir "speckit.$name.$Extension"
 
         switch ($Extension) {
             'toml' {
@@ -190,7 +186,7 @@ function Generate-CopilotPrompts {
 
     New-Item -ItemType Directory -Path $PromptsDir -Force | Out-Null
 
-    $agentFiles = Get-ChildItem -Path "$AgentsDir/$CmdNamespace.*.agent.md" -File -ErrorAction SilentlyContinue
+    $agentFiles = Get-ChildItem -Path "$AgentsDir/speckit.*.agent.md" -File -ErrorAction SilentlyContinue
 
     foreach ($agentFile in $agentFiles) {
         $basename = $agentFile.Name -replace '\.agent\.md$', ''
@@ -206,8 +202,7 @@ agent: $basename
 }
 
 # Create skills in <skills_dir>\<name>\SKILL.md format.
-# Most agents use hyphenated names (e.g. warden-plan); Kimi is the
-# current dotted-name exception (e.g. warden.plan).
+# Skills use hyphenated names (e.g. speckit-plan).
 #
 # Technical debt note:
 # Keep SKILL.md frontmatter aligned with `install_ai_skills()` and extension
@@ -224,7 +219,7 @@ function New-Skills {
 
     foreach ($template in $templates) {
         $name = [System.IO.Path]::GetFileNameWithoutExtension($template.Name)
-        $skillName = "${CmdNamespace}${Separator}$name"
+        $skillName = "speckit${Separator}$name"
         $skillDir = Join-Path $SkillsDir $skillName
         New-Item -ItemType Directory -Force -Path $skillDir | Out-Null
 
@@ -322,11 +317,6 @@ function Build-Variant {
     if (Test-Path "scripts") {
         $scriptsDestDir = Join-Path $specDir "scripts"
         New-Item -ItemType Directory -Path $scriptsDestDir -Force | Out-Null
-
-        if (Test-Path "scripts/python") {
-            Copy-Item -Path "scripts/python" -Destination $scriptsDestDir -Recurse -Force
-            Write-Host "Copied scripts/python -> .specify/scripts"
-        }
 
         switch ($Script) {
             'sh' {
@@ -472,7 +462,7 @@ function Build-Variant {
         'kimi' {
             $skillsDir = Join-Path $baseDir ".kimi/skills"
             New-Item -ItemType Directory -Force -Path $skillsDir | Out-Null
-            New-Skills -SkillsDir $skillsDir -ScriptVariant $Script -AgentName 'kimi' -Separator '.'
+            New-Skills -SkillsDir $skillsDir -ScriptVariant $Script -AgentName 'kimi'
         }
         'trae' {
             $rulesDir = Join-Path $baseDir ".trae/rules"
@@ -507,13 +497,13 @@ $AllAgents = @('claude', 'gemini', 'copilot', 'cursor-agent', 'qwen', 'opencode'
 $AllScripts = @('sh', 'ps')
 
 function Normalize-List {
-    param([string]$Input)
+    param([string]$Value)
 
-    if ([string]::IsNullOrEmpty($Input)) {
+    if ([string]::IsNullOrEmpty($Value)) {
         return @()
     }
 
-    $items = $Input -split '[,\s]+' | Where-Object { $_ } | Select-Object -Unique
+    $items = $Value -split '[,\s]+' | Where-Object { $_ } | Select-Object -Unique
     return $items
 }
 
@@ -536,7 +526,7 @@ function Validate-Subset {
 
 # Determine agent list
 if (-not [string]::IsNullOrEmpty($Agents)) {
-    $AgentList = Normalize-List -Input $Agents
+    $AgentList = Normalize-List -Value $Agents
     if (-not (Validate-Subset -Type 'agent' -Allowed $AllAgents -Items $AgentList)) {
         exit 1
     }
@@ -546,7 +536,7 @@ if (-not [string]::IsNullOrEmpty($Agents)) {
 
 # Determine script list
 if (-not [string]::IsNullOrEmpty($Scripts)) {
-    $ScriptList = Normalize-List -Input $Scripts
+    $ScriptList = Normalize-List -Value $Scripts
     if (-not (Validate-Subset -Type 'script' -Allowed $AllScripts -Items $ScriptList)) {
         exit 1
     }

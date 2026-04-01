@@ -18,7 +18,9 @@ import yaml
 from pathlib import Path
 
 from specify_cli.extensions import (
+    ExtensionManifest,
     ExtensionManager,
+    ExtensionError,
 )
 
 
@@ -39,17 +41,14 @@ def _create_init_options(project_root: Path, ai: str = "claude", ai_skills: bool
 def _create_skills_dir(project_root: Path, ai: str = "claude") -> Path:
     """Create and return the expected skills directory for the given agent."""
     # Match the logic in _get_skills_dir() from specify_cli
-    from specify_cli import AGENT_CONFIG, AGENT_SKILLS_DIR_OVERRIDES, DEFAULT_SKILLS_DIR
+    from specify_cli import AGENT_CONFIG, DEFAULT_SKILLS_DIR
 
-    if ai in AGENT_SKILLS_DIR_OVERRIDES:
-        skills_dir = project_root / AGENT_SKILLS_DIR_OVERRIDES[ai]
+    agent_config = AGENT_CONFIG.get(ai, {})
+    agent_folder = agent_config.get("folder", "")
+    if agent_folder:
+        skills_dir = project_root / agent_folder.rstrip("/") / "skills"
     else:
-        agent_config = AGENT_CONFIG.get(ai, {})
-        agent_folder = agent_config.get("folder", "")
-        if agent_folder:
-            skills_dir = project_root / agent_folder.rstrip("/") / "skills"
-        else:
-            skills_dir = project_root / DEFAULT_SKILLS_DIR
+        skills_dir = project_root / DEFAULT_SKILLS_DIR
 
     skills_dir.mkdir(parents=True, exist_ok=True)
     return skills_dir
@@ -74,12 +73,12 @@ def _create_extension_dir(temp_dir: Path, ext_id: str = "test-ext") -> Path:
         "provides": {
             "commands": [
                 {
-                    "name": f"warden.{ext_id}.hello",
+                    "name": f"speckit.{ext_id}.hello",
                     "file": "commands/hello.md",
                     "description": "Test hello command",
                 },
                 {
-                    "name": f"warden.{ext_id}.world",
+                    "name": f"speckit.{ext_id}.world",
                     "file": "commands/world.md",
                     "description": "Test world command",
                 },
@@ -193,6 +192,24 @@ class TestExtensionManagerGetSkillsDir:
         result = manager._get_skills_dir()
         assert result is None
 
+    def test_returns_kimi_skills_dir_when_ai_skills_disabled(self, project_dir):
+        """Kimi should still use its native skills dir when ai_skills is false."""
+        _create_init_options(project_dir, ai="kimi", ai_skills=False)
+        skills_dir = _create_skills_dir(project_dir, ai="kimi")
+        manager = ExtensionManager(project_dir)
+        result = manager._get_skills_dir()
+        assert result == skills_dir
+
+    def test_returns_none_for_non_dict_init_options(self, project_dir):
+        """Corrupted-but-parseable init-options should not crash skill-dir lookup."""
+        opts_file = project_dir / ".specify" / "init-options.json"
+        opts_file.parent.mkdir(parents=True, exist_ok=True)
+        opts_file.write_text("[]")
+        _create_skills_dir(project_dir, ai="claude")
+        manager = ExtensionManager(project_dir)
+        result = manager._get_skills_dir()
+        assert result is None
+
 
 # ===== Extension Skill Registration Tests =====
 
@@ -203,14 +220,14 @@ class TestExtensionSkillRegistration:
         """Skills should be created when ai_skills is enabled."""
         project_dir, skills_dir = skills_project
         manager = ExtensionManager(project_dir)
-        manager.install_from_directory(
+        manifest = manager.install_from_directory(
             extension_dir, "0.1.0", register_commands=False
         )
 
         # Check that skill directories were created
         skill_dirs = sorted([d.name for d in skills_dir.iterdir() if d.is_dir()])
-        assert "warden-test-ext.hello" in skill_dirs
-        assert "warden-test-ext.world" in skill_dirs
+        assert "speckit-test-ext-hello" in skill_dirs
+        assert "speckit-test-ext-world" in skill_dirs
 
     def test_skill_md_content_correct(self, skills_project, extension_dir):
         """SKILL.md should have correct agentskills.io structure."""
@@ -220,13 +237,13 @@ class TestExtensionSkillRegistration:
             extension_dir, "0.1.0", register_commands=False
         )
 
-        skill_file = skills_dir / "warden-test-ext.hello" / "SKILL.md"
+        skill_file = skills_dir / "speckit-test-ext-hello" / "SKILL.md"
         assert skill_file.exists()
         content = skill_file.read_text()
 
         # Check structure
         assert content.startswith("---\n")
-        assert "name: warden-test-ext.hello" in content
+        assert "name: speckit-test-ext-hello" in content
         assert "description:" in content
         assert "Test hello command" in content
         assert "source: extension:test-ext" in content
@@ -242,7 +259,7 @@ class TestExtensionSkillRegistration:
             extension_dir, "0.1.0", register_commands=False
         )
 
-        skill_file = skills_dir / "warden-test-ext.hello" / "SKILL.md"
+        skill_file = skills_dir / "speckit-test-ext-hello" / "SKILL.md"
         content = skill_file.read_text()
 
         assert content.startswith("---\n")
@@ -250,7 +267,7 @@ class TestExtensionSkillRegistration:
         assert len(parts) >= 3
         parsed = yaml.safe_load(parts[1])
         assert isinstance(parsed, dict)
-        assert parsed["name"] == "warden-test-ext.hello"
+        assert parsed["name"] == "speckit-test-ext-hello"
         assert "description" in parsed
 
     def test_no_skills_when_ai_skills_disabled(self, no_skills_project, extension_dir):
@@ -279,7 +296,7 @@ class TestExtensionSkillRegistration:
         project_dir, skills_dir = skills_project
 
         # Pre-create a custom skill
-        custom_dir = skills_dir / "warden-test-ext.hello"
+        custom_dir = skills_dir / "speckit-test-ext-hello"
         custom_dir.mkdir(parents=True)
         custom_content = "# My Custom Hello Skill\nUser-modified content\n"
         (custom_dir / "SKILL.md").write_text(custom_content)
@@ -294,9 +311,9 @@ class TestExtensionSkillRegistration:
 
         # But the other skill should still be created
         metadata = manager.registry.get(manifest.id)
-        assert "warden-test-ext.world" in metadata["registered_skills"]
+        assert "speckit-test-ext-world" in metadata["registered_skills"]
         # The pre-existing one should NOT be in registered_skills (it was skipped)
-        assert "warden-test-ext.hello" not in metadata["registered_skills"]
+        assert "speckit-test-ext-hello" not in metadata["registered_skills"]
 
     def test_registered_skills_in_registry(self, skills_project, extension_dir):
         """Registry should contain registered_skills list."""
@@ -309,11 +326,11 @@ class TestExtensionSkillRegistration:
         metadata = manager.registry.get(manifest.id)
         assert "registered_skills" in metadata
         assert len(metadata["registered_skills"]) == 2
-        assert "warden-test-ext.hello" in metadata["registered_skills"]
-        assert "warden-test-ext.world" in metadata["registered_skills"]
+        assert "speckit-test-ext-hello" in metadata["registered_skills"]
+        assert "speckit-test-ext-world" in metadata["registered_skills"]
 
-    def test_kimi_uses_dot_notation(self, project_dir, temp_dir):
-        """Kimi agent should use dot notation for skill names."""
+    def test_kimi_uses_hyphenated_skill_names(self, project_dir, temp_dir):
+        """Kimi agent should use the same hyphenated skill names as hooks."""
         _create_init_options(project_dir, ai="kimi", ai_skills=True)
         _create_skills_dir(project_dir, ai="kimi")
         ext_dir = _create_extension_dir(temp_dir, ext_id="test-ext")
@@ -324,9 +341,80 @@ class TestExtensionSkillRegistration:
         )
 
         metadata = manager.registry.get(manifest.id)
-        # Kimi should use dots, not hyphens
-        assert "warden.test-ext.hello" in metadata["registered_skills"]
-        assert "warden.test-ext.world" in metadata["registered_skills"]
+        assert "speckit-test-ext-hello" in metadata["registered_skills"]
+        assert "speckit-test-ext-world" in metadata["registered_skills"]
+
+    def test_kimi_creates_skills_when_ai_skills_disabled(self, project_dir, temp_dir):
+        """Kimi should still auto-register extension skills in native-skills mode."""
+        _create_init_options(project_dir, ai="kimi", ai_skills=False)
+        skills_dir = _create_skills_dir(project_dir, ai="kimi")
+        ext_dir = _create_extension_dir(temp_dir, ext_id="test-ext")
+
+        manager = ExtensionManager(project_dir)
+        manifest = manager.install_from_directory(
+            ext_dir, "0.1.0", register_commands=False
+        )
+
+        metadata = manager.registry.get(manifest.id)
+        assert "speckit-test-ext-hello" in metadata["registered_skills"]
+        assert "speckit-test-ext-world" in metadata["registered_skills"]
+        assert (skills_dir / "speckit-test-ext-hello" / "SKILL.md").exists()
+
+    def test_skill_registration_resolves_script_placeholders(self, project_dir, temp_dir):
+        """Auto-registered extension skills should resolve script placeholders."""
+        _create_init_options(project_dir, ai="claude", ai_skills=True)
+        skills_dir = _create_skills_dir(project_dir, ai="claude")
+
+        ext_dir = temp_dir / "scripted-ext"
+        ext_dir.mkdir()
+        manifest_data = {
+            "schema_version": "1.0",
+            "extension": {
+                "id": "scripted-ext",
+                "name": "Scripted Extension",
+                "version": "1.0.0",
+                "description": "Test",
+            },
+            "requires": {"speckit_version": ">=0.1.0"},
+            "provides": {
+                "commands": [
+                    {
+                        "name": "speckit.scripted-ext.plan",
+                        "file": "commands/plan.md",
+                        "description": "Scripted plan command",
+                    }
+                ]
+            },
+        }
+        with open(ext_dir / "extension.yml", "w") as f:
+            yaml.dump(manifest_data, f)
+
+        (ext_dir / "commands").mkdir()
+        (ext_dir / "commands" / "plan.md").write_text(
+            "---\n"
+            "description: Scripted plan command\n"
+            "scripts:\n"
+            "  sh: ../../scripts/bash/setup-plan.sh --json \"{ARGS}\"\n"
+            "agent_scripts:\n"
+            "  sh: ../../scripts/bash/update-agent-context.sh __AGENT__\n"
+            "---\n\n"
+            "Run {SCRIPT}\n"
+            "Then {AGENT_SCRIPT}\n"
+            "Review templates/checklist.md and memory/constitution.md for __AGENT__.\n"
+        )
+
+        manager = ExtensionManager(project_dir)
+        manager.install_from_directory(ext_dir, "0.1.0", register_commands=False)
+
+        content = (skills_dir / "speckit-scripted-ext-plan" / "SKILL.md").read_text()
+        assert "{SCRIPT}" not in content
+        assert "{AGENT_SCRIPT}" not in content
+        assert "{ARGS}" not in content
+        assert "__AGENT__" not in content
+        assert '.specify/scripts/bash/setup-plan.sh --json "$ARGUMENTS"' in content
+        assert ".specify/scripts/bash/update-agent-context.sh claude" in content
+        assert ".specify/templates/checklist.md" in content
+        assert ".specify/memory/constitution.md" in content
 
     def test_missing_command_file_skipped(self, skills_project, temp_dir):
         """Commands with missing source files should be skipped gracefully."""
@@ -346,12 +434,12 @@ class TestExtensionSkillRegistration:
             "provides": {
                 "commands": [
                     {
-                        "name": "warden.missing-cmd-ext.exists",
+                        "name": "speckit.missing-cmd-ext.exists",
                         "file": "commands/exists.md",
                         "description": "Exists",
                     },
                     {
-                        "name": "warden.missing-cmd-ext.ghost",
+                        "name": "speckit.missing-cmd-ext.ghost",
                         "file": "commands/ghost.md",
                         "description": "Does not exist",
                     },
@@ -373,8 +461,8 @@ class TestExtensionSkillRegistration:
         )
 
         metadata = manager.registry.get(manifest.id)
-        assert "warden-missing-cmd-ext.exists" in metadata["registered_skills"]
-        assert "warden-missing-cmd-ext.ghost" not in metadata["registered_skills"]
+        assert "speckit-missing-cmd-ext-exists" in metadata["registered_skills"]
+        assert "speckit-missing-cmd-ext-ghost" not in metadata["registered_skills"]
 
 
 # ===== Extension Skill Unregistration Tests =====
@@ -391,16 +479,16 @@ class TestExtensionSkillUnregistration:
         )
 
         # Verify skills exist
-        assert (skills_dir / "warden-test-ext.hello" / "SKILL.md").exists()
-        assert (skills_dir / "warden-test-ext.world" / "SKILL.md").exists()
+        assert (skills_dir / "speckit-test-ext-hello" / "SKILL.md").exists()
+        assert (skills_dir / "speckit-test-ext-world" / "SKILL.md").exists()
 
         # Remove extension
         result = manager.remove(manifest.id, keep_config=False)
         assert result is True
 
         # Skills should be gone
-        assert not (skills_dir / "warden-test-ext.hello").exists()
-        assert not (skills_dir / "warden-test-ext.world").exists()
+        assert not (skills_dir / "speckit-test-ext-hello").exists()
+        assert not (skills_dir / "speckit-test-ext-world").exists()
 
     def test_other_skills_preserved_on_remove(self, skills_project, extension_dir):
         """Non-extension skills should not be affected by extension removal."""
@@ -431,8 +519,8 @@ class TestExtensionSkillUnregistration:
         )
 
         # Manually delete skill dirs before calling remove
-        shutil.rmtree(skills_dir / "warden-test-ext.hello")
-        shutil.rmtree(skills_dir / "warden-test-ext.world")
+        shutil.rmtree(skills_dir / "speckit-test-ext-hello")
+        shutil.rmtree(skills_dir / "speckit-test-ext-world")
 
         # Should not raise
         result = manager.remove(manifest.id, keep_config=False)
@@ -455,6 +543,21 @@ class TestExtensionSkillUnregistration:
 class TestExtensionSkillEdgeCases:
     """Test edge cases in extension skill registration."""
 
+    def test_install_with_non_dict_init_options_does_not_crash(self, project_dir, extension_dir):
+        """Corrupted init-options payloads should disable skill registration, not crash install."""
+        opts_file = project_dir / ".specify" / "init-options.json"
+        opts_file.parent.mkdir(parents=True, exist_ok=True)
+        opts_file.write_text("[]")
+        _create_skills_dir(project_dir, ai="claude")
+
+        manager = ExtensionManager(project_dir)
+        manifest = manager.install_from_directory(
+            extension_dir, "0.1.0", register_commands=False
+        )
+
+        metadata = manager.registry.get(manifest.id)
+        assert metadata["registered_skills"] == []
+
     def test_command_without_frontmatter(self, skills_project, temp_dir):
         """Commands without YAML frontmatter should still produce valid skills."""
         project_dir, skills_dir = skills_project
@@ -473,7 +576,7 @@ class TestExtensionSkillEdgeCases:
             "provides": {
                 "commands": [
                     {
-                        "name": "warden.nofm-ext.plain",
+                        "name": "speckit.nofm-ext.plain",
                         "file": "commands/plain.md",
                         "description": "Plain command",
                     }
@@ -489,16 +592,16 @@ class TestExtensionSkillEdgeCases:
         )
 
         manager = ExtensionManager(project_dir)
-        manager.install_from_directory(
+        manifest = manager.install_from_directory(
             ext_dir, "0.1.0", register_commands=False
         )
 
-        skill_file = skills_dir / "warden-nofm-ext.plain" / "SKILL.md"
+        skill_file = skills_dir / "speckit-nofm-ext-plain" / "SKILL.md"
         assert skill_file.exists()
         content = skill_file.read_text()
-        assert "name: warden-nofm-ext.plain" in content
+        assert "name: speckit-nofm-ext-plain" in content
         # Fallback description when no frontmatter description
-        assert "Extension command: warden.nofm-ext.plain" in content
+        assert "Extension command: speckit.nofm-ext.plain" in content
         assert "Body without frontmatter." in content
 
     def test_gemini_agent_skills(self, project_dir, temp_dir):
@@ -508,13 +611,13 @@ class TestExtensionSkillEdgeCases:
         ext_dir = _create_extension_dir(temp_dir, ext_id="test-ext")
 
         manager = ExtensionManager(project_dir)
-        manager.install_from_directory(
+        manifest = manager.install_from_directory(
             ext_dir, "0.1.0", register_commands=False
         )
 
         skills_dir = project_dir / ".gemini" / "skills"
-        assert (skills_dir / "warden-test-ext.hello" / "SKILL.md").exists()
-        assert (skills_dir / "warden-test-ext.world" / "SKILL.md").exists()
+        assert (skills_dir / "speckit-test-ext-hello" / "SKILL.md").exists()
+        assert (skills_dir / "speckit-test-ext-world" / "SKILL.md").exists()
 
     def test_multiple_extensions_independent_skills(self, skills_project, temp_dir):
         """Installing and removing different extensions should be independent."""
@@ -524,23 +627,23 @@ class TestExtensionSkillEdgeCases:
         ext_dir_b = _create_extension_dir(temp_dir, ext_id="ext-b")
 
         manager = ExtensionManager(project_dir)
-        manager.install_from_directory(
+        manifest_a = manager.install_from_directory(
             ext_dir_a, "0.1.0", register_commands=False
         )
-        manager.install_from_directory(
+        manifest_b = manager.install_from_directory(
             ext_dir_b, "0.1.0", register_commands=False
         )
 
         # Both should have skills
-        assert (skills_dir / "warden-ext-a.hello" / "SKILL.md").exists()
-        assert (skills_dir / "warden-ext-b.hello" / "SKILL.md").exists()
+        assert (skills_dir / "speckit-ext-a-hello" / "SKILL.md").exists()
+        assert (skills_dir / "speckit-ext-b-hello" / "SKILL.md").exists()
 
         # Remove ext-a
         manager.remove("ext-a", keep_config=False)
 
         # ext-a skills gone, ext-b skills preserved
-        assert not (skills_dir / "warden-ext-a.hello").exists()
-        assert (skills_dir / "warden-ext-b.hello" / "SKILL.md").exists()
+        assert not (skills_dir / "speckit-ext-a-hello").exists()
+        assert (skills_dir / "speckit-ext-b-hello" / "SKILL.md").exists()
 
     def test_malformed_frontmatter_handled(self, skills_project, temp_dir):
         """Commands with invalid YAML frontmatter should still produce valid skills."""
@@ -560,7 +663,7 @@ class TestExtensionSkillEdgeCases:
             "provides": {
                 "commands": [
                     {
-                        "name": "warden.badfm-ext.broken",
+                        "name": "speckit.badfm-ext.broken",
                         "file": "commands/broken.md",
                         "description": "Broken frontmatter",
                     }
@@ -585,15 +688,15 @@ class TestExtensionSkillEdgeCases:
 
         manager = ExtensionManager(project_dir)
         # Should not raise
-        manager.install_from_directory(
+        manifest = manager.install_from_directory(
             ext_dir, "0.1.0", register_commands=False
         )
 
-        skill_file = skills_dir / "warden-badfm-ext.broken" / "SKILL.md"
+        skill_file = skills_dir / "speckit-badfm-ext-broken" / "SKILL.md"
         assert skill_file.exists()
         content = skill_file.read_text()
         # Fallback description since frontmatter was invalid
-        assert "Extension command: warden.badfm-ext.broken" in content
+        assert "Extension command: speckit.badfm-ext.broken" in content
         assert "This body should still be used." in content
 
     def test_remove_cleans_up_when_init_options_deleted(self, skills_project, extension_dir):
@@ -605,7 +708,7 @@ class TestExtensionSkillEdgeCases:
         )
 
         # Verify skills exist
-        assert (skills_dir / "warden-test-ext.hello" / "SKILL.md").exists()
+        assert (skills_dir / "speckit-test-ext-hello" / "SKILL.md").exists()
 
         # Delete init-options.json to simulate user change
         init_opts = project_dir / ".specify" / "init-options.json"
@@ -614,8 +717,8 @@ class TestExtensionSkillEdgeCases:
         # Remove should still clean up via fallback scan
         result = manager.remove(manifest.id, keep_config=False)
         assert result is True
-        assert not (skills_dir / "warden-test-ext.hello").exists()
-        assert not (skills_dir / "warden-test-ext.world").exists()
+        assert not (skills_dir / "speckit-test-ext-hello").exists()
+        assert not (skills_dir / "speckit-test-ext-world").exists()
 
     def test_remove_cleans_up_when_ai_skills_toggled(self, skills_project, extension_dir):
         """Skills should be cleaned up even if ai_skills is toggled to false after install."""
@@ -626,7 +729,7 @@ class TestExtensionSkillEdgeCases:
         )
 
         # Verify skills exist
-        assert (skills_dir / "warden-test-ext.hello" / "SKILL.md").exists()
+        assert (skills_dir / "speckit-test-ext-hello" / "SKILL.md").exists()
 
         # Toggle ai_skills to false
         _create_init_options(project_dir, ai="claude", ai_skills=False)
@@ -634,5 +737,5 @@ class TestExtensionSkillEdgeCases:
         # Remove should still clean up via fallback scan
         result = manager.remove(manifest.id, keep_config=False)
         assert result is True
-        assert not (skills_dir / "warden-test-ext.hello").exists()
-        assert not (skills_dir / "warden-test-ext.world").exists()
+        assert not (skills_dir / "speckit-test-ext-hello").exists()
+        assert not (skills_dir / "speckit-test-ext-world").exists()

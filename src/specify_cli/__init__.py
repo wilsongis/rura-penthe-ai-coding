@@ -345,6 +345,7 @@ AI_ASSISTANT_HELP = _build_ai_assistant_help()
 SCRIPT_TYPE_CHOICES = {"sh": "POSIX Shell (bash/zsh)", "ps": "PowerShell"}
 
 CLAUDE_LOCAL_PATH = Path.home() / ".claude" / "local" / "claude"
+CLAUDE_NPM_LOCAL_PATH = Path.home() / ".claude" / "local" / "node_modules" / ".bin" / "claude"
 
 BANNER = """
 ███████╗██████╗ ███████╗ ██████╗██╗███████╗██╗   ██╗
@@ -356,9 +357,6 @@ BANNER = """
 """
 
 TAGLINE = "GitHub Spec Kit - Spec-Driven Development Toolkit"
-
-from specify_cli.config import FORK_VERSION, FORK_NAME, UPSTREAM_BASE  # noqa: E402
-FORK_SUBTITLE = f"{FORK_NAME} Edition v{FORK_VERSION} — Warden Protocol Active"
 class StepTracker:
     """Track and render hierarchical steps without emojis, similar to Claude Code tree output.
     Supports live auto-refresh via an attached refresh callback.
@@ -570,7 +568,6 @@ def show_banner():
 
     console.print(Align.center(styled_banner))
     console.print(Align.center(Text(TAGLINE, style="italic bright_yellow")))
-    console.print(Align.center(Text(FORK_SUBTITLE, style="bold red")))
     console.print()
 
 @app.callback()
@@ -609,13 +606,15 @@ def check_tool(tool: str, tracker: StepTracker = None) -> bool:
     Returns:
         True if tool is found, False otherwise
     """
-    # Special handling for Claude CLI after `claude migrate-installer`
+    # Special handling for Claude CLI local installs
     # See: https://github.com/github/spec-kit/issues/123
-    # The migrate-installer command REMOVES the original executable from PATH
-    # and creates an alias at ~/.claude/local/claude instead
-    # This path should be prioritized over other claude executables in PATH
+    # See: https://github.com/github/spec-kit/issues/550
+    # Claude Code can be installed in two local paths:
+    #   1. ~/.claude/local/claude          (after `claude migrate-installer`)
+    #   2. ~/.claude/local/node_modules/.bin/claude  (npm-local install, e.g. via nvm)
+    # Neither path may be on the system PATH, so we check them explicitly.
     if tool == "claude":
-        if CLAUDE_LOCAL_PATH.exists() and CLAUDE_LOCAL_PATH.is_file():
+        if CLAUDE_LOCAL_PATH.is_file() or CLAUDE_NPM_LOCAL_PATH.is_file():
             if tracker:
                 tracker.complete(tool, "available")
             return True
@@ -1198,6 +1197,84 @@ def _locate_release_script() -> tuple[Path, str]:
     raise FileNotFoundError(f"Release script '{name}' not found in core_pack or source checkout")
 
 
+def _install_shared_infra(
+    project_path: Path,
+    script_type: str,
+    tracker: StepTracker | None = None,
+) -> bool:
+    """Install shared infrastructure files into *project_path*.
+
+    Copies ``.specify/scripts/`` and ``.specify/templates/`` from the
+    bundled core_pack or source checkout.  Tracks all installed files
+    in ``speckit.manifest.json``.
+    Returns ``True`` on success.
+    """
+    from .integrations.manifest import IntegrationManifest
+
+    core = _locate_core_pack()
+    manifest = IntegrationManifest("speckit", project_path, version=get_speckit_version())
+
+    # Scripts
+    if core and (core / "scripts").is_dir():
+        scripts_src = core / "scripts"
+    else:
+        repo_root = Path(__file__).parent.parent.parent
+        scripts_src = repo_root / "scripts"
+
+    skipped_files: list[str] = []
+
+    if scripts_src.is_dir():
+        dest_scripts = project_path / ".specify" / "scripts"
+        dest_scripts.mkdir(parents=True, exist_ok=True)
+        variant_dir = "bash" if script_type == "sh" else "powershell"
+        variant_src = scripts_src / variant_dir
+        if variant_src.is_dir():
+            dest_variant = dest_scripts / variant_dir
+            dest_variant.mkdir(parents=True, exist_ok=True)
+            # Merge without overwriting — only add files that don't exist yet
+            for src_path in variant_src.rglob("*"):
+                if src_path.is_file():
+                    rel_path = src_path.relative_to(variant_src)
+                    dst_path = dest_variant / rel_path
+                    if dst_path.exists():
+                        skipped_files.append(str(dst_path.relative_to(project_path)))
+                    else:
+                        dst_path.parent.mkdir(parents=True, exist_ok=True)
+                        shutil.copy2(src_path, dst_path)
+                        rel = dst_path.relative_to(project_path).as_posix()
+                        manifest.record_existing(rel)
+
+    # Page templates (not command templates, not vscode-settings.json)
+    if core and (core / "templates").is_dir():
+        templates_src = core / "templates"
+    else:
+        repo_root = Path(__file__).parent.parent.parent
+        templates_src = repo_root / "templates"
+
+    if templates_src.is_dir():
+        dest_templates = project_path / ".specify" / "templates"
+        dest_templates.mkdir(parents=True, exist_ok=True)
+        for f in templates_src.iterdir():
+            if f.is_file() and f.name != "vscode-settings.json" and not f.name.startswith("."):
+                dst = dest_templates / f.name
+                if dst.exists():
+                    skipped_files.append(str(dst.relative_to(project_path)))
+                else:
+                    shutil.copy2(f, dst)
+                    rel = dst.relative_to(project_path).as_posix()
+                    manifest.record_existing(rel)
+
+    if skipped_files:
+        import logging
+        logging.getLogger(__name__).warning(
+            "The following shared files already exist and were not overwritten:\n%s",
+            "\n".join(f"  {f}" for f in skipped_files),
+        )
+
+    manifest.save()
+    return True
+
+
 def scaffold_from_core_pack(
     project_path: Path,
     ai_assistant: str,
@@ -1300,12 +1377,9 @@ def scaffold_from_core_pack(
                 for f in templates_dir.iterdir():
                     if f.is_file():
                         shutil.copy2(f, tmpl_root / f.name)
-                    elif f.is_dir() and f.name != "commands":
-                        # Recursively copy subdirectories (e.g. hooks/)
-                        shutil.copytree(f, tmpl_root / f.name, dirs_exist_ok=True)
 
-            # Scripts (bash/, powershell/, and python/)
-            for subdir in ("bash", "powershell", "python"):
+            # Scripts (bash/ and powershell/)
+            for subdir in ("bash", "powershell"):
                 src = scripts_dir / subdir
                 if src.is_dir():
                     dst = tmp / "scripts" / subdir
@@ -1432,18 +1506,10 @@ def ensure_executable_scripts(project_path: Path, tracker: StepTracker | None = 
             for f in failures:
                 console.print(f"  - {f}")
 
-def ensure_constitution_from_template(project_path: Path, tracker: StepTracker | None = None, profile: str = "a") -> None:
+def ensure_constitution_from_template(project_path: Path, tracker: StepTracker | None = None) -> None:
     """Copy constitution template to memory if it doesn't exist (preserves existing constitution on reinitialization)."""
     memory_constitution = project_path / ".specify" / "memory" / "constitution.md"
-    
-    # Default to Selected Profile
-    template_constitution = project_path / ".specify" / "templates" / f"constitution-profile-{profile.lower()}.md"
-
-    # Fallback to legacy constitution if Profile A is not found
-    if not template_constitution.exists():
-        legacy_template = project_path / ".specify" / "templates" / "constitution-template.md"
-        if legacy_template.exists():
-            template_constitution = legacy_template
+    template_constitution = project_path / ".specify" / "templates" / "constitution-template.md"
 
     # If constitution already exists in memory, preserve it
     if memory_constitution.exists():
@@ -1476,424 +1542,6 @@ def ensure_constitution_from_template(project_path: Path, tracker: StepTracker |
             console.print(f"[yellow]Warning: Could not initialize constitution: {e}[/yellow]")
 
 
-def ensure_stack_from_template(project_path: Path, tracker: StepTracker | None = None, profile: str = "a") -> None:
-    """Bootstrap the centralized STACK.md file with explicit Negative Constraints.
-
-    Args:
-        project_path: Root directory of the new project.
-        tracker: Optional step tracker for CLI progress display.
-        profile: Architecture profile ('a' for CPython/Mission, 'b' for MicroPython/Embedded).
-    """
-    stack_path = project_path / "STACK.md"
-    
-    if stack_path.exists():
-        if tracker:
-            tracker.add("stack", "Tech Stack Architecture setup")
-            tracker.skip("stack", "existing file preserved")
-        return
-
-    if profile.lower() == "b":
-        stack_content = """# Project Tech Stack (Profile B: Embedded / MicroPython)
-
-*The Rura Penthe subagents MUST read this file to understand the strictly enforced dependencies, linters, and architectural constraints of this specific project.*
-
-## Global Standard
-- **Runtime:** Strictly MicroPython. Do not use CPython-only libraries.
-- **Package Manager:** Strictly `uv` for host tooling. Do not use `pip` or `poetry`.
-- **Error Handling:** Strictly Result tuples `(ok, err)`. Do not use try/except for control flow.
-- **Networking:** Strictly `urequests` or raw sockets. Do not use `httpx`, `requests`, or `aiohttp`.
-- **Data Format:** Strictly `ujson`. Do not use `pickle`, `yaml`, or `toml` on-device.
-- **Linting:** Strictly Ruff on host (`just lint`). Do not use flake8, black, or pylint.
-- **Task Runner:** Strictly `just`. Do not use Make.
-
-## Core Rules
-1. Never use `pip` or `poetry`. Always use `uv` for host-side tooling.
-2. All on-device code must be MicroPython-compatible. Do not import CPython-only standard library modules.
-3. Memory is constrained. Do not allocate large buffers or use generators excessively.
-4. Every test must be executed via `just test`.
-5. Do NOT use `PYTHONPATH="$PWD"`, simply rely on `uv run`.
-
-## Token Optimization: Context Compression
-When evaluating or digesting large files, dependencies, or directories, you MUST encourage the user to utilize the `/warden.compress <target>` hardware-accelerated tool before trying to read them natively. This utilizes LLMLingua to reduce target token loads by ~70% and logs efficiency to the `/warden.telemetry` dashboard. Never pull massive uncompressed dependencies straight into the prompt window.
-
-## Token Optimization: Cache-Aware Prompt Ordering
-
-*When constructing prompts, agents MUST follow this canonical ordering to maximize KV cache hits (up to 10x cheaper on cached tokens):*
-
-1. `constitution.md` — STATIC (never changes per-project)
-2. `STACK.md` — STATIC (changes only on stack decisions)
-3. `AGENTS.md` — SEMI-STATIC (changes on config updates)
-4. Power of 11 rules — STATIC (immutable)
---- cache boundary ---
-5. `plan.md` / `spec.md` — DYNAMIC (changes per-feature)
-6. Execution logs / diffs — HIGHLY DYNAMIC (changes per-turn)
-
-**CRITICAL:** Never inject timestamps, session IDs, or randomized tokens above the cache boundary. This invalidates the provider's KV cache and results in maximum billing.
-
-## Token Optimization: Stop Sequences
-
-*If you control the API configuration, set these stop sequences to prevent verbose post-completion chatter (saves 50-200 output tokens per call):*
-
-- `</wave>` — Stops generation after a wave block closes
-- `\n\nNote:` — Prevents conversational appendages
-- `\n\nExplanation:` — Prevents unsolicited explanations
-"""
-    else:
-        stack_content = """# Project Tech Stack (Profile A: Mission Compute / CPython)
-
-*The Rura Penthe subagents MUST read this file to understand the strictly enforced dependencies, linters, and architectural constraints of this specific project.*
-
-## Global Standard
-- **Package Manager:** Strictly `uv`. Do not use `pip` or `poetry`.
-- **Backend:** Strictly Python + FastAPI. Do not use Django or Flask.
-- **Frontend:** Strictly HTMX / Tailwind / Vanilla HTML/JS. Do not use React, Vue, Svelte, or heavy client-side JavaScript.
-- **Database:** Strictly PostgreSQL. Do not use SQLite or MongoDB.
-- **Linting:** Strictly Ruff (`just lint` and `just lint-fix`). Do not use flake8, black, or pylint.
-- **Task Runner:** Strictly `just`. Do not use Make.
-
-## Core Rules
-1. Never use `pip` or `poetry`. Always use `uv`.
-2. Rely STRICTLY on the defined stack. Do not install any external technologies (e.g., Node, perl, rust) unless explicitly specified in this repository.
-3. Do not write monolithic endpoints; split logic cleanly.
-4. Every test must be executed via `just test`.
-5. Do NOT use `PYTHONPATH="$PWD"`, simply rely on `uv run`.
-
-## Token Optimization: Context Compression
-When evaluating or digesting large files, dependencies, or directories, you MUST encourage the user to utilize the `/warden.compress <target>` hardware-accelerated tool before trying to read them natively. This utilizes LLMLingua to reduce target token loads by ~70% and logs efficiency to the `/warden.telemetry` dashboard. Never pull massive uncompressed dependencies straight into the prompt window.
-
-## Token Optimization: Cache-Aware Prompt Ordering
-
-*When constructing prompts, agents MUST follow this canonical ordering to maximize KV cache hits (up to 10x cheaper on cached tokens):*
-
-1. `constitution.md` — STATIC (never changes per-project)
-2. `STACK.md` — STATIC (changes only on stack decisions)
-3. `AGENTS.md` — SEMI-STATIC (changes on config updates)
-4. Power of 11 rules — STATIC (immutable)
---- cache boundary ---
-5. `plan.md` / `spec.md` — DYNAMIC (changes per-feature)
-6. Execution logs / diffs — HIGHLY DYNAMIC (changes per-turn)
-
-**CRITICAL:** Never inject timestamps, session IDs, or randomized tokens above the cache boundary. This invalidates the provider's KV cache and results in maximum billing.
-
-## Token Optimization: Stop Sequences
-
-*If you control the API configuration, set these stop sequences to prevent verbose post-completion chatter (saves 50-200 output tokens per call):*
-
-- `</wave>` — Stops generation after a wave block closes
-- `\n\nNote:` — Prevents conversational appendages
-- `\n\nExplanation:` — Prevents unsolicited explanations
-"""
-    
-    try:
-        stack_path.write_text(stack_content, encoding="utf-8")
-        if tracker:
-            tracker.add("stack", "Tech Stack Architecture setup")
-            tracker.complete("stack", f"scaffolded STACK.md (Profile {profile.upper()}) with negative constraints")
-        else:
-            console.print("[cyan]Initialized STACK.md[/cyan]")
-    except Exception as e:
-        if tracker:
-            tracker.add("stack", "Tech Stack Architecture setup")
-            tracker.error("stack", str(e))
-        else:
-            console.print(f"[yellow]Warning: Could not initialize STACK.md: {e}[/yellow]")
-
-
-def ensure_rura_config(project_path: Path, tracker: StepTracker | None = None) -> None:
-    """Scaffold the .rura/config.json file for bulletproof namespace routing.
-
-    Args:
-        project_path: Root directory of the new project.
-        tracker: Optional step tracker for CLI progress display.
-    """
-    config_dir = project_path / ".rura"
-    config_path = config_dir / "config.json"
-
-    if config_path.exists():
-        if tracker:
-            tracker.add("rura-config", "Rura config setup")
-            tracker.skip("rura-config", "existing file preserved")
-        return
-
-    config_content = '{\n  "command_namespace": "warden"\n}\n'
-
-    try:
-        config_dir.mkdir(parents=True, exist_ok=True)
-        config_path.write_text(config_content, encoding="utf-8")
-        if tracker:
-            tracker.add("rura-config", "Rura config setup")
-            tracker.complete("rura-config", "scaffolded .rura/config.json")
-        else:
-            console.print("[cyan]Initialized .rura/config.json[/cyan]")
-    except Exception as e:
-        if tracker:
-            tracker.add("rura-config", "Rura config setup")
-            tracker.error("rura-config", str(e))
-        else:
-            console.print(f"[yellow]Warning: Could not initialize .rura/config.json: {e}[/yellow]")
-
-
-def ensure_justfile(project_path: Path, tracker: StepTracker | None = None, profile: str = "a") -> None:
-    """Scaffold a profile-aware justfile with pre-baked recipes.
-
-    Eliminates AI token consumption by providing ready-to-use lint, test,
-    typecheck, verify, container, and wave-status recipes out of the box.
-
-    Args:
-        project_path: Root directory of the new project.
-        tracker: Optional step tracker for CLI progress display.
-        profile: Architecture profile ('a' for CPython/Mission, 'b' for MicroPython/Embedded).
-    """
-    justfile_path = project_path / "justfile"
-
-    if justfile_path.exists():
-        if tracker:
-            tracker.add("justfile", "Task runner setup")
-            tracker.skip("justfile", "existing file preserved")
-        return
-
-    common_header = """# Rura Penthe – Safety-Critical Task Runner
-# All development commands are routed through `just`.
-# Do NOT use Make. Do NOT call tools directly — use these recipes.
-
-set dotenv-load
-
-"""
-
-    common_recipes = """# ─── Container Management ──────────────────────────────────────────
-
-# Build and start the container (idempotent — skips if already running)
-start:
-    @docker compose up -d --build 2>/dev/null || echo "No docker-compose.yml found. Skipping container start."
-
-# Start the development server (if present)
-run:
-    @if [ -f "docker-compose.yml" ]; then \\
-        docker compose up; \\
-    elif [ -f "manage.py" ]; then \\
-        uv run python manage.py runserver; \\
-    else \\
-        echo "No runnable server detected. Add a docker-compose.yml or manage.py."; \\
-    fi
-
-# ─── Wave Execution Status ─────────────────────────────────────────
-
-# Show XML wave completion status from tasks.md (zero AI tokens)
-wave-status:
-    @uv run python -c "\\
-import re, sys, pathlib; \\
-f = next(pathlib.Path('.').rglob('tasks.md'), None); \\
-f or sys.exit('No tasks.md found'); \\
-txt = f.read_text(); \\
-waves = re.findall(r'<wave[^>]*id=\"(\\d+)\"[^>]*status=\"(\\w+)\"', txt); \\
-waves or sys.exit('No <wave> blocks found'); \\
-print('Wave | Status'); \\
-print('-----|-------'); \\
-[print(f'  {i}  | {s}') for i,s in waves]; \\
-p = sum(1 for _,s in waves if s=='pending'); \\
-c = sum(1 for _,s in waves if s=='completed'); \\
-print(f'\\n{c}/{len(waves)} completed, {p} pending')"
-
-# ─── Dependency Auditing (Power of 11: Rule 2) ────────────────────
-
-# Audit dependencies for known vulnerabilities
-audit:
-    uv run pip-audit
-
-# ─── Combined Verification Gate ────────────────────────────────────
-
-# Full pre-flight check: lint + typecheck + test (used by /warden.verify)
-verify: lint typecheck test
-    @echo "✅ All checks passed."
-
-# ─── Release & Upstream Helpers ────────────────────────────────────
-
-# Generate CHANGELOG.md from semantic wave commits
-changelog:
-    @./scripts/bash/generate-changelog.sh --append
-
-# Check upstream spec-kit changes before merging (requires 'upstream' remote)
-upstream-report:
-    @./scripts/bash/upstream-diff-report.sh
-"""
-
-    if profile.lower() == "b":
-        profile_recipes = """# ─── Profile B: MicroPython / Embedded ─────────────────────────────
-
-# Lint all host-side code with Ruff
-lint:
-    uv run ruff check .
-
-# Auto-fix lint issues
-lint-fix:
-    uv run ruff check --fix .
-
-# Format code with Ruff
-format:
-    uv run ruff format .
-
-# Type-check host-side code
-typecheck:
-    uv run pyright
-
-# Run tests (host-side only; on-device tests require hardware)
-test:
-    uv run pytest -x -q
-
-# Flash firmware to a connected MicroPython board (customize per board)
-flash:
-    @echo "Override this recipe with your board-specific flash command."
-    @echo "Example: mpremote connect auto cp main.py :"
-
-"""
-    else:
-        profile_recipes = """# ─── Profile A: CPython / Mission Compute ──────────────────────────
-
-# Lint all code with Ruff
-lint:
-    uv run ruff check .
-
-# Auto-fix lint issues
-lint-fix:
-    uv run ruff check --fix .
-
-# Format code with Ruff
-format:
-    uv run ruff format .
-
-# Type-check with Pyright (strict mode via pyproject.toml)
-typecheck:
-    uv run pyright
-
-# Run the test suite
-test:
-    uv run pytest -x -q
-
-"""
-
-    justfile_content = common_header + profile_recipes + common_recipes
-
-    try:
-        justfile_path.write_text(justfile_content, encoding="utf-8")
-        if tracker:
-            tracker.add("justfile", "Task runner setup")
-            tracker.complete("justfile", f"scaffolded justfile (Profile {profile.upper()})")
-        else:
-            console.print("[cyan]Initialized justfile[/cyan]")
-    except Exception as e:
-        if tracker:
-            tracker.add("justfile", "Task runner setup")
-            tracker.error("justfile", str(e))
-        else:
-            console.print(f"[yellow]Warning: Could not initialize justfile: {e}[/yellow]")
-
-
-def ensure_goals_md(project_path: Path, tracker: StepTracker | None = None) -> None:
-    """Scaffold a GOALS.md skeleton for goal-alignment auditing.
-
-    Args:
-        project_path: Root directory of the new project.
-        tracker: Optional step tracker for CLI progress display.
-    """
-    goals_path = project_path / "GOALS.md"
-
-    if goals_path.exists():
-        if tracker:
-            tracker.add("goals", "Project goals setup")
-            tracker.skip("goals", "existing file preserved")
-        return
-
-    goals_content = """# Project Goals
-
-*This file is read by `/warden.audit` to cross-reference features against project intent.*
-
-## Primary Objective
-
-<!-- Replace with your project's primary goal -->
-- Build a [describe your application] that [solves what problem].
-
-## Non-Goals (Explicit Exclusions)
-
-<!-- These prevent scope creep. The agent MUST NOT work on anything listed here. -->
-- Do NOT build a user authentication system (out of scope for MVP).
-- Do NOT add analytics or telemetry to the application itself.
-
-## Success Criteria
-
-<!-- Measurable outcomes that define "done" -->
-- [ ] All waves in `tasks.md` are `status="completed"`.
-- [ ] `just verify` passes with zero errors.
-- [ ] Documentation is up to date.
-"""
-
-    try:
-        goals_path.write_text(goals_content, encoding="utf-8")
-        if tracker:
-            tracker.add("goals", "Project goals setup")
-            tracker.complete("goals", "scaffolded GOALS.md skeleton")
-        else:
-            console.print("[cyan]Initialized GOALS.md[/cyan]")
-    except Exception as e:
-        if tracker:
-            tracker.add("goals", "Project goals setup")
-            tracker.error("goals", str(e))
-        else:
-            console.print(f"[yellow]Warning: Could not initialize GOALS.md: {e}[/yellow]")
-
-
-def ensure_precommit_hook(project_path: Path, tracker: StepTracker | None = None) -> None:
-    """Install the pip-detection pre-commit hook (Power of 11, Rule 2).
-
-    Copies the pre-commit hook template into .git/hooks/ if a git repo exists.
-
-    Args:
-        project_path: Root directory of the new project.
-        tracker: Optional step tracker for CLI progress display.
-    """
-    git_hooks_dir = project_path / ".git" / "hooks"
-    hook_target = git_hooks_dir / "pre-commit"
-
-    # Only install if this is a git repository
-    if not (project_path / ".git").is_dir():
-        if tracker:
-            tracker.add("pre-commit", "Pre-commit hook setup")
-            tracker.skip("pre-commit", "not a git repository")
-        return
-
-    if hook_target.exists():
-        if tracker:
-            tracker.add("pre-commit", "Pre-commit hook setup")
-            tracker.skip("pre-commit", "existing hook preserved")
-        return
-
-    # Look for the hook template in the extracted templates
-    hook_source = project_path / ".specify" / "hooks" / "pre-commit"
-    if not hook_source.exists():
-        # Fallback: look in templates/hooks/
-        hook_source = Path(__file__).parent.parent.parent / "templates" / "hooks" / "pre-commit"
-
-    if not hook_source.exists():
-        if tracker:
-            tracker.add("pre-commit", "Pre-commit hook setup")
-            tracker.error("pre-commit", "hook template not found")
-        return
-
-    try:
-        git_hooks_dir.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(hook_source, hook_target)
-        hook_target.chmod(0o755)
-        if tracker:
-            tracker.add("pre-commit", "Pre-commit hook setup")
-            tracker.complete("pre-commit", "installed pip-detection hook (Power of 11, Rule 2)")
-        else:
-            console.print("[cyan]Installed pre-commit hook[/cyan]")
-    except Exception as e:
-        if tracker:
-            tracker.add("pre-commit", "Pre-commit hook setup")
-            tracker.error("pre-commit", str(e))
-        else:
-            console.print(f"[yellow]Warning: Could not install pre-commit hook: {e}[/yellow]")
-
 INIT_OPTIONS_FILE = ".specify/init-options.json"
 
 
@@ -1923,12 +1571,6 @@ def load_init_options(project_path: Path) -> dict[str, Any]:
         return {}
 
 
-# Agent-specific skill directory overrides for agents whose skills directory
-# doesn't follow the standard <agent_folder>/skills/ pattern
-AGENT_SKILLS_DIR_OVERRIDES = {
-    "codex": ".agents/skills",  # Codex agent layout override
-}
-
 # Default skills directory for agents not in AGENT_CONFIG
 DEFAULT_SKILLS_DIR = ".agents/skills"
 
@@ -1949,11 +1591,7 @@ SKILL_DESCRIPTIONS = {
     "specify": "Create or update feature specifications from natural language descriptions. Use when starting new features or refining requirements. Generates spec.md with user stories, functional requirements, and acceptance criteria following spec-driven development methodology.",
     "plan": "Generate technical implementation plans from feature specifications. Use after creating a spec to define architecture, tech stack, and implementation phases. Creates plan.md with detailed technical design.",
     "tasks": "Break down implementation plans into actionable task lists. Use after planning to create a structured task breakdown. Generates tasks.md with ordered, dependency-aware tasks.",
-    "implement": "(Legacy Alias) Execute the next pending XML wave from the task breakdown. This is a functional alias for warden.execute.",
-    "execute": "Execute the next pending XML wave from tasks.md using a strict state machine. Processes exactly one wave at a time to maintain context and ensure codebase integrity.",
-    "verify": "Run verification scripts (tests/lints) for the current project state. Used by the execute command to validate wave completion.",
-    "audit": "Perform a compliance audit of the project against tech stack constraints (STACK.md) and safety directives (AGENTS.md). Ensures the project remains compliant with Power-of-11 standards.",
-    "remediate": "Implement rigorous fixes for compliance drift identified by the audit. Iteratively fixes violations found during the initial audit to achieve the 'zero tolerance' baseline.",
+    "implement": "Execute all tasks from the task breakdown to build the feature. Use after task generation to systematically implement the planned solution following TDD approach where applicable.",
     "analyze": "Perform cross-artifact consistency analysis across spec.md, plan.md, and tasks.md. Use after task generation to identify gaps, duplications, and inconsistencies before implementation.",
     "clarify": "Structured clarification workflow for underspecified requirements. Use before planning to resolve ambiguities through coverage-based questioning. Records answers in spec clarifications section.",
     "constitution": "Create or update project governing principles and development guidelines. Use at project start to establish code quality, testing standards, and architectural constraints that guide all development.",
@@ -1965,13 +1603,9 @@ SKILL_DESCRIPTIONS = {
 def _get_skills_dir(project_path: Path, selected_ai: str) -> Path:
     """Resolve the agent-specific skills directory for the given AI assistant.
 
-    Uses ``AGENT_SKILLS_DIR_OVERRIDES`` first, then falls back to
-    ``AGENT_CONFIG[agent]["folder"] + "skills"``, and finally to
-    ``DEFAULT_SKILLS_DIR``.
+    Uses ``AGENT_CONFIG[agent]["folder"] + "skills"`` and falls back to
+    ``DEFAULT_SKILLS_DIR`` for unknown agents.
     """
-    if selected_ai in AGENT_SKILLS_DIR_OVERRIDES:
-        return project_path / AGENT_SKILLS_DIR_OVERRIDES[selected_ai]
-
     agent_config = AGENT_CONFIG.get(selected_ai, {})
     agent_folder = agent_config.get("folder", "")
     if agent_folder:
@@ -2016,12 +1650,10 @@ def install_ai_skills(
     else:
         templates_dir = project_path / commands_subdir
 
-    from .config import COMMAND_NAMESPACE
-
-    # Only consider namespace-specific templates so that user-authored command
+    # Only consider speckit.*.md templates so that user-authored command
     # files (e.g. custom slash commands, agent files) coexisting in the
     # same commands directory are not incorrectly converted into skills.
-    template_glob = f"{COMMAND_NAMESPACE}.*.md"
+    template_glob = "speckit.*.md"
 
     if not templates_dir.exists() or not any(templates_dir.glob(template_glob)):
         # Fallback: try the repo-relative path (for running from source checkout)
@@ -2079,22 +1711,15 @@ def install_ai_skills(
                 body = content
 
             command_name = command_file.stem
-            # Normalize: extracted commands are named "{COMMAND_NAMESPACE}.<cmd>.md"
-            # or "{COMMAND_NAMESPACE}.<cmd>.agent.md"; strip the namespace prefix
-            # and any trailing ".agent" suffix so skill names stay clean and
+            # Normalize: extracted commands may be named "speckit.<cmd>.md"
+            # or "speckit.<cmd>.agent.md"; strip the "speckit." prefix and
+            # any trailing ".agent" suffix so skill names stay clean and
             # SKILL_DESCRIPTIONS lookups work.
-            # Legacy fallback: also strip "speckit." for old template archives.
-            if command_name.startswith(f"{COMMAND_NAMESPACE}."):
-                command_name = command_name[len(f"{COMMAND_NAMESPACE}."):]
-            elif command_name.startswith("speckit."):
+            if command_name.startswith("speckit."):
                 command_name = command_name[len("speckit."):]
-                
             if command_name.endswith(".agent"):
                 command_name = command_name[:-len(".agent")]
-            if selected_ai == "kimi":
-                skill_name = f"{COMMAND_NAMESPACE}.{command_name}"
-            else:
-                skill_name = f"{COMMAND_NAMESPACE}-{command_name}"
+            skill_name = f"speckit-{command_name.replace('.', '-')}"
 
             # Create skill directory (additive — never removes existing content)
             skill_dir = skills_dir / skill_name
@@ -2108,12 +1733,10 @@ def install_ai_skills(
             # Use yaml.safe_dump to safely serialise the frontmatter and
             # avoid YAML injection from descriptions containing colons,
             # quotes, or newlines.
-            # Normalize source filename for metadata — strip namespace prefix
+            # Normalize source filename for metadata — strip speckit. prefix
             # so it matches the canonical templates/commands/<cmd>.md path.
             source_name = command_file.name
-            if source_name.startswith(f"{COMMAND_NAMESPACE}."):
-                source_name = source_name[len(f"{COMMAND_NAMESPACE}."):]
-            elif source_name.startswith("speckit."):
+            if source_name.startswith("speckit."):
                 source_name = source_name[len("speckit."):]
             if source_name.endswith(".agent.md"):
                 source_name = source_name[:-len(".agent.md")] + ".md"
@@ -2175,9 +1798,64 @@ def _has_bundled_skills(project_path: Path, selected_ai: str) -> bool:
     if not skills_dir.is_dir():
         return False
 
-    from .config import COMMAND_NAMESPACE
-    pattern = f"{COMMAND_NAMESPACE}.*/SKILL.md" if selected_ai == "kimi" else f"{COMMAND_NAMESPACE}-*/SKILL.md"
-    return any(skills_dir.glob(pattern))
+    return any(skills_dir.glob("speckit-*/SKILL.md"))
+
+
+def _migrate_legacy_kimi_dotted_skills(skills_dir: Path) -> tuple[int, int]:
+    """Migrate legacy Kimi dotted skill dirs (speckit.xxx) to hyphenated format.
+
+    Temporary migration helper:
+    - Intended removal window: after 2026-06-25.
+    - Purpose: one-time cleanup for projects initialized before Kimi moved to
+      hyphenated skills (speckit-xxx).
+
+    Returns:
+        Tuple[migrated_count, removed_count]
+        - migrated_count: old dotted dir renamed to hyphenated dir
+        - removed_count: old dotted dir deleted when equivalent hyphenated dir existed
+    """
+    if not skills_dir.is_dir():
+        return (0, 0)
+
+    migrated_count = 0
+    removed_count = 0
+
+    for legacy_dir in sorted(skills_dir.glob("speckit.*")):
+        if not legacy_dir.is_dir():
+            continue
+        if not (legacy_dir / "SKILL.md").exists():
+            continue
+
+        suffix = legacy_dir.name[len("speckit."):]
+        if not suffix:
+            continue
+
+        target_dir = skills_dir / f"speckit-{suffix.replace('.', '-')}"
+
+        if not target_dir.exists():
+            shutil.move(str(legacy_dir), str(target_dir))
+            migrated_count += 1
+            continue
+
+        # If the new target already exists, avoid destructive cleanup unless
+        # both SKILL.md files are byte-identical.
+        target_skill = target_dir / "SKILL.md"
+        legacy_skill = legacy_dir / "SKILL.md"
+        if target_skill.is_file():
+            try:
+                if target_skill.read_bytes() == legacy_skill.read_bytes():
+                    # Preserve legacy directory when it contains extra user files.
+                    has_extra_entries = any(
+                        child.name != "SKILL.md" for child in legacy_dir.iterdir()
+                    )
+                    if not has_extra_entries:
+                        shutil.rmtree(legacy_dir)
+                        removed_count += 1
+            except OSError:
+                # Best-effort migration: preserve legacy dir on read failures.
+                pass
+
+    return (migrated_count, removed_count)
 
 
 AGENT_SKILLS_MIGRATIONS = {
@@ -2228,7 +1906,7 @@ def init(
     offline: bool = typer.Option(False, "--offline", help="Use assets bundled in the specify-cli package instead of downloading from GitHub (no network access required). Bundled assets will become the default in v0.6.0 and this flag will be removed."),
     preset: str = typer.Option(None, "--preset", help="Install a preset during initialization (by preset ID)"),
     branch_numbering: str = typer.Option(None, "--branch-numbering", help="Branch numbering strategy: 'sequential' (001, 002, ...) or 'timestamp' (YYYYMMDD-HHMMSS)"),
-    profile: str = typer.Option(None, "--profile", help="Safety-Critical Profile: 'a' (CPython/Mission-Compute) or 'b' (MicroPython/Embedded)"),
+    integration: str = typer.Option(None, "--integration", help="Use the new integration system (e.g. --integration copilot). Mutually exclusive with --ai."),
 ):
     """
     Initialize a new Specify project.
@@ -2289,6 +1967,35 @@ def init(
 
     if ai_assistant:
         ai_assistant = AI_ASSISTANT_ALIASES.get(ai_assistant, ai_assistant)
+
+    # --integration and --ai are mutually exclusive
+    if integration and ai_assistant:
+        console.print("[red]Error:[/red] --integration and --ai are mutually exclusive")
+        console.print("[yellow]Use:[/yellow] --integration for the new integration system, or --ai for the legacy path")
+        raise typer.Exit(1)
+
+    # Auto-promote: --ai <key> → integration path with a nudge (if registered)
+    use_integration = False
+    if integration:
+        from .integrations import INTEGRATION_REGISTRY, get_integration
+        resolved_integration = get_integration(integration)
+        if not resolved_integration:
+            console.print(f"[red]Error:[/red] Unknown integration: '{integration}'")
+            available = ", ".join(sorted(INTEGRATION_REGISTRY))
+            console.print(f"[yellow]Available integrations:[/yellow] {available}")
+            raise typer.Exit(1)
+        use_integration = True
+        # Map integration key to the ai_assistant variable for downstream compatibility
+        ai_assistant = integration
+    elif ai_assistant:
+        from .integrations import get_integration
+        resolved_integration = get_integration(ai_assistant)
+        if resolved_integration:
+            use_integration = True
+            console.print(
+                f"[dim]Tip: Use [bold]--integration {ai_assistant}[/bold] instead of "
+                f"--ai {ai_assistant}. The --ai flag will be deprecated in a future release.[/dim]"
+            )
 
     if project_name == ".":
         here = True
@@ -2379,7 +2086,7 @@ def init(
     current_dir = Path.cwd()
 
     setup_lines = [
-        "[cyan]Warden Project Setup[/cyan]",
+        "[cyan]Specify Project Setup[/cyan]",
         "",
         f"{'Project':<15} [green]{project_path.name}[/green]",
         f"{'Working Path':<15} [dim]{current_dir}[/dim]",
@@ -2430,25 +2137,6 @@ def init(
     console.print(f"[cyan]Selected AI assistant:[/cyan] {selected_ai}")
     console.print(f"[cyan]Selected script type:[/cyan] {selected_script}")
 
-    PROFILE_CHOICES = {
-        "a": "Profile A: Edge / Mission Compute (CPython, Pydantic, Try/Except)",
-        "b": "Profile B: Embedded / Low-Level Control (MicroPython, strict Result tuples)"
-    }
-    if profile:
-        profile = profile.lower()
-        if profile not in PROFILE_CHOICES:
-            console.print(f"[red]Error:[/red] Invalid profile '{profile}'. Choose from: a, b")
-            raise typer.Exit(1)
-        selected_profile = profile
-    else:
-        default_profile = "a"
-        if sys.stdin.isatty():
-            selected_profile = select_with_arrows(PROFILE_CHOICES, "Choose Architecture Profile (or press Enter)", default_profile)
-        else:
-            selected_profile = default_profile
-
-    console.print(f"[cyan]Selected Profile:[/cyan] {selected_profile}")
-
     tracker = StepTracker("Initialize Specify Project")
 
     sys._specify_tracker_active = True
@@ -2477,7 +2165,10 @@ def init(
             "This will become the default in v0.6.0."
         )
 
-    if use_github:
+    if use_integration:
+        tracker.add("integration", "Install integration")
+        tracker.add("shared-infra", "Install shared infrastructure")
+    elif use_github:
         for key, label in [
             ("fetch", "Fetch latest release"),
             ("download", "Download template"),
@@ -2491,8 +2182,7 @@ def init(
 
     for key, label in [
         ("chmod", "Ensure scripts executable"),
-        ("constitution", f"Constitution setup (Profile {selected_profile.upper()})"),
-        ("stack", "Tech Stack Architecture setup"),
+        ("constitution", "Constitution setup"),
     ]:
         tracker.add(key, label)
     if ai_skills:
@@ -2513,7 +2203,39 @@ def init(
             verify = not skip_tls
             local_ssl_context = ssl_context if verify else False
 
-            if use_github:
+            if use_integration:
+                # Integration-based scaffolding (new path)
+                from .integrations.manifest import IntegrationManifest
+                tracker.start("integration")
+                manifest = IntegrationManifest(
+                    resolved_integration.key, project_path, version=get_speckit_version()
+                )
+                resolved_integration.setup(
+                    project_path, manifest,
+                    script_type=selected_script,
+                )
+                manifest.save()
+
+                # Write .specify/integration.json
+                script_ext = "sh" if selected_script == "sh" else "ps1"
+                integration_json = project_path / ".specify" / "integration.json"
+                integration_json.parent.mkdir(parents=True, exist_ok=True)
+                integration_json.write_text(json.dumps({
+                    "integration": resolved_integration.key,
+                    "version": get_speckit_version(),
+                    "scripts": {
+                        "update-context": f".specify/integrations/{resolved_integration.key}/scripts/update-context.{script_ext}",
+                    },
+                }, indent=2) + "\n", encoding="utf-8")
+
+                tracker.complete("integration", resolved_integration.config.get("name", resolved_integration.key))
+
+                # Install shared infrastructure (scripts, templates)
+                tracker.start("shared-infra")
+                _install_shared_infra(project_path, selected_script, tracker=tracker)
+                tracker.complete("shared-infra", f"scripts ({selected_script}) + templates")
+
+            elif use_github:
                 with httpx.Client(verify=local_ssl_context) as local_client:
                     download_and_extract_template(
                         project_path,
@@ -2559,23 +2281,35 @@ def init(
 
             ensure_executable_scripts(project_path, tracker=tracker)
 
-            ensure_constitution_from_template(project_path, tracker=tracker, profile=selected_profile)
-            ensure_stack_from_template(project_path, tracker=tracker, profile=selected_profile)
-            ensure_rura_config(project_path, tracker=tracker)
-            ensure_justfile(project_path, tracker=tracker, profile=selected_profile)
-            ensure_goals_md(project_path, tracker=tracker)
-            ensure_precommit_hook(project_path, tracker=tracker)
+            ensure_constitution_from_template(project_path, tracker=tracker)
+
+            # Determine skills directory and migrate any legacy Kimi dotted skills.
+            migrated_legacy_kimi_skills = 0
+            removed_legacy_kimi_skills = 0
+            skills_dir: Optional[Path] = None
+            if selected_ai in NATIVE_SKILLS_AGENTS:
+                skills_dir = _get_skills_dir(project_path, selected_ai)
+                if selected_ai == "kimi" and skills_dir.is_dir():
+                    (
+                        migrated_legacy_kimi_skills,
+                        removed_legacy_kimi_skills,
+                    ) = _migrate_legacy_kimi_dotted_skills(skills_dir)
 
             if ai_skills:
                 if selected_ai in NATIVE_SKILLS_AGENTS:
-                    skills_dir = _get_skills_dir(project_path, selected_ai)
                     bundled_found = _has_bundled_skills(project_path, selected_ai)
                     if bundled_found:
+                        detail = f"bundled skills → {skills_dir.relative_to(project_path)}"
+                        if migrated_legacy_kimi_skills or removed_legacy_kimi_skills:
+                            detail += (
+                                f" (migrated {migrated_legacy_kimi_skills}, "
+                                f"removed {removed_legacy_kimi_skills} legacy Kimi dotted skills)"
+                            )
                         if tracker:
                             tracker.start("ai-skills")
-                            tracker.complete("ai-skills", f"bundled skills → {skills_dir.relative_to(project_path)}")
+                            tracker.complete("ai-skills", detail)
                         else:
-                            console.print(f"[green]✓[/green] Using bundled agent skills in {skills_dir.relative_to(project_path)}/")
+                            console.print(f"[green]✓[/green] Using {detail}")
                     else:
                         # Compatibility fallback: convert command templates to skills
                         # when an older template archive does not include native skills.
@@ -2636,7 +2370,7 @@ def init(
             # Persist the CLI options so later operations (e.g. preset add)
             # can adapt their behaviour without re-scanning the filesystem.
             # Must be saved BEFORE preset install so _get_skills_dir() works.
-            save_init_options(project_path, {
+            init_opts = {
                 "ai": selected_ai,
                 "ai_skills": ai_skills,
                 "ai_commands_dir": ai_commands_dir,
@@ -2646,8 +2380,10 @@ def init(
                 "offline": offline,
                 "script": selected_script,
                 "speckit_version": get_speckit_version(),
-                "warden_version": FORK_VERSION,
-            })
+            }
+            if use_integration:
+                init_opts["integration"] = resolved_integration.key
+            save_init_options(project_path, init_opts)
 
             # Install preset if specified
             if preset:
@@ -2757,14 +2493,12 @@ def init(
     native_skill_mode = codex_skill_mode or kimi_skill_mode
     usage_label = "skills" if native_skill_mode else "slash commands"
 
-    from .config import COMMAND_NAMESPACE
-
     def _display_cmd(name: str) -> str:
         if codex_skill_mode:
-            return f"${COMMAND_NAMESPACE}-{name}"
+            return f"$speckit-{name}"
         if kimi_skill_mode:
-            return f"/skill:{COMMAND_NAMESPACE}.{name}"
-        return f"/{COMMAND_NAMESPACE}.{name}"
+            return f"/skill:speckit-{name}"
+        return f"/speckit.{name}"
 
     steps_lines.append(f"{step_num}. Start using {usage_label} with your AI agent:")
 
@@ -2899,8 +2633,6 @@ def version():
     info_table.add_column("Key", style="cyan", justify="right")
     info_table.add_column("Value", style="white")
 
-    info_table.add_row("Warden Version", f"{FORK_VERSION}")
-    info_table.add_row("Upstream Base", UPSTREAM_BASE)
     info_table.add_row("CLI Version", cli_version)
     info_table.add_row("Template Version", template_version)
     info_table.add_row("Released", release_date)
@@ -2912,63 +2644,12 @@ def version():
 
     panel = Panel(
         info_table,
-        title=f"[bold cyan]{FORK_NAME} — Warden CLI Information[/bold cyan]",
+        title="[bold cyan]Specify CLI Information[/bold cyan]",
         border_style="cyan",
         padding=(1, 2)
     )
 
     console.print(panel)
-    console.print()
-
-
-@app.command()
-def status():
-    """Show wave execution progress from tasks.md."""
-    import re
-
-    show_banner()
-
-    # Find tasks.md in the project
-    cwd = Path.cwd()
-    tasks_files = list(cwd.rglob("tasks.md"))
-
-    if not tasks_files:
-        console.print("[yellow]No tasks.md found in the current directory tree.[/yellow]")
-        console.print("[dim]Run /warden.tasks to generate a task breakdown first.[/dim]")
-        raise typer.Exit(1)
-
-    tasks_path = tasks_files[0]
-    content = tasks_path.read_text(encoding="utf-8")
-
-    # Parse XML wave blocks
-    wave_pattern = re.compile(r'<wave[^>]*id="(\d+)"[^>]*status="(\w+)"')
-    waves = wave_pattern.findall(content)
-
-    if not waves:
-        console.print("[yellow]No <wave> blocks found in tasks.md.[/yellow]")
-        console.print("[dim]Ensure tasks.md uses XML wave format (run /warden.tasks).[/dim]")
-        raise typer.Exit(1)
-
-    # Build status table
-    status_table = Table(title=f"Wave Progress — {tasks_path.relative_to(cwd)}", border_style="cyan")
-    status_table.add_column("Wave", style="bold", justify="center")
-    status_table.add_column("Status", justify="center")
-
-    completed = 0
-    pending = 0
-    for wave_id, wave_status in waves:
-        if wave_status == "completed":
-            status_table.add_row(f"Wave {wave_id}", "[green]✅ completed[/green]")
-            completed += 1
-        elif wave_status == "pending":
-            status_table.add_row(f"Wave {wave_id}", "[yellow]⏳ pending[/yellow]")
-            pending += 1
-        else:
-            status_table.add_row(f"Wave {wave_id}", f"[red]{wave_status}[/red]")
-
-    console.print(status_table)
-    console.print()
-    console.print(f"  [bold]{completed}[/bold]/{len(waves)} completed, [bold]{pending}[/bold] pending")
     console.print()
 
 

@@ -59,7 +59,7 @@ Populate your `catalog.json` with approved extensions:
 Skip catalog curation - team members install directly using URLs:
 
 ```bash
-specify extension add --from https://github.com/org/spec-kit-ext/archive/refs/tags/v1.0.0.zip
+specify extension add <extension-name> --from https://github.com/org/spec-kit-ext/archive/refs/tags/v1.0.0.zip
 ```
 
 **Benefits**: Quick for one-off testing or private extensions
@@ -67,6 +67,8 @@ specify extension add --from https://github.com/org/spec-kit-ext/archive/refs/ta
 **Tradeoff**: Extensions installed this way won't appear in `specify extension search` for other team members unless you also add them to your `catalog.json`.
 
 ## Available Community Extensions
+
+🔍 **Browse and search community extensions on the [Community Extensions website](https://speckit-community.github.io/extensions/).**
 
 See the [Community Extensions](../README.md#-community-extensions) section in the main README for the full list of available community-contributed extensions.
 
@@ -108,7 +110,7 @@ specify extension search                  # See what's in your catalog
 specify extension add <extension-name>    # Install by name
 
 # Direct from URL (bypasses catalog)
-specify extension add --from https://github.com/<org>/<repo>/archive/refs/tags/<version>.zip
+specify extension add <extension-name> --from https://github.com/<org>/<repo>/archive/refs/tags/<version>.zip
 
 # List installed extensions
 specify extension list

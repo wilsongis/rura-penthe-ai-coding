@@ -25,10 +25,6 @@ fi
 
 echo "Building release packages for $NEW_VERSION"
 
-# Command namespace prefix for generated filenames (e.g. warden.plan.md).
-# Override via CMD_NAMESPACE env var to match fork-specific configuration.
-CMD_NAMESPACE="${CMD_NAMESPACE:-warden}"
-
 # Create and use .genreleases directory for all build artifacts
 # Override via GENRELEASES_DIR env var (e.g. for tests writing to a temp dir)
 GENRELEASES_DIR="${GENRELEASES_DIR:-.genreleases}"
@@ -115,11 +111,11 @@ generate_commands() {
     case $ext in
       toml)
         body=$(printf '%s\n' "$body" | sed 's/\\/\\\\/g')
-        { echo "description = \"$description\""; echo; echo "prompt = \"\"\""; echo "$body"; echo "\"\"\""; } > "$output_dir/${CMD_NAMESPACE}.$name.$ext" ;;
+        { echo "description = \"$description\""; echo; echo "prompt = \"\"\""; echo "$body"; echo "\"\"\""; } > "$output_dir/speckit.$name.$ext" ;;
       md)
-        echo "$body" > "$output_dir/${CMD_NAMESPACE}.$name.$ext" ;;
+        echo "$body" > "$output_dir/speckit.$name.$ext" ;;
       agent.md)
-        echo "$body" > "$output_dir/${CMD_NAMESPACE}.$name.$ext" ;;
+        echo "$body" > "$output_dir/speckit.$name.$ext" ;;
     esac
   done
 }
@@ -129,7 +125,7 @@ generate_copilot_prompts() {
   mkdir -p "$prompts_dir"
 
   # Generate a .prompt.md file for each .agent.md file
-  for agent_file in "$agents_dir"/${CMD_NAMESPACE}.*.agent.md; do
+  for agent_file in "$agents_dir"/speckit.*.agent.md; do
     [[ -f "$agent_file" ]] || continue
 
     local basename=$(basename "$agent_file" .agent.md)
@@ -144,8 +140,7 @@ EOF
 }
 
 # Create skills in <skills_dir>/<name>/SKILL.md format.
-# Most agents use hyphenated names (e.g. warden-plan); Kimi is the
-# current dotted-name exception (e.g. warden.plan).
+# Skills use hyphenated names (e.g. speckit-plan).
 #
 # Technical debt note:
 # Keep SKILL.md frontmatter aligned with `install_ai_skills()` and extension
@@ -160,7 +155,7 @@ create_skills() {
     [[ -f "$template" ]] || continue
     local name
     name=$(basename "$template" .md)
-    local skill_name="${CMD_NAMESPACE}${separator}${name}"
+    local skill_name="speckit${separator}${name}"
     local skill_dir="${skills_dir}/${skill_name}"
     mkdir -p "$skill_dir"
 
@@ -238,7 +233,6 @@ build_variant() {
   # Only copy the relevant script variant directory
   if [[ -d scripts ]]; then
     mkdir -p "$SPEC_DIR/scripts"
-    [[ -d scripts/python ]] && { cp -r scripts/python "$SPEC_DIR/scripts/"; echo "Copied scripts/python -> .specify/scripts"; }
     case $script in
       sh)
         [[ -d scripts/bash ]] && { cp -r scripts/bash "$SPEC_DIR/scripts/"; echo "Copied scripts/bash -> .specify/scripts"; }
@@ -326,7 +320,7 @@ build_variant() {
       generate_commands vibe md "\$ARGUMENTS" "$base_dir/.vibe/prompts" "$script" ;;
     kimi)
       mkdir -p "$base_dir/.kimi/skills"
-      create_skills "$base_dir/.kimi/skills" "$script" "kimi" "." ;;
+      create_skills "$base_dir/.kimi/skills" "$script" "kimi" ;;
     trae)
       mkdir -p "$base_dir/.trae/rules"
       generate_commands trae md "\$ARGUMENTS" "$base_dir/.trae/rules" "$script" ;;
