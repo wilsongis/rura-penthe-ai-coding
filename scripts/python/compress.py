@@ -89,8 +89,10 @@ def get_ignore_spec(base_path: Path) -> pathspec.PathSpec:
     return pathspec.PathSpec.from_lines("gitwildmatch", lines)
 
 def get_tokens(content: str, enc) -> int:
-    if not content: return 0
-    if enc is None: return len(content) // 4
+    if not content:
+        return 0
+    if enc is None:
+        return len(content) // 4
     try:
         return len(enc.encode(content, disallowed_special=()))
     except Exception:

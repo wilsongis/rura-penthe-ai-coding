@@ -17,7 +17,7 @@ Any change that affects a slash command's behavior requires manually testing tha
 cd <spec-kit-repo>
 uv venv .venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-uv pip install -e .
+uv tool install -e .
 
 # Initialize a test project using your local changes
 specify init /tmp/speckit-test --ai <agent> --offline

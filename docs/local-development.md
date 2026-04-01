@@ -39,7 +39,7 @@ uv venv
 source .venv/bin/activate  # or on Windows PowerShell: .venv\Scripts\Activate.ps1
 
 # Install project in editable mode
-uv pip install -e .
+uv tool install -e .
 
 # Now 'specify' entrypoint is available
 specify --help
@@ -144,7 +144,7 @@ specify init demo --skip-tls --ai gemini --ignore-agent-tools --script ps
 | Action | Command |
 |--------|---------|
 | Run CLI directly | `python -m src.specify_cli --help` |
-| Editable install | `uv pip install -e .` then `specify ...` |
+| Editable install | `uv tool install -e .` then `specify ...` |
 | Local uvx run (repo root) | `uvx --from . specify ...` |
 | Local uvx run (abs path) | `uvx --from /mnt/c/GitHub/spec-kit specify ...` |
 | Git branch uvx | `uvx --from git+URL@branch specify ...` |
@@ -162,7 +162,7 @@ rm -rf .venv dist build *.egg-info
 
 | Symptom | Fix |
 |---------|-----|
-| `ModuleNotFoundError: typer` | Run `uv pip install -e .` |
+| `ModuleNotFoundError: typer` | Run `uv tool install -e .` |
 | Scripts not executable (Linux) | Re-run init or `chmod +x scripts/*.sh` |
 | Git step skipped | You passed `--no-git` or Git not installed |
 | Wrong script type downloaded | Pass `--script sh` or `--script ps` explicitly |

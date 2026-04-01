@@ -1304,8 +1304,8 @@ def scaffold_from_core_pack(
                         # Recursively copy subdirectories (e.g. hooks/)
                         shutil.copytree(f, tmpl_root / f.name, dirs_exist_ok=True)
 
-            # Scripts (bash/ and powershell/)
-            for subdir in ("bash", "powershell"):
+            # Scripts (bash/, powershell/, and python/)
+            for subdir in ("bash", "powershell", "python"):
                 src = scripts_dir / subdir
                 if src.is_dir():
                     dst = tmp / "scripts" / subdir
@@ -1953,6 +1953,7 @@ SKILL_DESCRIPTIONS = {
     "execute": "Execute the next pending XML wave from tasks.md using a strict state machine. Processes exactly one wave at a time to maintain context and ensure codebase integrity.",
     "verify": "Run verification scripts (tests/lints) for the current project state. Used by the execute command to validate wave completion.",
     "audit": "Perform a compliance audit of the project against tech stack constraints (STACK.md) and safety directives (AGENTS.md). Ensures the project remains compliant with Power-of-11 standards.",
+    "remediate": "Implement rigorous fixes for compliance drift identified by the audit. Iteratively fixes violations found during the initial audit to achieve the 'zero tolerance' baseline.",
     "analyze": "Perform cross-artifact consistency analysis across spec.md, plan.md, and tasks.md. Use after task generation to identify gaps, duplications, and inconsistencies before implementation.",
     "clarify": "Structured clarification workflow for underspecified requirements. Use before planning to resolve ambiguities through coverage-based questioning. Records answers in spec clarifications section.",
     "constitution": "Create or update project governing principles and development guidelines. Use at project start to establish code quality, testing standards, and architectural constraints that guide all development.",

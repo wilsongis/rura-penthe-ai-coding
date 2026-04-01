@@ -81,7 +81,7 @@ The `.specify/scripts` directory will contain both `.sh` and `.ps1` scripts.
 
 ### Enterprise / Air-Gapped Installation
 
-If your environment blocks access to PyPI (you see 403 errors when running `uv tool install` or `pip install`), you can create a portable wheel bundle on a connected machine and transfer it to the air-gapped target.
+If your environment blocks access to PyPI (you see 403 errors when running `uv tool install`), you can create a portable wheel bundle on a connected machine and transfer it to the air-gapped target.
 
 **Step 1: Build the wheel on a connected machine (same OS and Python version as the target)**
 
@@ -91,11 +91,11 @@ git clone https://github.com/github/spec-kit.git
 cd spec-kit
 
 # Build the wheel
-pip install build
-python -m build --wheel --outdir dist/
+uv tool install build
+uv run python -m build --wheel --outdir dist/
 
 # Download the wheel and all its runtime dependencies
-pip download -d dist/ dist/specify_cli-*.whl
+uv pip download -d dist/ dist/specify_cli-*.whl
 ```
 
 > **Important:** `pip download` resolves platform-specific wheels (e.g., PyYAML includes native extensions). You must run this step on a machine with the **same OS and Python version** as the air-gapped target. If you need to support multiple platforms, repeat this step on each target OS (Linux, macOS, Windows) and Python version.
@@ -107,7 +107,7 @@ Copy the entire `dist/` directory (which contains the `specify-cli` wheel and al
 **Step 3: Install on the air-gapped machine**
 
 ```bash
-pip install --no-index --find-links=./dist specify-cli
+uv tool install --no-index --find-links=./dist specify-cli
 ```
 
 **Step 4: Initialize a project (no network required)**
