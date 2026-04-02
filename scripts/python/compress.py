@@ -9,6 +9,13 @@
 # ]
 # ///
 
+"""Warden Context Compressor (LLMLingua-2).
+
+Hardware-accelerated token compression pipeline for reducing
+agent context window payloads via the LLMLingua-2 model.
+
+Deployment Profile: Profile A (Edge / Mission Compute)
+"""
 import sys
 import argparse
 import sqlite3

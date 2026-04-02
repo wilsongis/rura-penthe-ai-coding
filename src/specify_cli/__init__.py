@@ -23,6 +23,8 @@ Or install globally:
     specify init <project-name>
     specify init .
     specify init --here
+
+Deployment Profile: Profile A (Edge / Mission Compute)
 """
 
 import os
@@ -1597,6 +1599,8 @@ SKILL_DESCRIPTIONS = {
     "constitution": "Create or update project governing principles and development guidelines. Use at project start to establish code quality, testing standards, and architectural constraints that guide all development.",
     "checklist": "Generate custom quality checklists for validating requirements completeness and clarity. Use to create unit tests for English that ensure spec quality before implementation.",
     "taskstoissues": "Convert tasks from tasks.md into GitHub issues. Use after task breakdown to track work items in GitHub project management.",
+    "audit": "Run a comprehensive compliance audit against STACK.md, GOALS.md, and Power-of-11 safety directives. Generates a structured report with pass/fail verdicts and remediation guidance.",
+    "remediate": "Algorithmically fix compliance drift identified by /warden.audit. Operates as a Senior Standards Remediator, applying targeted fixes to restore zero-tolerance baseline.",
 }
 
 

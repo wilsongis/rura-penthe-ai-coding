@@ -1,4 +1,7 @@
-"""Tabnine CLI integration."""
+"""Tabnine CLI integration.
+
+Deployment Profile: Profile A (Edge / Mission Compute)
+"""
 
 from ..base import TomlIntegration
 

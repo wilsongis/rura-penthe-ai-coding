@@ -4,6 +4,8 @@ Extension Manager for Spec Kit
 Handles installation, removal, and management of Spec Kit extensions.
 Extensions are modular packages that add commands and functionality to spec-kit
 without bloating the core framework.
+
+Deployment Profile: Profile A (Edge / Mission Compute)
 """
 
 import json

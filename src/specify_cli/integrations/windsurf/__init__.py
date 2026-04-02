@@ -1,4 +1,7 @@
-"""Windsurf IDE integration."""
+"""Windsurf IDE integration.
+
+Deployment Profile: Profile A (Edge / Mission Compute)
+"""
 
 from ..base import MarkdownIntegration
 

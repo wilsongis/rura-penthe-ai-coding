@@ -1,5 +1,12 @@
 # src/rura_penthe/optimizer/memory_anchor.py
 
+"""Memory Anchor Protocol.
+
+Implements the memory anchoring protocol for persistent context
+retention across agent session boundaries.
+
+Deployment Profile: Profile A (Edge / Mission Compute)
+"""
 class MemoryAnchorProtocol:
     """
     Substitutes mass-request file loads with pointers to AGENTS.md

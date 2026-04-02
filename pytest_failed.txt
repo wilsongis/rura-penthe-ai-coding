@@ -1,0 +1,415 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.15, pytest-9.0.2, pluggy-1.6.0
+rootdir: /Users/wilsonm/Development/rura-penthe-ai-coding
+configfile: pyproject.toml
+testpaths: tests
+plugins: cov-7.1.0, anyio-4.13.0
+collected 50 items
+run-last-failure: rerun previous 50 failures (skipped 9 files)
+
+tests/test_core_pack_scaffold.py FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF [ 78%]
+FFFFFFFFFFF                                                              [100%]
+
+=================================== FAILURES ===================================
+______________ test_parity_bundled_vs_release_script[copilot-sh] _______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'copilot' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+______________ test_parity_bundled_vs_release_script[copilot-ps] _______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'copilot' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_______________ test_parity_bundled_vs_release_script[claude-sh] _______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'claude' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_______________ test_parity_bundled_vs_release_script[claude-ps] _______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'claude' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_______________ test_parity_bundled_vs_release_script[gemini-sh] _______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'gemini' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_______________ test_parity_bundled_vs_release_script[gemini-ps] _______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'gemini' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+____________ test_parity_bundled_vs_release_script[cursor-agent-sh] ____________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'cursor-agent' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+____________ test_parity_bundled_vs_release_script[cursor-agent-ps] ____________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'cursor-agent' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[qwen-sh] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'qwen' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[qwen-ps] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'qwen' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+______________ test_parity_bundled_vs_release_script[opencode-sh] ______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'opencode' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+______________ test_parity_bundled_vs_release_script[opencode-ps] ______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'opencode' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_______________ test_parity_bundled_vs_release_script[codex-sh] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'codex' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_______________ test_parity_bundled_vs_release_script[codex-ps] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'codex' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+______________ test_parity_bundled_vs_release_script[windsurf-sh] ______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'windsurf' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+______________ test_parity_bundled_vs_release_script[windsurf-ps] ______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'windsurf' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_______________ test_parity_bundled_vs_release_script[junie-sh] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'junie' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_______________ test_parity_bundled_vs_release_script[junie-ps] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'junie' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+______________ test_parity_bundled_vs_release_script[kilocode-sh] ______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'kilocode' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+______________ test_parity_bundled_vs_release_script[kilocode-ps] ______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'kilocode' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_______________ test_parity_bundled_vs_release_script[auggie-sh] _______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'auggie' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_______________ test_parity_bundled_vs_release_script[auggie-ps] _______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'auggie' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_____________ test_parity_bundled_vs_release_script[codebuddy-sh] ______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'codebuddy' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_____________ test_parity_bundled_vs_release_script[codebuddy-ps] ______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'codebuddy' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+______________ test_parity_bundled_vs_release_script[qodercli-sh] ______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'qodercli' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+______________ test_parity_bundled_vs_release_script[qodercli-ps] ______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'qodercli' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[roo-sh] _________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'roo' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[roo-ps] _________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'roo' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+______________ test_parity_bundled_vs_release_script[kiro-cli-sh] ______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'kiro-cli' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+______________ test_parity_bundled_vs_release_script[kiro-cli-ps] ______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'kiro-cli' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[amp-sh] _________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'amp' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[amp-ps] _________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'amp' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[shai-sh] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'shai' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[shai-ps] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'shai' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+______________ test_parity_bundled_vs_release_script[tabnine-sh] _______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'tabnine' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+______________ test_parity_bundled_vs_release_script[tabnine-ps] _______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'tabnine' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[agy-sh] _________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'agy' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[agy-ps] _________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'agy' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[bob-sh] _________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'bob' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[bob-ps] _________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'bob' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[vibe-sh] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'vibe' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[vibe-ps] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'vibe' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[kimi-sh] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'kimi' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[kimi-ps] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'kimi' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[trae-sh] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'trae' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[trae-ps] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'trae' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_________________ test_parity_bundled_vs_release_script[pi-sh] _________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'pi' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_________________ test_parity_bundled_vs_release_script[pi-ps] _________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'pi' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_______________ test_parity_bundled_vs_release_script[iflow-sh] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'iflow' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_______________ test_parity_bundled_vs_release_script[iflow-ps] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'iflow' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+=========================== short test summary info ============================
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[copilot-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[copilot-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[claude-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[claude-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[gemini-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[gemini-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[cursor-agent-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[cursor-agent-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[qwen-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[qwen-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[opencode-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[opencode-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[codex-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[codex-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[windsurf-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[windsurf-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[junie-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[junie-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[kilocode-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[kilocode-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[auggie-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[auggie-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[codebuddy-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[codebuddy-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[qodercli-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[qodercli-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[roo-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[roo-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[kiro-cli-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[kiro-cli-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[amp-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[amp-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[shai-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[shai-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[tabnine-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[tabnine-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[agy-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[agy-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[bob-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[bob-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[vibe-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[vibe-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[kimi-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[kimi-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[trae-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[trae-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[pi-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[pi-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[iflow-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[iflow-ps]
+======================== 50 failed in 82.49s (0:01:22) =========================

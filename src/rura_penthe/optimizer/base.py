@@ -1,4 +1,11 @@
 # src/rura_penthe/optimizer/base.py
+"""Token Optimization Base Classes.
+
+Defines the abstract interfaces (TokenOptimizer, ContextCompressor)
+and the InterceptorMiddleware for LLMLingua compression pipelines.
+
+Deployment Profile: Profile A (Edge / Mission Compute)
+"""
 import subprocess
 from pathlib import Path
 from abc import ABC, abstractmethod

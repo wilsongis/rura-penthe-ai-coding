@@ -7,6 +7,8 @@ Provides:
   integrations (the common case — subclass, set three class attrs, done).
 - ``TomlIntegration`` — concrete base for TOML-format integrations
   (Gemini, Tabnine — subclass, set three class attrs, done).
+
+Deployment Profile: Profile A (Edge / Mission Compute)
 """
 
 from __future__ import annotations

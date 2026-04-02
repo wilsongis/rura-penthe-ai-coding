@@ -1,0 +1,1252 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.11.15, pytest-9.0.2, pluggy-1.6.0 -- /Users/wilsonm/Development/rura-penthe-ai-coding/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/wilsonm/Development/rura-penthe-ai-coding
+configfile: pyproject.toml
+testpaths: tests
+plugins: cov-7.1.0, anyio-4.13.0
+collecting ... collected 839 items
+
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_runtime_config_uses_kiro_cli_and_removes_q PASSED [  0%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_extension_registrar_uses_kiro_cli_and_removes_q PASSED [  0%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_extension_registrar_includes_codex PASSED [  0%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_runtime_codex_uses_native_skills PASSED [  0%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_release_agent_lists_include_kiro_cli_and_exclude_q PASSED [  0%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_release_ps_switch_has_shai_and_agy_generation PASSED [  0%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_release_sh_switch_has_shai_and_agy_generation PASSED [  0%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_release_scripts_generate_codex_skills PASSED [  0%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_init_ai_help_includes_roo_and_kiro_alias PASSED [  1%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_devcontainer_kiro_installer_uses_pinned_checksum PASSED [  1%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_release_output_targets_kiro_prompt_dir PASSED [  1%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_agent_context_scripts_use_kiro_cli PASSED [  1%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_runtime_config_includes_tabnine PASSED [  1%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_extension_registrar_includes_tabnine PASSED [  1%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_release_agent_lists_include_tabnine PASSED [  1%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_release_scripts_generate_tabnine_toml_commands PASSED [  1%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_github_release_includes_tabnine_packages PASSED [  2%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_agent_context_scripts_include_tabnine PASSED [  2%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_ai_help_includes_tabnine PASSED [  2%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_kimi_in_agent_config PASSED [  2%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_kimi_in_extension_registrar PASSED [  2%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_kimi_in_release_agent_lists PASSED [  2%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_kimi_in_powershell_validate_set PASSED [  2%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_kimi_in_github_release_output PASSED [  2%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_ai_help_includes_kimi PASSED [  2%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_trae_in_agent_config PASSED [  3%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_trae_in_extension_registrar PASSED [  3%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_trae_in_release_agent_lists PASSED [  3%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_trae_in_release_scripts_generate_commands PASSED [  3%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_trae_in_github_release_output PASSED [  3%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_trae_in_agent_context_scripts PASSED [  3%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_trae_in_powershell_validate_set PASSED [  3%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_ai_help_includes_trae PASSED [  3%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_pi_in_agent_config PASSED [  4%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_pi_in_extension_registrar PASSED [  4%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_pi_in_release_agent_lists PASSED [  4%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_release_scripts_generate_pi_prompt_templates PASSED [  4%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_pi_in_powershell_validate_set PASSED [  4%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_pi_in_github_release_output PASSED [  4%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_agent_context_scripts_include_pi PASSED [  4%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_ai_help_includes_pi PASSED [  4%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_iflow_in_agent_config PASSED [  5%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_iflow_in_extension_registrar PASSED [  5%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_iflow_in_release_agent_lists PASSED [  5%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_iflow_in_release_scripts_build_variant PASSED [  5%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_iflow_in_github_release_output PASSED [  5%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_iflow_in_agent_context_scripts PASSED [  5%]
+tests/test_agent_config_consistency.py::TestAgentConfigConsistency::test_ai_help_includes_iflow PASSED [  5%]
+tests/test_ai_skills.py::TestGetSkillsDir::test_claude_skills_dir PASSED [  5%]
+tests/test_ai_skills.py::TestGetSkillsDir::test_gemini_skills_dir PASSED [  5%]
+tests/test_ai_skills.py::TestGetSkillsDir::test_tabnine_skills_dir PASSED [  6%]
+tests/test_ai_skills.py::TestGetSkillsDir::test_copilot_skills_dir PASSED [  6%]
+tests/test_ai_skills.py::TestGetSkillsDir::test_codex_uses_override PASSED [  6%]
+tests/test_ai_skills.py::TestGetSkillsDir::test_cursor_agent_skills_dir PASSED [  6%]
+tests/test_ai_skills.py::TestGetSkillsDir::test_kiro_cli_skills_dir PASSED [  6%]
+tests/test_ai_skills.py::TestGetSkillsDir::test_pi_skills_dir PASSED     [  6%]
+tests/test_ai_skills.py::TestGetSkillsDir::test_unknown_agent_uses_default PASSED [  6%]
+tests/test_ai_skills.py::TestGetSkillsDir::test_all_configured_agents_resolve PASSED [  6%]
+tests/test_ai_skills.py::TestGetSkillsDir::test_override_takes_precedence_over_config PASSED [  7%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_skills_installed_with_correct_structure PASSED [  7%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_generated_skill_has_parseable_yaml PASSED [  7%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_empty_yaml_frontmatter PASSED [  7%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_enhanced_descriptions_used_when_available PASSED [  7%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_template_without_frontmatter PASSED [  7%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_missing_templates_directory PASSED [  7%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_empty_templates_directory PASSED [  7%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_malformed_yaml_frontmatter PASSED [  7%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_additive_does_not_overwrite_other_files PASSED [  8%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_return_value PASSED   [  8%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_return_false_when_no_templates PASSED [  8%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_non_md_commands_dir_falls_back PASSED [  8%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_qwen_md_commands_dir_installs_skills PASSED [  8%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_pi_prompt_dir_installs_skills PASSED [  8%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_skills_install_for_all_agents[copilot] PASSED [  8%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_skills_install_for_all_agents[claude] PASSED [  8%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_skills_install_for_all_agents[gemini] PASSED [  9%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_skills_install_for_all_agents[cursor-agent] PASSED [  9%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_skills_install_for_all_agents[qwen] PASSED [  9%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_skills_install_for_all_agents[opencode] PASSED [  9%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_skills_install_for_all_agents[codex] PASSED [  9%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_skills_install_for_all_agents[windsurf] PASSED [  9%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_skills_install_for_all_agents[junie] PASSED [  9%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_skills_install_for_all_agents[kilocode] PASSED [  9%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_skills_install_for_all_agents[auggie] PASSED [ 10%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_skills_install_for_all_agents[codebuddy] PASSED [ 10%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_skills_install_for_all_agents[qodercli] PASSED [ 10%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_skills_install_for_all_agents[roo] PASSED [ 10%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_skills_install_for_all_agents[kiro-cli] PASSED [ 10%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_skills_install_for_all_agents[amp] PASSED [ 10%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_skills_install_for_all_agents[shai] PASSED [ 10%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_skills_install_for_all_agents[tabnine] PASSED [ 10%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_skills_install_for_all_agents[agy] PASSED [ 10%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_skills_install_for_all_agents[bob] PASSED [ 11%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_skills_install_for_all_agents[vibe] PASSED [ 11%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_skills_install_for_all_agents[kimi] PASSED [ 11%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_skills_install_for_all_agents[trae] PASSED [ 11%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_skills_install_for_all_agents[pi] PASSED [ 11%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_skills_install_for_all_agents[iflow] PASSED [ 11%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_copilot_ignores_non_speckit_agents PASSED [ 11%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_non_speckit_commands_ignored_for_all_agents[claude-review.md] PASSED [ 11%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_non_speckit_commands_ignored_for_all_agents[cursor-agent-deploy.md] PASSED [ 12%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_non_speckit_commands_ignored_for_all_agents[qwen-my-workflow.md] PASSED [ 12%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_copilot_fallback_when_only_non_speckit_agents PASSED [ 12%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_fallback_when_only_non_speckit_commands[claude] PASSED [ 12%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_fallback_when_only_non_speckit_commands[cursor-agent] PASSED [ 12%]
+tests/test_ai_skills.py::TestInstallAiSkills::test_fallback_when_only_non_speckit_commands[qwen] PASSED [ 12%]
+tests/test_ai_skills.py::TestCommandCoexistence::test_existing_commands_preserved_claude PASSED [ 12%]
+tests/test_ai_skills.py::TestCommandCoexistence::test_existing_commands_preserved_gemini PASSED [ 12%]
+tests/test_ai_skills.py::TestCommandCoexistence::test_existing_commands_preserved_qwen PASSED [ 12%]
+tests/test_ai_skills.py::TestCommandCoexistence::test_commands_dir_not_removed PASSED [ 13%]
+tests/test_ai_skills.py::TestCommandCoexistence::test_no_commands_dir_no_error PASSED [ 13%]
+tests/test_ai_skills.py::TestNewProjectCommandSkip::test_new_project_commands_removed_after_skills_succeed PASSED [ 13%]
+tests/test_ai_skills.py::TestNewProjectCommandSkip::test_new_project_nonstandard_commands_subdir_removed_after_skills_succeed PASSED [ 13%]
+tests/test_ai_skills.py::TestNewProjectCommandSkip::test_codex_native_skills_preserved_without_conversion PASSED [ 13%]
+tests/test_ai_skills.py::TestNewProjectCommandSkip::test_codex_native_skills_missing_falls_back_then_fails_cleanly PASSED [ 13%]
+tests/test_ai_skills.py::TestNewProjectCommandSkip::test_codex_native_skills_ignores_non_speckit_skill_dirs PASSED [ 13%]
+tests/test_ai_skills.py::TestNewProjectCommandSkip::test_codex_ai_skills_here_mode_preserves_existing_codex_dir PASSED [ 13%]
+tests/test_ai_skills.py::TestNewProjectCommandSkip::test_codex_ai_skills_fresh_dir_does_not_create_codex_dir PASSED [ 14%]
+tests/test_ai_skills.py::TestNewProjectCommandSkip::test_download_and_extract_template_blocks_zip_path_traversal[False] PASSED [ 14%]
+tests/test_ai_skills.py::TestNewProjectCommandSkip::test_download_and_extract_template_blocks_zip_path_traversal[True] PASSED [ 14%]
+tests/test_ai_skills.py::TestNewProjectCommandSkip::test_commands_preserved_when_skills_fail PASSED [ 14%]
+tests/test_ai_skills.py::TestNewProjectCommandSkip::test_here_mode_commands_preserved PASSED [ 14%]
+tests/test_ai_skills.py::TestSkipIfExists::test_existing_skill_not_overwritten PASSED [ 14%]
+tests/test_ai_skills.py::TestSkipIfExists::test_fresh_install_writes_all_skills PASSED [ 14%]
+tests/test_ai_skills.py::TestSkipIfExists::test_existing_skill_overwritten_when_enabled PASSED [ 14%]
+tests/test_ai_skills.py::TestSkillDescriptions::test_all_known_commands_have_descriptions PASSED [ 15%]
+tests/test_ai_skills.py::TestCliValidation::test_ai_skills_without_ai_fails PASSED [ 15%]
+tests/test_ai_skills.py::TestCliValidation::test_ai_skills_without_ai_shows_usage PASSED [ 15%]
+tests/test_ai_skills.py::TestCliValidation::test_agy_without_ai_skills_fails PASSED [ 15%]
+tests/test_ai_skills.py::TestCliValidation::test_codex_without_ai_skills_fails PASSED [ 15%]
+tests/test_ai_skills.py::TestCliValidation::test_interactive_agy_without_ai_skills_prompts_skills PASSED [ 15%]
+tests/test_ai_skills.py::TestCliValidation::test_interactive_codex_without_ai_skills_enables_skills PASSED [ 15%]
+tests/test_ai_skills.py::TestCliValidation::test_kimi_next_steps_show_skill_invocation PASSED [ 15%]
+tests/test_ai_skills.py::TestCliValidation::test_ai_skills_flag_appears_in_help PASSED [ 15%]
+tests/test_ai_skills.py::TestCliValidation::test_kiro_alias_normalized_to_kiro_cli PASSED [ 16%]
+tests/test_ai_skills.py::TestCliValidation::test_q_removed_from_agent_config PASSED [ 16%]
+tests/test_ai_skills.py::TestParameterOrderingIssue::test_ai_flag_consuming_here_flag PASSED [ 16%]
+tests/test_ai_skills.py::TestParameterOrderingIssue::test_ai_flag_consuming_ai_skills_flag PASSED [ 16%]
+tests/test_ai_skills.py::TestParameterOrderingIssue::test_error_message_provides_hint PASSED [ 16%]
+tests/test_ai_skills.py::TestParameterOrderingIssue::test_error_message_lists_available_agents PASSED [ 16%]
+tests/test_ai_skills.py::TestParameterOrderingIssue::test_ai_commands_dir_consuming_flag PASSED [ 16%]
+tests/test_branch_numbering.py::TestSaveBranchNumbering::test_save_branch_numbering_timestamp PASSED [ 16%]
+tests/test_branch_numbering.py::TestSaveBranchNumbering::test_save_branch_numbering_sequential PASSED [ 17%]
+tests/test_branch_numbering.py::TestSaveBranchNumbering::test_branch_numbering_defaults_to_sequential PASSED [ 17%]
+tests/test_branch_numbering.py::TestBranchNumberingValidation::test_invalid_branch_numbering_rejected PASSED [ 17%]
+tests/test_branch_numbering.py::TestBranchNumberingValidation::test_valid_branch_numbering_sequential PASSED [ 17%]
+tests/test_branch_numbering.py::TestBranchNumberingValidation::test_valid_branch_numbering_timestamp PASSED [ 17%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_scripts[copilot] PASSED [ 17%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_scripts[claude] PASSED [ 17%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_scripts[gemini] PASSED [ 17%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_scripts[cursor-agent] PASSED [ 17%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_scripts[qwen] PASSED [ 18%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_scripts[opencode] PASSED [ 18%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_scripts[codex] PASSED [ 18%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_scripts[windsurf] PASSED [ 18%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_scripts[junie] PASSED [ 18%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_scripts[kilocode] PASSED [ 18%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_scripts[auggie] PASSED [ 18%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_scripts[codebuddy] PASSED [ 18%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_scripts[qodercli] PASSED [ 19%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_scripts[roo] PASSED [ 19%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_scripts[kiro-cli] PASSED [ 19%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_scripts[amp] PASSED [ 19%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_scripts[shai] PASSED [ 19%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_scripts[tabnine] PASSED [ 19%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_scripts[agy] PASSED [ 19%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_scripts[bob] PASSED [ 19%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_scripts[vibe] PASSED [ 20%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_scripts[kimi] PASSED [ 20%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_scripts[trae] PASSED [ 20%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_scripts[pi] PASSED [ 20%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_scripts[iflow] PASSED [ 20%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_templates[copilot] PASSED [ 20%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_templates[claude] PASSED [ 20%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_templates[gemini] PASSED [ 20%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_templates[cursor-agent] PASSED [ 20%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_templates[qwen] PASSED [ 21%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_templates[opencode] PASSED [ 21%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_templates[codex] PASSED [ 21%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_templates[windsurf] PASSED [ 21%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_templates[junie] PASSED [ 21%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_templates[kilocode] PASSED [ 21%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_templates[auggie] PASSED [ 21%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_templates[codebuddy] PASSED [ 21%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_templates[qodercli] PASSED [ 22%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_templates[roo] PASSED [ 22%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_templates[kiro-cli] PASSED [ 22%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_templates[amp] PASSED [ 22%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_templates[shai] PASSED [ 22%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_templates[tabnine] PASSED [ 22%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_templates[agy] PASSED [ 22%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_templates[bob] PASSED [ 22%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_templates[vibe] PASSED [ 23%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_templates[kimi] PASSED [ 23%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_templates[trae] PASSED [ 23%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_templates[pi] PASSED [ 23%]
+tests/test_core_pack_scaffold.py::test_scaffold_creates_specify_templates[iflow] PASSED [ 23%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_dir_location[copilot] PASSED [ 23%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_dir_location[claude] PASSED [ 23%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_dir_location[gemini] PASSED [ 23%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_dir_location[cursor-agent] PASSED [ 23%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_dir_location[qwen] PASSED [ 24%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_dir_location[opencode] PASSED [ 24%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_dir_location[codex] PASSED [ 24%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_dir_location[windsurf] PASSED [ 24%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_dir_location[junie] PASSED [ 24%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_dir_location[kilocode] PASSED [ 24%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_dir_location[auggie] PASSED [ 24%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_dir_location[codebuddy] PASSED [ 24%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_dir_location[qodercli] PASSED [ 25%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_dir_location[roo] PASSED [ 25%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_dir_location[kiro-cli] PASSED [ 25%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_dir_location[amp] PASSED [ 25%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_dir_location[shai] PASSED [ 25%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_dir_location[tabnine] PASSED [ 25%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_dir_location[agy] PASSED [ 25%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_dir_location[bob] PASSED [ 25%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_dir_location[vibe] PASSED [ 25%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_dir_location[kimi] PASSED [ 26%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_dir_location[trae] PASSED [ 26%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_dir_location[pi] PASSED [ 26%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_dir_location[iflow] PASSED [ 26%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_count[copilot] PASSED [ 26%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_count[claude] PASSED [ 26%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_count[gemini] PASSED [ 26%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_count[cursor-agent] PASSED [ 26%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_count[qwen] PASSED [ 27%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_count[opencode] PASSED [ 27%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_count[codex] PASSED [ 27%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_count[windsurf] PASSED [ 27%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_count[junie] PASSED [ 27%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_count[kilocode] PASSED [ 27%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_count[auggie] PASSED [ 27%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_count[codebuddy] PASSED [ 27%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_count[qodercli] PASSED [ 28%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_count[roo] PASSED [ 28%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_count[kiro-cli] PASSED [ 28%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_count[amp] PASSED [ 28%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_count[shai] PASSED [ 28%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_count[tabnine] PASSED [ 28%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_count[agy] PASSED [ 28%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_count[bob] PASSED [ 28%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_count[vibe] PASSED [ 28%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_count[kimi] PASSED [ 29%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_count[trae] PASSED [ 29%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_count[pi] PASSED [ 29%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_count[iflow] PASSED [ 29%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_names[copilot] PASSED [ 29%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_names[claude] PASSED [ 29%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_names[gemini] PASSED [ 29%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_names[cursor-agent] PASSED [ 29%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_names[qwen] PASSED [ 30%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_names[opencode] PASSED [ 30%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_names[codex] PASSED [ 30%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_names[windsurf] PASSED [ 30%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_names[junie] PASSED [ 30%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_names[kilocode] PASSED [ 30%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_names[auggie] PASSED [ 30%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_names[codebuddy] PASSED [ 30%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_names[qodercli] PASSED [ 30%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_names[roo] PASSED [ 31%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_names[kiro-cli] PASSED [ 31%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_names[amp] PASSED [ 31%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_names[shai] PASSED [ 31%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_names[tabnine] PASSED [ 31%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_names[agy] PASSED [ 31%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_names[bob] PASSED [ 31%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_names[vibe] PASSED [ 31%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_names[kimi] PASSED [ 32%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_names[trae] PASSED [ 32%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_names[pi] PASSED [ 32%]
+tests/test_core_pack_scaffold.py::test_scaffold_command_file_names[iflow] PASSED [ 32%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_script_placeholder[copilot] PASSED [ 32%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_script_placeholder[claude] PASSED [ 32%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_script_placeholder[gemini] PASSED [ 32%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_script_placeholder[cursor-agent] PASSED [ 32%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_script_placeholder[qwen] PASSED [ 33%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_script_placeholder[opencode] PASSED [ 33%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_script_placeholder[codex] PASSED [ 33%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_script_placeholder[windsurf] PASSED [ 33%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_script_placeholder[junie] PASSED [ 33%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_script_placeholder[kilocode] PASSED [ 33%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_script_placeholder[auggie] PASSED [ 33%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_script_placeholder[codebuddy] PASSED [ 33%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_script_placeholder[qodercli] PASSED [ 33%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_script_placeholder[roo] PASSED [ 34%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_script_placeholder[kiro-cli] PASSED [ 34%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_script_placeholder[amp] PASSED [ 34%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_script_placeholder[shai] PASSED [ 34%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_script_placeholder[tabnine] PASSED [ 34%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_script_placeholder[agy] PASSED [ 34%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_script_placeholder[bob] PASSED [ 34%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_script_placeholder[vibe] PASSED [ 34%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_script_placeholder[kimi] PASSED [ 35%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_script_placeholder[trae] PASSED [ 35%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_script_placeholder[pi] PASSED [ 35%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_script_placeholder[iflow] PASSED [ 35%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_agent_placeholder[copilot] PASSED [ 35%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_agent_placeholder[claude] PASSED [ 35%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_agent_placeholder[gemini] PASSED [ 35%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_agent_placeholder[cursor-agent] PASSED [ 35%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_agent_placeholder[qwen] PASSED [ 35%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_agent_placeholder[opencode] PASSED [ 36%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_agent_placeholder[codex] PASSED [ 36%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_agent_placeholder[windsurf] PASSED [ 36%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_agent_placeholder[junie] PASSED [ 36%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_agent_placeholder[kilocode] PASSED [ 36%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_agent_placeholder[auggie] PASSED [ 36%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_agent_placeholder[codebuddy] PASSED [ 36%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_agent_placeholder[qodercli] PASSED [ 36%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_agent_placeholder[roo] PASSED [ 37%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_agent_placeholder[kiro-cli] PASSED [ 37%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_agent_placeholder[amp] PASSED [ 37%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_agent_placeholder[shai] PASSED [ 37%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_agent_placeholder[tabnine] PASSED [ 37%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_agent_placeholder[agy] PASSED [ 37%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_agent_placeholder[bob] PASSED [ 37%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_agent_placeholder[vibe] PASSED [ 37%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_agent_placeholder[kimi] PASSED [ 38%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_agent_placeholder[trae] PASSED [ 38%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_agent_placeholder[pi] PASSED [ 38%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_agent_placeholder[iflow] PASSED [ 38%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_args_placeholder[copilot] PASSED [ 38%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_args_placeholder[claude] PASSED [ 38%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_args_placeholder[gemini] PASSED [ 38%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_args_placeholder[cursor-agent] PASSED [ 38%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_args_placeholder[qwen] PASSED [ 38%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_args_placeholder[opencode] PASSED [ 39%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_args_placeholder[codex] PASSED [ 39%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_args_placeholder[windsurf] PASSED [ 39%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_args_placeholder[junie] PASSED [ 39%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_args_placeholder[kilocode] PASSED [ 39%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_args_placeholder[auggie] PASSED [ 39%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_args_placeholder[codebuddy] PASSED [ 39%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_args_placeholder[qodercli] PASSED [ 39%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_args_placeholder[roo] PASSED [ 40%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_args_placeholder[kiro-cli] PASSED [ 40%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_args_placeholder[amp] PASSED [ 40%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_args_placeholder[shai] PASSED [ 40%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_args_placeholder[tabnine] PASSED [ 40%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_args_placeholder[agy] PASSED [ 40%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_args_placeholder[bob] PASSED [ 40%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_args_placeholder[vibe] PASSED [ 40%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_args_placeholder[kimi] PASSED [ 41%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_args_placeholder[trae] PASSED [ 41%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_args_placeholder[pi] PASSED [ 41%]
+tests/test_core_pack_scaffold.py::test_no_unresolved_args_placeholder[iflow] PASSED [ 41%]
+tests/test_core_pack_scaffold.py::test_argument_token_format[copilot] PASSED [ 41%]
+tests/test_core_pack_scaffold.py::test_argument_token_format[claude] PASSED [ 41%]
+tests/test_core_pack_scaffold.py::test_argument_token_format[gemini] PASSED [ 41%]
+tests/test_core_pack_scaffold.py::test_argument_token_format[cursor-agent] PASSED [ 41%]
+tests/test_core_pack_scaffold.py::test_argument_token_format[qwen] PASSED [ 41%]
+tests/test_core_pack_scaffold.py::test_argument_token_format[opencode] PASSED [ 42%]
+tests/test_core_pack_scaffold.py::test_argument_token_format[codex] PASSED [ 42%]
+tests/test_core_pack_scaffold.py::test_argument_token_format[windsurf] PASSED [ 42%]
+tests/test_core_pack_scaffold.py::test_argument_token_format[junie] PASSED [ 42%]
+tests/test_core_pack_scaffold.py::test_argument_token_format[kilocode] PASSED [ 42%]
+tests/test_core_pack_scaffold.py::test_argument_token_format[auggie] PASSED [ 42%]
+tests/test_core_pack_scaffold.py::test_argument_token_format[codebuddy] PASSED [ 42%]
+tests/test_core_pack_scaffold.py::test_argument_token_format[qodercli] PASSED [ 42%]
+tests/test_core_pack_scaffold.py::test_argument_token_format[roo] PASSED [ 43%]
+tests/test_core_pack_scaffold.py::test_argument_token_format[kiro-cli] PASSED [ 43%]
+tests/test_core_pack_scaffold.py::test_argument_token_format[amp] PASSED [ 43%]
+tests/test_core_pack_scaffold.py::test_argument_token_format[shai] PASSED [ 43%]
+tests/test_core_pack_scaffold.py::test_argument_token_format[tabnine] PASSED [ 43%]
+tests/test_core_pack_scaffold.py::test_argument_token_format[agy] PASSED [ 43%]
+tests/test_core_pack_scaffold.py::test_argument_token_format[bob] PASSED [ 43%]
+tests/test_core_pack_scaffold.py::test_argument_token_format[vibe] PASSED [ 43%]
+tests/test_core_pack_scaffold.py::test_argument_token_format[kimi] PASSED [ 43%]
+tests/test_core_pack_scaffold.py::test_argument_token_format[trae] PASSED [ 44%]
+tests/test_core_pack_scaffold.py::test_argument_token_format[pi] PASSED  [ 44%]
+tests/test_core_pack_scaffold.py::test_argument_token_format[iflow] PASSED [ 44%]
+tests/test_core_pack_scaffold.py::test_path_rewrites_applied[copilot] PASSED [ 44%]
+tests/test_core_pack_scaffold.py::test_path_rewrites_applied[claude] PASSED [ 44%]
+tests/test_core_pack_scaffold.py::test_path_rewrites_applied[gemini] PASSED [ 44%]
+tests/test_core_pack_scaffold.py::test_path_rewrites_applied[cursor-agent] PASSED [ 44%]
+tests/test_core_pack_scaffold.py::test_path_rewrites_applied[qwen] PASSED [ 44%]
+tests/test_core_pack_scaffold.py::test_path_rewrites_applied[opencode] PASSED [ 45%]
+tests/test_core_pack_scaffold.py::test_path_rewrites_applied[codex] PASSED [ 45%]
+tests/test_core_pack_scaffold.py::test_path_rewrites_applied[windsurf] PASSED [ 45%]
+tests/test_core_pack_scaffold.py::test_path_rewrites_applied[junie] PASSED [ 45%]
+tests/test_core_pack_scaffold.py::test_path_rewrites_applied[kilocode] PASSED [ 45%]
+tests/test_core_pack_scaffold.py::test_path_rewrites_applied[auggie] PASSED [ 45%]
+tests/test_core_pack_scaffold.py::test_path_rewrites_applied[codebuddy] PASSED [ 45%]
+tests/test_core_pack_scaffold.py::test_path_rewrites_applied[qodercli] PASSED [ 45%]
+tests/test_core_pack_scaffold.py::test_path_rewrites_applied[roo] PASSED [ 46%]
+tests/test_core_pack_scaffold.py::test_path_rewrites_applied[kiro-cli] PASSED [ 46%]
+tests/test_core_pack_scaffold.py::test_path_rewrites_applied[amp] PASSED [ 46%]
+tests/test_core_pack_scaffold.py::test_path_rewrites_applied[shai] PASSED [ 46%]
+tests/test_core_pack_scaffold.py::test_path_rewrites_applied[tabnine] PASSED [ 46%]
+tests/test_core_pack_scaffold.py::test_path_rewrites_applied[agy] PASSED [ 46%]
+tests/test_core_pack_scaffold.py::test_path_rewrites_applied[bob] PASSED [ 46%]
+tests/test_core_pack_scaffold.py::test_path_rewrites_applied[vibe] PASSED [ 46%]
+tests/test_core_pack_scaffold.py::test_path_rewrites_applied[kimi] PASSED [ 46%]
+tests/test_core_pack_scaffold.py::test_path_rewrites_applied[trae] PASSED [ 47%]
+tests/test_core_pack_scaffold.py::test_path_rewrites_applied[pi] PASSED  [ 47%]
+tests/test_core_pack_scaffold.py::test_path_rewrites_applied[iflow] PASSED [ 47%]
+tests/test_core_pack_scaffold.py::test_toml_format_valid[gemini] PASSED  [ 47%]
+tests/test_core_pack_scaffold.py::test_toml_format_valid[tabnine] PASSED [ 47%]
+tests/test_core_pack_scaffold.py::test_markdown_has_frontmatter[copilot] PASSED [ 47%]
+tests/test_core_pack_scaffold.py::test_markdown_has_frontmatter[claude] PASSED [ 47%]
+tests/test_core_pack_scaffold.py::test_markdown_has_frontmatter[cursor-agent] PASSED [ 47%]
+tests/test_core_pack_scaffold.py::test_markdown_has_frontmatter[qwen] PASSED [ 48%]
+tests/test_core_pack_scaffold.py::test_markdown_has_frontmatter[opencode] PASSED [ 48%]
+tests/test_core_pack_scaffold.py::test_markdown_has_frontmatter[codex] PASSED [ 48%]
+tests/test_core_pack_scaffold.py::test_markdown_has_frontmatter[windsurf] PASSED [ 48%]
+tests/test_core_pack_scaffold.py::test_markdown_has_frontmatter[junie] PASSED [ 48%]
+tests/test_core_pack_scaffold.py::test_markdown_has_frontmatter[kilocode] PASSED [ 48%]
+tests/test_core_pack_scaffold.py::test_markdown_has_frontmatter[auggie] PASSED [ 48%]
+tests/test_core_pack_scaffold.py::test_markdown_has_frontmatter[codebuddy] PASSED [ 48%]
+tests/test_core_pack_scaffold.py::test_markdown_has_frontmatter[qodercli] PASSED [ 48%]
+tests/test_core_pack_scaffold.py::test_markdown_has_frontmatter[roo] PASSED [ 49%]
+tests/test_core_pack_scaffold.py::test_markdown_has_frontmatter[kiro-cli] PASSED [ 49%]
+tests/test_core_pack_scaffold.py::test_markdown_has_frontmatter[amp] PASSED [ 49%]
+tests/test_core_pack_scaffold.py::test_markdown_has_frontmatter[shai] PASSED [ 49%]
+tests/test_core_pack_scaffold.py::test_markdown_has_frontmatter[agy] PASSED [ 49%]
+tests/test_core_pack_scaffold.py::test_markdown_has_frontmatter[bob] PASSED [ 49%]
+tests/test_core_pack_scaffold.py::test_markdown_has_frontmatter[vibe] PASSED [ 49%]
+tests/test_core_pack_scaffold.py::test_markdown_has_frontmatter[kimi] PASSED [ 49%]
+tests/test_core_pack_scaffold.py::test_markdown_has_frontmatter[trae] PASSED [ 50%]
+tests/test_core_pack_scaffold.py::test_markdown_has_frontmatter[pi] PASSED [ 50%]
+tests/test_core_pack_scaffold.py::test_markdown_has_frontmatter[iflow] PASSED [ 50%]
+tests/test_core_pack_scaffold.py::test_copilot_companion_prompt_files PASSED [ 50%]
+tests/test_core_pack_scaffold.py::test_copilot_prompt_file_content PASSED [ 50%]
+tests/test_core_pack_scaffold.py::test_scaffold_powershell_variant[copilot] PASSED [ 50%]
+tests/test_core_pack_scaffold.py::test_scaffold_powershell_variant[claude] PASSED [ 50%]
+tests/test_core_pack_scaffold.py::test_scaffold_powershell_variant[gemini] PASSED [ 50%]
+tests/test_core_pack_scaffold.py::test_scaffold_powershell_variant[cursor-agent] PASSED [ 51%]
+tests/test_core_pack_scaffold.py::test_scaffold_powershell_variant[qwen] PASSED [ 51%]
+tests/test_core_pack_scaffold.py::test_scaffold_powershell_variant[opencode] PASSED [ 51%]
+tests/test_core_pack_scaffold.py::test_scaffold_powershell_variant[codex] PASSED [ 51%]
+tests/test_core_pack_scaffold.py::test_scaffold_powershell_variant[windsurf] PASSED [ 51%]
+tests/test_core_pack_scaffold.py::test_scaffold_powershell_variant[junie] PASSED [ 51%]
+tests/test_core_pack_scaffold.py::test_scaffold_powershell_variant[kilocode] PASSED [ 51%]
+tests/test_core_pack_scaffold.py::test_scaffold_powershell_variant[auggie] PASSED [ 51%]
+tests/test_core_pack_scaffold.py::test_scaffold_powershell_variant[codebuddy] PASSED [ 51%]
+tests/test_core_pack_scaffold.py::test_scaffold_powershell_variant[qodercli] PASSED [ 52%]
+tests/test_core_pack_scaffold.py::test_scaffold_powershell_variant[roo] PASSED [ 52%]
+tests/test_core_pack_scaffold.py::test_scaffold_powershell_variant[kiro-cli] PASSED [ 52%]
+tests/test_core_pack_scaffold.py::test_scaffold_powershell_variant[amp] PASSED [ 52%]
+tests/test_core_pack_scaffold.py::test_scaffold_powershell_variant[shai] PASSED [ 52%]
+tests/test_core_pack_scaffold.py::test_scaffold_powershell_variant[tabnine] PASSED [ 52%]
+tests/test_core_pack_scaffold.py::test_scaffold_powershell_variant[agy] PASSED [ 52%]
+tests/test_core_pack_scaffold.py::test_scaffold_powershell_variant[bob] PASSED [ 52%]
+tests/test_core_pack_scaffold.py::test_scaffold_powershell_variant[vibe] PASSED [ 53%]
+tests/test_core_pack_scaffold.py::test_scaffold_powershell_variant[kimi] PASSED [ 53%]
+tests/test_core_pack_scaffold.py::test_scaffold_powershell_variant[trae] PASSED [ 53%]
+tests/test_core_pack_scaffold.py::test_scaffold_powershell_variant[pi] PASSED [ 53%]
+tests/test_core_pack_scaffold.py::test_scaffold_powershell_variant[iflow] PASSED [ 53%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[copilot-sh] FAILED [ 53%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[copilot-ps] FAILED [ 53%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[claude-sh] FAILED [ 53%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[claude-ps] FAILED [ 53%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[gemini-sh] FAILED [ 54%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[gemini-ps] FAILED [ 54%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[cursor-agent-sh] FAILED [ 54%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[cursor-agent-ps] FAILED [ 54%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[qwen-sh] FAILED [ 54%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[qwen-ps] FAILED [ 54%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[opencode-sh] FAILED [ 54%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[opencode-ps] FAILED [ 54%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[codex-sh] FAILED [ 55%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[codex-ps] FAILED [ 55%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[windsurf-sh] FAILED [ 55%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[windsurf-ps] FAILED [ 55%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[junie-sh] FAILED [ 55%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[junie-ps] FAILED [ 55%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[kilocode-sh] FAILED [ 55%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[kilocode-ps] FAILED [ 55%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[auggie-sh] FAILED [ 56%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[auggie-ps] FAILED [ 56%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[codebuddy-sh] FAILED [ 56%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[codebuddy-ps] FAILED [ 56%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[qodercli-sh] FAILED [ 56%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[qodercli-ps] FAILED [ 56%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[roo-sh] FAILED [ 56%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[roo-ps] FAILED [ 56%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[kiro-cli-sh] FAILED [ 56%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[kiro-cli-ps] FAILED [ 57%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[amp-sh] FAILED [ 57%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[amp-ps] FAILED [ 57%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[shai-sh] FAILED [ 57%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[shai-ps] FAILED [ 57%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[tabnine-sh] FAILED [ 57%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[tabnine-ps] FAILED [ 57%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[agy-sh] FAILED [ 57%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[agy-ps] FAILED [ 58%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[bob-sh] FAILED [ 58%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[bob-ps] FAILED [ 58%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[vibe-sh] FAILED [ 58%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[vibe-ps] FAILED [ 58%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[kimi-sh] FAILED [ 58%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[kimi-ps] FAILED [ 58%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[trae-sh] FAILED [ 58%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[trae-ps] FAILED [ 58%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[pi-sh] FAILED [ 59%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[pi-ps] FAILED [ 59%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[iflow-sh] FAILED [ 59%]
+tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[iflow-ps] FAILED [ 59%]
+tests/test_core_pack_scaffold.py::test_pyproject_force_include_covers_all_templates PASSED [ 59%]
+tests/test_cursor_frontmatter.py::TestScriptFrontmatterPattern::test_create_new_has_mdc_frontmatter_logic PASSED [ 59%]
+tests/test_cursor_frontmatter.py::TestScriptFrontmatterPattern::test_update_existing_has_mdc_frontmatter_logic PASSED [ 59%]
+tests/test_cursor_frontmatter.py::TestScriptFrontmatterPattern::test_powershell_script_has_mdc_frontmatter_logic PASSED [ 59%]
+tests/test_cursor_frontmatter.py::TestCursorFrontmatterIntegration::test_new_mdc_file_has_frontmatter PASSED [ 60%]
+tests/test_cursor_frontmatter.py::TestCursorFrontmatterIntegration::test_existing_mdc_without_frontmatter_gets_it_added PASSED [ 60%]
+tests/test_cursor_frontmatter.py::TestCursorFrontmatterIntegration::test_existing_mdc_with_frontmatter_not_duplicated PASSED [ 60%]
+tests/test_cursor_frontmatter.py::TestCursorFrontmatterIntegration::test_non_mdc_file_has_no_frontmatter PASSED [ 60%]
+tests/test_extension_skills.py::TestExtensionManagerGetSkillsDir::test_returns_skills_dir_when_active PASSED [ 60%]
+tests/test_extension_skills.py::TestExtensionManagerGetSkillsDir::test_returns_none_when_no_ai_skills PASSED [ 60%]
+tests/test_extension_skills.py::TestExtensionManagerGetSkillsDir::test_returns_none_when_no_init_options PASSED [ 60%]
+tests/test_extension_skills.py::TestExtensionManagerGetSkillsDir::test_returns_none_when_skills_dir_missing PASSED [ 60%]
+tests/test_extension_skills.py::TestExtensionSkillRegistration::test_skills_created_when_ai_skills_active PASSED [ 61%]
+tests/test_extension_skills.py::TestExtensionSkillRegistration::test_skill_md_content_correct PASSED [ 61%]
+tests/test_extension_skills.py::TestExtensionSkillRegistration::test_skill_md_has_parseable_yaml PASSED [ 61%]
+tests/test_extension_skills.py::TestExtensionSkillRegistration::test_no_skills_when_ai_skills_disabled PASSED [ 61%]
+tests/test_extension_skills.py::TestExtensionSkillRegistration::test_no_skills_when_init_options_missing PASSED [ 61%]
+tests/test_extension_skills.py::TestExtensionSkillRegistration::test_existing_skill_not_overwritten PASSED [ 61%]
+tests/test_extension_skills.py::TestExtensionSkillRegistration::test_registered_skills_in_registry PASSED [ 61%]
+tests/test_extension_skills.py::TestExtensionSkillRegistration::test_kimi_uses_dot_notation PASSED [ 61%]
+tests/test_extension_skills.py::TestExtensionSkillRegistration::test_missing_command_file_skipped PASSED [ 61%]
+tests/test_extension_skills.py::TestExtensionSkillUnregistration::test_skills_removed_on_extension_remove PASSED [ 62%]
+tests/test_extension_skills.py::TestExtensionSkillUnregistration::test_other_skills_preserved_on_remove PASSED [ 62%]
+tests/test_extension_skills.py::TestExtensionSkillUnregistration::test_remove_handles_already_deleted_skills PASSED [ 62%]
+tests/test_extension_skills.py::TestExtensionSkillUnregistration::test_remove_no_skills_when_not_active PASSED [ 62%]
+tests/test_extension_skills.py::TestExtensionSkillEdgeCases::test_command_without_frontmatter PASSED [ 62%]
+tests/test_extension_skills.py::TestExtensionSkillEdgeCases::test_gemini_agent_skills PASSED [ 62%]
+tests/test_extension_skills.py::TestExtensionSkillEdgeCases::test_multiple_extensions_independent_skills PASSED [ 62%]
+tests/test_extension_skills.py::TestExtensionSkillEdgeCases::test_malformed_frontmatter_handled PASSED [ 62%]
+tests/test_extension_skills.py::TestExtensionSkillEdgeCases::test_remove_cleans_up_when_init_options_deleted PASSED [ 63%]
+tests/test_extension_skills.py::TestExtensionSkillEdgeCases::test_remove_cleans_up_when_ai_skills_toggled PASSED [ 63%]
+tests/test_extensions.py::TestNormalizePriority::test_valid_integer PASSED [ 63%]
+tests/test_extensions.py::TestNormalizePriority::test_valid_string_number PASSED [ 63%]
+tests/test_extensions.py::TestNormalizePriority::test_zero_returns_default PASSED [ 63%]
+tests/test_extensions.py::TestNormalizePriority::test_negative_returns_default PASSED [ 63%]
+tests/test_extensions.py::TestNormalizePriority::test_none_returns_default PASSED [ 63%]
+tests/test_extensions.py::TestNormalizePriority::test_invalid_string_returns_default PASSED [ 63%]
+tests/test_extensions.py::TestNormalizePriority::test_float_truncates PASSED [ 64%]
+tests/test_extensions.py::TestNormalizePriority::test_empty_string_returns_default PASSED [ 64%]
+tests/test_extensions.py::TestNormalizePriority::test_custom_default PASSED [ 64%]
+tests/test_extensions.py::TestExtensionManifest::test_valid_manifest PASSED [ 64%]
+tests/test_extensions.py::TestExtensionManifest::test_missing_required_field PASSED [ 64%]
+tests/test_extensions.py::TestExtensionManifest::test_invalid_extension_id PASSED [ 64%]
+tests/test_extensions.py::TestExtensionManifest::test_invalid_version PASSED [ 64%]
+tests/test_extensions.py::TestExtensionManifest::test_invalid_command_name PASSED [ 64%]
+tests/test_extensions.py::TestExtensionManifest::test_no_commands PASSED [ 64%]
+tests/test_extensions.py::TestExtensionManifest::test_manifest_hash PASSED [ 65%]
+tests/test_extensions.py::TestExtensionRegistry::test_empty_registry PASSED [ 65%]
+tests/test_extensions.py::TestExtensionRegistry::test_add_extension PASSED [ 65%]
+tests/test_extensions.py::TestExtensionRegistry::test_remove_extension PASSED [ 65%]
+tests/test_extensions.py::TestExtensionRegistry::test_registry_persistence PASSED [ 65%]
+tests/test_extensions.py::TestExtensionRegistry::test_update_preserves_installed_at PASSED [ 65%]
+tests/test_extensions.py::TestExtensionRegistry::test_update_merges_with_existing PASSED [ 65%]
+tests/test_extensions.py::TestExtensionRegistry::test_update_raises_for_missing_extension PASSED [ 65%]
+tests/test_extensions.py::TestExtensionRegistry::test_restore_overwrites_completely PASSED [ 66%]
+tests/test_extensions.py::TestExtensionRegistry::test_restore_can_recreate_removed_entry PASSED [ 66%]
+tests/test_extensions.py::TestExtensionRegistry::test_restore_rejects_none_metadata PASSED [ 66%]
+tests/test_extensions.py::TestExtensionRegistry::test_restore_rejects_non_dict_metadata PASSED [ 66%]
+tests/test_extensions.py::TestExtensionRegistry::test_restore_uses_deep_copy PASSED [ 66%]
+tests/test_extensions.py::TestExtensionRegistry::test_get_returns_deep_copy PASSED [ 66%]
+tests/test_extensions.py::TestExtensionRegistry::test_get_returns_none_for_corrupted_entry PASSED [ 66%]
+tests/test_extensions.py::TestExtensionRegistry::test_list_returns_deep_copy PASSED [ 66%]
+tests/test_extensions.py::TestExtensionRegistry::test_list_returns_empty_dict_for_corrupted_registry PASSED [ 66%]
+tests/test_extensions.py::TestExtensionManager::test_check_compatibility_valid PASSED [ 67%]
+tests/test_extensions.py::TestExtensionManager::test_check_compatibility_invalid PASSED [ 67%]
+tests/test_extensions.py::TestExtensionManager::test_install_from_directory PASSED [ 67%]
+tests/test_extensions.py::TestExtensionManager::test_install_duplicate PASSED [ 67%]
+tests/test_extensions.py::TestExtensionManager::test_remove_extension PASSED [ 67%]
+tests/test_extensions.py::TestExtensionManager::test_remove_nonexistent PASSED [ 67%]
+tests/test_extensions.py::TestExtensionManager::test_list_installed PASSED [ 67%]
+tests/test_extensions.py::TestExtensionManager::test_config_backup_on_remove PASSED [ 67%]
+tests/test_extensions.py::TestCommandRegistrar::test_kiro_cli_agent_config_present PASSED [ 68%]
+tests/test_extensions.py::TestCommandRegistrar::test_codex_agent_config_present PASSED [ 68%]
+tests/test_extensions.py::TestCommandRegistrar::test_pi_agent_config_present PASSED [ 68%]
+tests/test_extensions.py::TestCommandRegistrar::test_qwen_agent_config_is_markdown PASSED [ 68%]
+tests/test_extensions.py::TestCommandRegistrar::test_parse_frontmatter_valid PASSED [ 68%]
+tests/test_extensions.py::TestCommandRegistrar::test_parse_frontmatter_no_frontmatter PASSED [ 68%]
+tests/test_extensions.py::TestCommandRegistrar::test_parse_frontmatter_non_mapping_returns_empty_dict PASSED [ 68%]
+tests/test_extensions.py::TestCommandRegistrar::test_render_frontmatter PASSED [ 68%]
+tests/test_extensions.py::TestCommandRegistrar::test_render_frontmatter_unicode PASSED [ 69%]
+tests/test_extensions.py::TestCommandRegistrar::test_register_commands_for_claude PASSED [ 69%]
+tests/test_extensions.py::TestCommandRegistrar::test_command_with_aliases PASSED [ 69%]
+tests/test_extensions.py::TestCommandRegistrar::test_unregister_commands_for_codex_skills_uses_mapped_names PASSED [ 69%]
+tests/test_extensions.py::TestCommandRegistrar::test_register_commands_for_all_agents_distinguishes_codex_from_amp PASSED [ 69%]
+tests/test_extensions.py::TestCommandRegistrar::test_codex_skill_registration_writes_skill_frontmatter PASSED [ 69%]
+tests/test_extensions.py::TestCommandRegistrar::test_codex_skill_registration_resolves_script_placeholders PASSED [ 69%]
+tests/test_extensions.py::TestCommandRegistrar::test_codex_skill_alias_frontmatter_matches_alias_name PASSED [ 69%]
+tests/test_extensions.py::TestCommandRegistrar::test_codex_skill_registration_uses_fallback_script_variant_without_init_options PASSED [ 69%]
+tests/test_extensions.py::TestCommandRegistrar::test_codex_skill_registration_fallback_prefers_powershell_on_windows PASSED [ 70%]
+tests/test_extensions.py::TestCommandRegistrar::test_register_commands_for_copilot PASSED [ 70%]
+tests/test_extensions.py::TestCommandRegistrar::test_copilot_companion_prompt_created PASSED [ 70%]
+tests/test_extensions.py::TestCommandRegistrar::test_copilot_aliases_get_companion_prompts PASSED [ 70%]
+tests/test_extensions.py::TestCommandRegistrar::test_non_copilot_agent_no_companion_file PASSED [ 70%]
+tests/test_extensions.py::TestVersionSatisfies::test_version_satisfies_simple PASSED [ 70%]
+tests/test_extensions.py::TestVersionSatisfies::test_version_satisfies_range PASSED [ 70%]
+tests/test_extensions.py::TestVersionSatisfies::test_version_satisfies_complex PASSED [ 70%]
+tests/test_extensions.py::TestVersionSatisfies::test_version_satisfies_invalid PASSED [ 71%]
+tests/test_extensions.py::TestIntegration::test_full_install_and_remove_workflow PASSED [ 71%]
+tests/test_extensions.py::TestIntegration::test_copilot_cleanup_removes_prompt_files PASSED [ 71%]
+tests/test_extensions.py::TestIntegration::test_multiple_extensions PASSED [ 71%]
+tests/test_extensions.py::TestExtensionCatalog::test_catalog_initialization PASSED [ 71%]
+tests/test_extensions.py::TestExtensionCatalog::test_cache_directory_creation PASSED [ 71%]
+tests/test_extensions.py::TestExtensionCatalog::test_cache_expiration PASSED [ 71%]
+tests/test_extensions.py::TestExtensionCatalog::test_search_all_extensions PASSED [ 71%]
+tests/test_extensions.py::TestExtensionCatalog::test_search_by_query PASSED [ 71%]
+tests/test_extensions.py::TestExtensionCatalog::test_search_by_tag PASSED [ 72%]
+tests/test_extensions.py::TestExtensionCatalog::test_search_verified_only PASSED [ 72%]
+tests/test_extensions.py::TestExtensionCatalog::test_get_extension_info PASSED [ 72%]
+tests/test_extensions.py::TestExtensionCatalog::test_clear_cache PASSED  [ 72%]
+tests/test_extensions.py::TestCatalogEntry::test_catalog_entry_creation PASSED [ 72%]
+tests/test_extensions.py::TestCatalogStack::test_default_stack PASSED    [ 72%]
+tests/test_extensions.py::TestCatalogStack::test_env_var_overrides_default_stack PASSED [ 72%]
+tests/test_extensions.py::TestCatalogStack::test_env_var_invalid_url_raises PASSED [ 72%]
+tests/test_extensions.py::TestCatalogStack::test_project_config_overrides_defaults PASSED [ 73%]
+tests/test_extensions.py::TestCatalogStack::test_project_config_sorted_by_priority PASSED [ 73%]
+tests/test_extensions.py::TestCatalogStack::test_project_config_invalid_url_raises PASSED [ 73%]
+tests/test_extensions.py::TestCatalogStack::test_empty_project_config_raises_error PASSED [ 73%]
+tests/test_extensions.py::TestCatalogStack::test_catalog_entries_without_urls_raises_error PASSED [ 73%]
+tests/test_extensions.py::TestCatalogStack::test_load_catalog_config_missing_file PASSED [ 73%]
+tests/test_extensions.py::TestCatalogStack::test_load_catalog_config_localhost_allowed PASSED [ 73%]
+tests/test_extensions.py::TestCatalogStack::test_merge_conflict_higher_priority_wins PASSED [ 73%]
+tests/test_extensions.py::TestCatalogStack::test_install_allowed_false_from_get_extension_info PASSED [ 74%]
+tests/test_extensions.py::TestCatalogStack::test_search_results_include_catalog_metadata PASSED [ 74%]
+tests/test_extensions.py::TestExtensionIgnore::test_no_extensionignore PASSED [ 74%]
+tests/test_extensions.py::TestExtensionIgnore::test_extensionignore_excludes_files PASSED [ 74%]
+tests/test_extensions.py::TestExtensionIgnore::test_extensionignore_glob_patterns PASSED [ 74%]
+tests/test_extensions.py::TestExtensionIgnore::test_extensionignore_comments_and_blanks PASSED [ 74%]
+tests/test_extensions.py::TestExtensionIgnore::test_extensionignore_itself_excluded PASSED [ 74%]
+tests/test_extensions.py::TestExtensionIgnore::test_extensionignore_relative_path_match PASSED [ 74%]
+tests/test_extensions.py::TestExtensionIgnore::test_extensionignore_dotdot_pattern_is_noop PASSED [ 74%]
+tests/test_extensions.py::TestExtensionIgnore::test_extensionignore_absolute_path_pattern_is_noop PASSED [ 75%]
+tests/test_extensions.py::TestExtensionIgnore::test_extensionignore_empty_file PASSED [ 75%]
+tests/test_extensions.py::TestExtensionIgnore::test_extensionignore_windows_backslash_patterns PASSED [ 75%]
+tests/test_extensions.py::TestExtensionIgnore::test_extensionignore_star_does_not_cross_directories PASSED [ 75%]
+tests/test_extensions.py::TestExtensionIgnore::test_extensionignore_doublestar_crosses_directories PASSED [ 75%]
+tests/test_extensions.py::TestExtensionIgnore::test_extensionignore_negation_pattern PASSED [ 75%]
+tests/test_extensions.py::TestExtensionAddCLI::test_add_by_display_name_uses_resolved_id_for_download PASSED [ 75%]
+tests/test_extensions.py::TestExtensionUpdateCLI::test_update_success_preserves_installed_at PASSED [ 75%]
+tests/test_extensions.py::TestExtensionUpdateCLI::test_update_failure_rolls_back_registry_hooks_and_commands PASSED [ 76%]
+tests/test_extensions.py::TestExtensionListCLI::test_list_shows_extension_id PASSED [ 76%]
+tests/test_extensions.py::TestExtensionPriority::test_list_by_priority_empty PASSED [ 76%]
+tests/test_extensions.py::TestExtensionPriority::test_list_by_priority_single PASSED [ 76%]
+tests/test_extensions.py::TestExtensionPriority::test_list_by_priority_ordering PASSED [ 76%]
+tests/test_extensions.py::TestExtensionPriority::test_list_by_priority_default PASSED [ 76%]
+tests/test_extensions.py::TestExtensionPriority::test_list_by_priority_invalid_priority_defaults PASSED [ 76%]
+tests/test_extensions.py::TestExtensionPriority::test_list_by_priority_excludes_disabled PASSED [ 76%]
+tests/test_extensions.py::TestExtensionPriority::test_list_by_priority_includes_disabled_when_requested PASSED [ 76%]
+tests/test_extensions.py::TestExtensionPriority::test_install_with_priority PASSED [ 77%]
+tests/test_extensions.py::TestExtensionPriority::test_install_default_priority PASSED [ 77%]
+tests/test_extensions.py::TestExtensionPriority::test_list_installed_includes_priority PASSED [ 77%]
+tests/test_extensions.py::TestExtensionPriority::test_priority_preserved_on_update PASSED [ 77%]
+tests/test_extensions.py::TestExtensionPriority::test_corrupted_extension_entry_not_picked_up_as_unregistered PASSED [ 77%]
+tests/test_extensions.py::TestExtensionPriorityCLI::test_add_with_priority_option PASSED [ 77%]
+tests/test_extensions.py::TestExtensionPriorityCLI::test_list_shows_priority PASSED [ 77%]
+tests/test_extensions.py::TestExtensionPriorityCLI::test_set_priority_changes_priority PASSED [ 77%]
+tests/test_extensions.py::TestExtensionPriorityCLI::test_set_priority_same_value_no_change PASSED [ 78%]
+tests/test_extensions.py::TestExtensionPriorityCLI::test_set_priority_invalid_value PASSED [ 78%]
+tests/test_extensions.py::TestExtensionPriorityCLI::test_set_priority_not_installed PASSED [ 78%]
+tests/test_extensions.py::TestExtensionPriorityCLI::test_set_priority_by_display_name PASSED [ 78%]
+tests/test_extensions.py::TestExtensionPriorityBackwardsCompatibility::test_legacy_extension_without_priority_field PASSED [ 78%]
+tests/test_extensions.py::TestExtensionPriorityBackwardsCompatibility::test_legacy_extension_in_list_installed PASSED [ 78%]
+tests/test_extensions.py::TestExtensionPriorityBackwardsCompatibility::test_mixed_legacy_and_new_extensions_ordering PASSED [ 78%]
+tests/test_merge.py::test_merge_json_files_type_mismatch_preservation PASSED [ 78%]
+tests/test_merge.py::test_merge_json_files_deep_nesting PASSED           [ 79%]
+tests/test_merge.py::test_merge_json_files_empty_existing PASSED         [ 79%]
+tests/test_merge.py::test_merge_vscode_realistic_scenario PASSED         [ 79%]
+tests/test_merge.py::test_merge_json_files_with_bom PASSED               [ 79%]
+tests/test_merge.py::test_merge_json_files_not_a_dictionary_template PASSED [ 79%]
+tests/test_merge.py::test_merge_json_files_unparseable_existing PASSED   [ 79%]
+tests/test_merge.py::test_merge_json_files_list_preservation PASSED      [ 79%]
+tests/test_merge.py::test_merge_json_files_no_changes PASSED             [ 79%]
+tests/test_merge.py::test_merge_json_files_type_mismatch_no_op PASSED    [ 79%]
+tests/test_merge.py::test_handle_vscode_settings_preserves_mode_on_atomic_write PASSED [ 80%]
+tests/test_presets.py::TestPresetManifest::test_valid_manifest PASSED    [ 80%]
+tests/test_presets.py::TestPresetManifest::test_missing_manifest PASSED  [ 80%]
+tests/test_presets.py::TestPresetManifest::test_invalid_yaml PASSED      [ 80%]
+tests/test_presets.py::TestPresetManifest::test_missing_schema_version PASSED [ 80%]
+tests/test_presets.py::TestPresetManifest::test_wrong_schema_version PASSED [ 80%]
+tests/test_presets.py::TestPresetManifest::test_missing_pack_id PASSED   [ 80%]
+tests/test_presets.py::TestPresetManifest::test_invalid_pack_id_format PASSED [ 80%]
+tests/test_presets.py::TestPresetManifest::test_invalid_version PASSED   [ 81%]
+tests/test_presets.py::TestPresetManifest::test_missing_speckit_version PASSED [ 81%]
+tests/test_presets.py::TestPresetManifest::test_no_templates_provided PASSED [ 81%]
+tests/test_presets.py::TestPresetManifest::test_invalid_template_type PASSED [ 81%]
+tests/test_presets.py::TestPresetManifest::test_valid_template_types PASSED [ 81%]
+tests/test_presets.py::TestPresetManifest::test_template_missing_required_fields PASSED [ 81%]
+tests/test_presets.py::TestPresetManifest::test_invalid_template_name_format PASSED [ 81%]
+tests/test_presets.py::TestPresetManifest::test_get_hash PASSED          [ 81%]
+tests/test_presets.py::TestPresetManifest::test_multiple_templates PASSED [ 82%]
+tests/test_presets.py::TestPresetRegistry::test_empty_registry PASSED    [ 82%]
+tests/test_presets.py::TestPresetRegistry::test_add_and_get PASSED       [ 82%]
+tests/test_presets.py::TestPresetRegistry::test_remove PASSED            [ 82%]
+tests/test_presets.py::TestPresetRegistry::test_remove_nonexistent PASSED [ 82%]
+tests/test_presets.py::TestPresetRegistry::test_list PASSED              [ 82%]
+tests/test_presets.py::TestPresetRegistry::test_persistence PASSED       [ 82%]
+tests/test_presets.py::TestPresetRegistry::test_corrupted_registry PASSED [ 82%]
+tests/test_presets.py::TestPresetRegistry::test_get_nonexistent PASSED   [ 82%]
+tests/test_presets.py::TestPresetRegistry::test_restore PASSED           [ 83%]
+tests/test_presets.py::TestPresetRegistry::test_restore_rejects_none_metadata PASSED [ 83%]
+tests/test_presets.py::TestPresetRegistry::test_restore_rejects_non_dict_metadata PASSED [ 83%]
+tests/test_presets.py::TestPresetRegistry::test_restore_uses_deep_copy PASSED [ 83%]
+tests/test_presets.py::TestPresetRegistry::test_get_returns_deep_copy PASSED [ 83%]
+tests/test_presets.py::TestPresetRegistry::test_get_returns_none_for_corrupted_entry PASSED [ 83%]
+tests/test_presets.py::TestPresetRegistry::test_list_returns_deep_copy PASSED [ 83%]
+tests/test_presets.py::TestPresetRegistry::test_list_returns_empty_dict_for_corrupted_registry PASSED [ 83%]
+tests/test_presets.py::TestPresetRegistry::test_list_by_priority_excludes_disabled PASSED [ 84%]
+tests/test_presets.py::TestPresetRegistry::test_list_by_priority_includes_disabled_when_requested PASSED [ 84%]
+tests/test_presets.py::TestPresetManager::test_install_from_directory PASSED [ 84%]
+tests/test_presets.py::TestPresetManager::test_install_already_installed PASSED [ 84%]
+tests/test_presets.py::TestPresetManager::test_install_incompatible PASSED [ 84%]
+tests/test_presets.py::TestPresetManager::test_install_from_zip PASSED   [ 84%]
+tests/test_presets.py::TestPresetManager::test_install_from_zip_nested PASSED [ 84%]
+tests/test_presets.py::TestPresetManager::test_install_from_zip_no_manifest PASSED [ 84%]
+tests/test_presets.py::TestPresetManager::test_remove PASSED             [ 84%]
+tests/test_presets.py::TestPresetManager::test_remove_nonexistent PASSED [ 85%]
+tests/test_presets.py::TestPresetManager::test_list_installed PASSED     [ 85%]
+tests/test_presets.py::TestPresetManager::test_list_installed_empty PASSED [ 85%]
+tests/test_presets.py::TestPresetManager::test_get_pack PASSED           [ 85%]
+tests/test_presets.py::TestPresetManager::test_get_pack_not_installed PASSED [ 85%]
+tests/test_presets.py::TestPresetManager::test_check_compatibility_valid PASSED [ 85%]
+tests/test_presets.py::TestPresetManager::test_check_compatibility_invalid PASSED [ 85%]
+tests/test_presets.py::TestPresetManager::test_install_with_priority PASSED [ 85%]
+tests/test_presets.py::TestPresetManager::test_install_default_priority PASSED [ 86%]
+tests/test_presets.py::TestPresetManager::test_list_installed_includes_priority PASSED [ 86%]
+tests/test_presets.py::TestRegistryPriority::test_list_by_priority PASSED [ 86%]
+tests/test_presets.py::TestRegistryPriority::test_list_by_priority_default PASSED [ 86%]
+tests/test_presets.py::TestRegistryPriority::test_list_by_priority_invalid_priority_defaults PASSED [ 86%]
+tests/test_presets.py::TestPresetResolver::test_resolve_core_template PASSED [ 86%]
+tests/test_presets.py::TestPresetResolver::test_resolve_nonexistent PASSED [ 86%]
+tests/test_presets.py::TestPresetResolver::test_resolve_higher_priority_pack_wins PASSED [ 86%]
+tests/test_presets.py::TestPresetResolver::test_resolve_override_takes_priority PASSED [ 87%]
+tests/test_presets.py::TestPresetResolver::test_resolve_pack_takes_priority_over_core PASSED [ 87%]
+tests/test_presets.py::TestPresetResolver::test_resolve_override_takes_priority_over_pack PASSED [ 87%]
+tests/test_presets.py::TestPresetResolver::test_resolve_extension_provided_templates PASSED [ 87%]
+tests/test_presets.py::TestPresetResolver::test_resolve_disabled_extension_templates_skipped PASSED [ 87%]
+tests/test_presets.py::TestPresetResolver::test_resolve_disabled_extension_not_picked_up_as_unregistered PASSED [ 87%]
+tests/test_presets.py::TestPresetResolver::test_resolve_pack_over_extension PASSED [ 87%]
+tests/test_presets.py::TestPresetResolver::test_resolve_with_source_core PASSED [ 87%]
+tests/test_presets.py::TestPresetResolver::test_resolve_with_source_override PASSED [ 87%]
+tests/test_presets.py::TestPresetResolver::test_resolve_with_source_pack PASSED [ 88%]
+tests/test_presets.py::TestPresetResolver::test_resolve_with_source_extension PASSED [ 88%]
+tests/test_presets.py::TestPresetResolver::test_resolve_with_source_not_found PASSED [ 88%]
+tests/test_presets.py::TestPresetResolver::test_resolve_skips_hidden_extension_dirs PASSED [ 88%]
+tests/test_presets.py::TestExtensionPriorityResolution::test_unregistered_beats_registered_with_lower_precedence PASSED [ 88%]
+tests/test_presets.py::TestExtensionPriorityResolution::test_registered_with_higher_precedence_beats_unregistered PASSED [ 88%]
+tests/test_presets.py::TestExtensionPriorityResolution::test_unregistered_attribution_with_priority_ordering PASSED [ 88%]
+tests/test_presets.py::TestExtensionPriorityResolution::test_same_priority_sorted_alphabetically PASSED [ 88%]
+tests/test_presets.py::TestPresetCatalog::test_default_catalog_url PASSED [ 89%]
+tests/test_presets.py::TestPresetCatalog::test_community_catalog_url PASSED [ 89%]
+tests/test_presets.py::TestPresetCatalog::test_cache_validation_no_cache PASSED [ 89%]
+tests/test_presets.py::TestPresetCatalog::test_cache_validation_valid PASSED [ 89%]
+tests/test_presets.py::TestPresetCatalog::test_cache_validation_expired PASSED [ 89%]
+tests/test_presets.py::TestPresetCatalog::test_cache_validation_corrupted PASSED [ 89%]
+tests/test_presets.py::TestPresetCatalog::test_clear_cache PASSED        [ 89%]
+tests/test_presets.py::TestPresetCatalog::test_search_with_cached_data PASSED [ 89%]
+tests/test_presets.py::TestPresetCatalog::test_get_pack_info PASSED      [ 89%]
+tests/test_presets.py::TestPresetCatalog::test_validate_catalog_url_https PASSED [ 90%]
+tests/test_presets.py::TestPresetCatalog::test_validate_catalog_url_http_rejected PASSED [ 90%]
+tests/test_presets.py::TestPresetCatalog::test_validate_catalog_url_localhost_http_allowed PASSED [ 90%]
+tests/test_presets.py::TestPresetCatalog::test_env_var_catalog_url PASSED [ 90%]
+tests/test_presets.py::TestIntegration::test_full_install_resolve_remove_cycle PASSED [ 90%]
+tests/test_presets.py::TestIntegration::test_override_beats_pack_beats_extension_beats_core PASSED [ 90%]
+tests/test_presets.py::TestIntegration::test_install_from_zip_then_resolve PASSED [ 90%]
+tests/test_presets.py::TestPresetCatalogEntry::test_create_entry PASSED  [ 90%]
+tests/test_presets.py::TestPresetCatalogEntry::test_default_description PASSED [ 91%]
+tests/test_presets.py::TestPresetCatalogMultiCatalog::test_default_active_catalogs PASSED [ 91%]
+tests/test_presets.py::TestPresetCatalogMultiCatalog::test_env_var_overrides_catalogs PASSED [ 91%]
+tests/test_presets.py::TestPresetCatalogMultiCatalog::test_project_config_overrides_defaults PASSED [ 91%]
+tests/test_presets.py::TestPresetCatalogMultiCatalog::test_load_catalog_config_nonexistent PASSED [ 91%]
+tests/test_presets.py::TestPresetCatalogMultiCatalog::test_load_catalog_config_empty PASSED [ 91%]
+tests/test_presets.py::TestPresetCatalogMultiCatalog::test_load_catalog_config_invalid_yaml PASSED [ 91%]
+tests/test_presets.py::TestPresetCatalogMultiCatalog::test_load_catalog_config_not_a_list PASSED [ 91%]
+tests/test_presets.py::TestPresetCatalogMultiCatalog::test_load_catalog_config_invalid_entry PASSED [ 92%]
+tests/test_presets.py::TestPresetCatalogMultiCatalog::test_load_catalog_config_http_url_rejected PASSED [ 92%]
+tests/test_presets.py::TestPresetCatalogMultiCatalog::test_load_catalog_config_priority_sorting PASSED [ 92%]
+tests/test_presets.py::TestPresetCatalogMultiCatalog::test_load_catalog_config_invalid_priority PASSED [ 92%]
+tests/test_presets.py::TestPresetCatalogMultiCatalog::test_load_catalog_config_install_allowed_string PASSED [ 92%]
+tests/test_presets.py::TestPresetCatalogMultiCatalog::test_get_catalog_url_uses_highest_priority PASSED [ 92%]
+tests/test_presets.py::TestPresetCatalogMultiCatalog::test_cache_paths_default_url PASSED [ 92%]
+tests/test_presets.py::TestPresetCatalogMultiCatalog::test_cache_paths_custom_url PASSED [ 92%]
+tests/test_presets.py::TestPresetCatalogMultiCatalog::test_url_cache_valid PASSED [ 92%]
+tests/test_presets.py::TestPresetCatalogMultiCatalog::test_url_cache_expired PASSED [ 93%]
+tests/test_presets.py::TestSelfTestPreset::test_self_test_preset_exists PASSED [ 93%]
+tests/test_presets.py::TestSelfTestPreset::test_self_test_manifest_valid PASSED [ 93%]
+tests/test_presets.py::TestSelfTestPreset::test_self_test_provides_all_core_templates PASSED [ 93%]
+tests/test_presets.py::TestSelfTestPreset::test_self_test_template_files_exist PASSED [ 93%]
+tests/test_presets.py::TestSelfTestPreset::test_self_test_templates_have_marker PASSED [ 93%]
+tests/test_presets.py::TestSelfTestPreset::test_install_self_test_preset PASSED [ 93%]
+tests/test_presets.py::TestSelfTestPreset::test_self_test_overrides_all_core_templates PASSED [ 93%]
+tests/test_presets.py::TestSelfTestPreset::test_self_test_resolve_with_source PASSED [ 94%]
+tests/test_presets.py::TestSelfTestPreset::test_self_test_removal_restores_core PASSED [ 94%]
+tests/test_presets.py::TestSelfTestPreset::test_self_test_not_in_catalog PASSED [ 94%]
+tests/test_presets.py::TestSelfTestPreset::test_self_test_has_command PASSED [ 94%]
+tests/test_presets.py::TestSelfTestPreset::test_self_test_command_file_exists PASSED [ 94%]
+tests/test_presets.py::TestSelfTestPreset::test_self_test_registers_commands_for_claude PASSED [ 94%]
+tests/test_presets.py::TestSelfTestPreset::test_self_test_registers_commands_for_gemini PASSED [ 94%]
+tests/test_presets.py::TestSelfTestPreset::test_self_test_unregisters_commands_on_remove PASSED [ 94%]
+tests/test_presets.py::TestSelfTestPreset::test_self_test_no_commands_without_agent_dirs PASSED [ 94%]
+tests/test_presets.py::TestSelfTestPreset::test_extension_command_skipped_when_extension_missing PASSED [ 95%]
+tests/test_presets.py::TestSelfTestPreset::test_extension_command_registered_when_extension_present PASSED [ 95%]
+tests/test_presets.py::TestInitOptions::test_save_and_load_round_trip PASSED [ 95%]
+tests/test_presets.py::TestInitOptions::test_load_returns_empty_when_missing PASSED [ 95%]
+tests/test_presets.py::TestInitOptions::test_load_returns_empty_on_invalid_json PASSED [ 95%]
+tests/test_presets.py::TestPresetSkills::test_skill_overridden_on_preset_install PASSED [ 95%]
+tests/test_presets.py::TestPresetSkills::test_skill_not_updated_when_ai_skills_disabled PASSED [ 95%]
+tests/test_presets.py::TestPresetSkills::test_skill_not_updated_without_init_options PASSED [ 95%]
+tests/test_presets.py::TestPresetSkills::test_skill_restored_on_preset_remove PASSED [ 96%]
+tests/test_presets.py::TestPresetSkills::test_no_skills_registered_when_no_skill_dir_exists PASSED [ 96%]
+tests/test_presets.py::TestPresetSetPriority::test_set_priority_changes_priority PASSED [ 96%]
+tests/test_presets.py::TestPresetSetPriority::test_set_priority_same_value_no_change PASSED [ 96%]
+tests/test_presets.py::TestPresetSetPriority::test_set_priority_invalid_value PASSED [ 96%]
+tests/test_presets.py::TestPresetSetPriority::test_set_priority_not_installed PASSED [ 96%]
+tests/test_presets.py::TestPresetPriorityBackwardsCompatibility::test_legacy_preset_without_priority_field PASSED [ 96%]
+tests/test_presets.py::TestPresetPriorityBackwardsCompatibility::test_legacy_preset_in_list_installed PASSED [ 96%]
+tests/test_presets.py::TestPresetPriorityBackwardsCompatibility::test_mixed_legacy_and_new_presets_ordering PASSED [ 97%]
+tests/test_presets.py::TestPresetEnableDisable::test_disable_preset PASSED [ 97%]
+tests/test_presets.py::TestPresetEnableDisable::test_enable_preset PASSED [ 97%]
+tests/test_presets.py::TestPresetEnableDisable::test_disable_already_disabled PASSED [ 97%]
+tests/test_presets.py::TestPresetEnableDisable::test_enable_already_enabled PASSED [ 97%]
+tests/test_presets.py::TestPresetEnableDisable::test_disable_not_installed PASSED [ 97%]
+tests/test_presets.py::TestPresetEnableDisable::test_enable_not_installed PASSED [ 97%]
+tests/test_presets.py::TestPresetEnableDisable::test_disabled_preset_excluded_from_resolution PASSED [ 97%]
+tests/test_presets.py::TestPresetEnableDisable::test_enable_corrupted_registry_entry PASSED [ 97%]
+tests/test_presets.py::TestPresetEnableDisable::test_disable_corrupted_registry_entry PASSED [ 98%]
+tests/test_timestamp_branches.py::TestTimestampBranch::test_timestamp_creates_branch PASSED [ 98%]
+tests/test_timestamp_branches.py::TestTimestampBranch::test_number_and_timestamp_warns PASSED [ 98%]
+tests/test_timestamp_branches.py::TestTimestampBranch::test_json_output_keys PASSED [ 98%]
+tests/test_timestamp_branches.py::TestTimestampBranch::test_long_name_truncation PASSED [ 98%]
+tests/test_timestamp_branches.py::TestSequentialBranch::test_sequential_default_with_existing_specs PASSED [ 98%]
+tests/test_timestamp_branches.py::TestSequentialBranch::test_sequential_ignores_timestamp_dirs PASSED [ 98%]
+tests/test_timestamp_branches.py::TestCheckFeatureBranch::test_accepts_timestamp_branch PASSED [ 98%]
+tests/test_timestamp_branches.py::TestCheckFeatureBranch::test_accepts_sequential_branch PASSED [ 99%]
+tests/test_timestamp_branches.py::TestCheckFeatureBranch::test_rejects_main PASSED [ 99%]
+tests/test_timestamp_branches.py::TestCheckFeatureBranch::test_rejects_partial_timestamp PASSED [ 99%]
+tests/test_timestamp_branches.py::TestFindFeatureDirByPrefix::test_timestamp_branch PASSED [ 99%]
+tests/test_timestamp_branches.py::TestFindFeatureDirByPrefix::test_cross_branch_prefix PASSED [ 99%]
+tests/test_timestamp_branches.py::TestGetCurrentBranch::test_env_var PASSED [ 99%]
+tests/test_timestamp_branches.py::TestNoGitTimestamp::test_no_git_timestamp PASSED [ 99%]
+tests/test_timestamp_branches.py::TestE2EFlow::test_e2e_timestamp PASSED [ 99%]
+tests/test_timestamp_branches.py::TestE2EFlow::test_e2e_sequential PASSED [100%]
+
+=================================== FAILURES ===================================
+______________ test_parity_bundled_vs_release_script[copilot-sh] _______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'copilot' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+______________ test_parity_bundled_vs_release_script[copilot-ps] _______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'copilot' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_______________ test_parity_bundled_vs_release_script[claude-sh] _______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'claude' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_______________ test_parity_bundled_vs_release_script[claude-ps] _______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'claude' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_______________ test_parity_bundled_vs_release_script[gemini-sh] _______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'gemini' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_______________ test_parity_bundled_vs_release_script[gemini-ps] _______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'gemini' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+____________ test_parity_bundled_vs_release_script[cursor-agent-sh] ____________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'cursor-agent' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+____________ test_parity_bundled_vs_release_script[cursor-agent-ps] ____________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'cursor-agent' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[qwen-sh] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'qwen' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[qwen-ps] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'qwen' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+______________ test_parity_bundled_vs_release_script[opencode-sh] ______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'opencode' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+______________ test_parity_bundled_vs_release_script[opencode-ps] ______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'opencode' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_______________ test_parity_bundled_vs_release_script[codex-sh] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'codex' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_______________ test_parity_bundled_vs_release_script[codex-ps] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'codex' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+______________ test_parity_bundled_vs_release_script[windsurf-sh] ______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'windsurf' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+______________ test_parity_bundled_vs_release_script[windsurf-ps] ______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'windsurf' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_______________ test_parity_bundled_vs_release_script[junie-sh] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'junie' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_______________ test_parity_bundled_vs_release_script[junie-ps] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'junie' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+______________ test_parity_bundled_vs_release_script[kilocode-sh] ______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'kilocode' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+______________ test_parity_bundled_vs_release_script[kilocode-ps] ______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'kilocode' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_______________ test_parity_bundled_vs_release_script[auggie-sh] _______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'auggie' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_______________ test_parity_bundled_vs_release_script[auggie-ps] _______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'auggie' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_____________ test_parity_bundled_vs_release_script[codebuddy-sh] ______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'codebuddy' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_____________ test_parity_bundled_vs_release_script[codebuddy-ps] ______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'codebuddy' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+______________ test_parity_bundled_vs_release_script[qodercli-sh] ______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'qodercli' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+______________ test_parity_bundled_vs_release_script[qodercli-ps] ______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'qodercli' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[roo-sh] _________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'roo' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[roo-ps] _________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'roo' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+______________ test_parity_bundled_vs_release_script[kiro-cli-sh] ______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'kiro-cli' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+______________ test_parity_bundled_vs_release_script[kiro-cli-ps] ______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'kiro-cli' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[amp-sh] _________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'amp' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[amp-ps] _________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'amp' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[shai-sh] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'shai' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[shai-ps] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'shai' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+______________ test_parity_bundled_vs_release_script[tabnine-sh] _______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'tabnine' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+______________ test_parity_bundled_vs_release_script[tabnine-ps] _______________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'tabnine' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[agy-sh] _________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'agy' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[agy-ps] _________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'agy' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[bob-sh] _________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'bob' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[bob-ps] _________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'bob' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[vibe-sh] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'vibe' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[vibe-ps] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'vibe' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[kimi-sh] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'kimi' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[kimi-ps] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'kimi' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[trae-sh] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'trae' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+________________ test_parity_bundled_vs_release_script[trae-ps] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'trae' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_________________ test_parity_bundled_vs_release_script[pi-sh] _________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'pi' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_________________ test_parity_bundled_vs_release_script[pi-ps] _________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'pi' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_______________ test_parity_bundled_vs_release_script[iflow-sh] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'iflow' (sh): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+_______________ test_parity_bundled_vs_release_script[iflow-ps] ________________
+tests/test_core_pack_scaffold.py:570: in test_parity_bundled_vs_release_script
+    assert not only_script, (
+E   AssertionError: Agent 'iflow' (ps): files only in release ZIP (not in bundled output):
+E       .specify/scripts/python/compress.py
+E       .specify/scripts/python/telemetry.py
+E   assert not {'.specify/scripts/python/compress.py', '.specify/scripts/python/telemetry.py'}
+=========================== short test summary info ============================
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[copilot-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[copilot-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[claude-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[claude-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[gemini-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[gemini-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[cursor-agent-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[cursor-agent-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[qwen-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[qwen-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[opencode-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[opencode-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[codex-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[codex-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[windsurf-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[windsurf-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[junie-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[junie-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[kilocode-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[kilocode-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[auggie-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[auggie-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[codebuddy-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[codebuddy-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[qodercli-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[qodercli-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[roo-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[roo-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[kiro-cli-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[kiro-cli-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[amp-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[amp-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[shai-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[shai-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[tabnine-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[tabnine-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[agy-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[agy-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[bob-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[bob-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[vibe-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[vibe-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[kimi-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[kimi-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[trae-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[trae-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[pi-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[pi-ps]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[iflow-sh]
+FAILED tests/test_core_pack_scaffold.py::test_parity_bundled_vs_release_script[iflow-ps]
+================== 50 failed, 789 passed in 92.42s (0:01:32) ===================

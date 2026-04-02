@@ -3,6 +3,13 @@
 # dependencies = []
 # ///
 
+"""Warden Telemetry Dashboard.
+
+Reads and reports compression telemetry metrics from the
+local SQLite database (~/.rura/telemetry.db).
+
+Deployment Profile: Profile A (Edge / Mission Compute)
+"""
 import sys
 import sqlite3
 import json

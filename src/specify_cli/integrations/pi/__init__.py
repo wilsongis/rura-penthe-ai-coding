@@ -1,4 +1,7 @@
-"""Pi Coding Agent integration."""
+"""Pi Coding Agent integration.
+
+Deployment Profile: Profile A (Edge / Mission Compute)
+"""
 
 from ..base import MarkdownIntegration
 

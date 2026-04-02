@@ -5,6 +5,8 @@ Copilot has several unique behaviors compared to standard markdown agents:
 - Each command gets a companion ``.prompt.md`` file in ``.github/prompts/``
 - Installs ``.vscode/settings.json`` with prompt file recommendations
 - Context file lives at ``.github/copilot-instructions.md``
+
+Deployment Profile: Profile A (Edge / Mission Compute)
 """
 
 from __future__ import annotations

@@ -1,4 +1,11 @@
 # src/rura_penthe/optimizer/context_compressor.py
+"""Advanced Context Optimizer.
+
+Implements advanced context-window compression strategies
+for reducing token payloads in agent prompt generation.
+
+Deployment Profile: Profile A (Edge / Mission Compute)
+"""
 from typing import List, Dict, Any
 
 class AdvancedContextOptimizer:

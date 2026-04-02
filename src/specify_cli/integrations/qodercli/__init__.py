@@ -1,4 +1,7 @@
-"""Qoder CLI integration."""
+"""Qoder CLI integration.
+
+Deployment Profile: Profile A (Edge / Mission Compute)
+"""
 
 from ..base import MarkdownIntegration
 

@@ -4,6 +4,8 @@ Each installed integration records the files it created together with
 their SHA-256 hashes.  On uninstall only files whose hash still matches
 the recorded value are removed — modified files are left in place and
 reported to the caller.
+
+Deployment Profile: Profile A (Edge / Mission Compute)
 """
 
 from __future__ import annotations

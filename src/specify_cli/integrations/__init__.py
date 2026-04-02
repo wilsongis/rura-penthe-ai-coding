@@ -2,6 +2,8 @@
 
 Each integration is a self-contained subpackage that handles setup/teardown
 for a specific AI assistant (Copilot, Claude, Gemini, etc.).
+
+Deployment Profile: Profile A (Edge / Mission Compute)
 """
 
 from __future__ import annotations

@@ -1,6 +1,8 @@
 """
 Token Optimization Middleware Package
 Provides context compression, diff tooling, and execution log optimizations for Rura-Penthe.
+
+Deployment Profile: Profile A (Edge / Mission Compute)
 """
 
 from .base import TokenOptimizer, ContextCompressor, InterceptorMiddleware

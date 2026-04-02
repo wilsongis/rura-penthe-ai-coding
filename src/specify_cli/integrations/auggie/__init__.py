@@ -1,4 +1,7 @@
-"""Auggie CLI integration."""
+"""Auggie CLI integration.
+
+Deployment Profile: Profile A (Edge / Mission Compute)
+"""
 
 from ..base import MarkdownIntegration
 

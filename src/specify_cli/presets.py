@@ -5,6 +5,8 @@ Handles installation, removal, and management of Spec Kit presets.
 Presets are self-contained, versioned collections of templates
 (artifact, command, and script templates) that can be installed to
 customize the Spec-Driven Development workflow.
+
+Deployment Profile: Profile A (Edge / Mission Compute)
 """
 
 import copy

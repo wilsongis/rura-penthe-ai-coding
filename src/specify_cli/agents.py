@@ -4,6 +4,8 @@ Agent Command Registrar for Spec Kit
 Shared infrastructure for registering commands with AI agents.
 Used by both the extension system and the preset system to write
 command files into agent-specific directories in the correct format.
+
+Deployment Profile: Profile A (Edge / Mission Compute)
 """
 
 from pathlib import Path

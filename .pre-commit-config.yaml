@@ -1,0 +1,45 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      
+  # 1. uv lock enforcement (Rule 11)
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.1.30
+    hooks:
+      # Ensures uv.lock is up-to-date with pyproject.toml
+      - id: uv-lock
+
+  # 2. pip-audit for CVE scanning (Rule 11)
+  - repo: https://github.com/pypa/pip-audit
+    rev: v2.7.2
+    hooks:
+      - id: pip-audit
+        args: ["--require-hashes", "-r", "uv.lock"]
+
+  # 3. Ruff linter & formatter (Power of 11 compliance)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.3.5
+    hooks:
+      # Run the linter
+      - id: ruff
+        args: [ --fix ]
+      # Run the formatter
+      - id: ruff-format
+
+  # 4. Pyright for Strict Type Checking (Rule 7)
+  - repo: https://github.com/RobertCraigie/pyright-python
+    rev: v1.1.356
+    hooks:
+      - id: pyright
+
+  # 5. Semgrep for Taint Analysis (Rule 10)
+  - repo: https://github.com/returntocorp/semgrep
+    rev: v1.68.0
+    hooks:
+      - id: semgrep
+        args: ["--config=auto", "--error"]

@@ -1,5 +1,12 @@
 # src/rura_penthe/optimizer/execution_boundary.py
 
+"""Execution Boundary Compressor.
+
+Compresses execution result payloads at process boundaries
+to minimize token consumption in agent feedback loops.
+
+Deployment Profile: Profile A (Edge / Mission Compute)
+"""
 def compress_execution_result(stdout: str, stderr: str, exit_code: int) -> str:
     """
     Filters and truncates containerized output. Prioritizes capturing

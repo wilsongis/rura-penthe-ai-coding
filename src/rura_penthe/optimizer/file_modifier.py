@@ -1,4 +1,11 @@
 # src/rura_penthe/optimizer/file_modifier.py
+"""Modifier Constraint Enforcer.
+
+Enforces file modification constraints and guards to ensure
+safe, bounded mutations during agent-driven code generation.
+
+Deployment Profile: Profile A (Edge / Mission Compute)
+"""
 from typing import Dict, Any
 
 class ModifierConstraintEnforcer:

@@ -2,6 +2,8 @@
 Specify CLI Configuration
 
 Contains decentralized, environment-driven constants used across the CLI and plugin systems.
+
+Deployment Profile: Profile A (Edge / Mission Compute)
 """
 import os
 import json
