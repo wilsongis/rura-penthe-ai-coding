@@ -1,4 +1,6 @@
-# [PROJECT_NAME] Constitution (Profile A: Edge / Mission Compute)
+# [PROJECT_NAME] Constitution (Warden Profile A: Edge / Mission Compute)
+
+> **This constitution applies to Warden Profile A projects.** Projects must declare `profile = "warden"` and `warden_target = "edge"` in `pyproject.toml`. For vanilla (non-safety-critical) projects, see [WARDEN.md](../WARDEN.md).
 
 ## Core Principles
 

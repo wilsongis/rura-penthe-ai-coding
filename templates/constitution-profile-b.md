@@ -1,4 +1,6 @@
-# [PROJECT_NAME] Constitution (Profile B: Embedded / Low-Level Control)
+# [PROJECT_NAME] Constitution (Warden Profile B: Embedded / Bare-Metal Control)
+
+> **This constitution applies to Warden Profile B projects.** Projects must declare `profile = "warden"` and `warden_target = "embedded"` in `pyproject.toml`. For vanilla (non-safety-critical) projects, see [WARDEN.md](../WARDEN.md).
 
 ## Core Principles
 

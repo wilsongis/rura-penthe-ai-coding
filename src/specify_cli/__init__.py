@@ -1862,6 +1862,54 @@ def _migrate_legacy_kimi_dotted_skills(skills_dir: Path) -> tuple[int, int]:
     return (migrated_count, removed_count)
 
 
+def _generate_roo_modes(project_path: Path, tracker: StepTracker | None = None) -> None:
+    """Generate .roomodes configuration to enforce the Model Ladder and git branching."""
+    if tracker:
+        tracker.add("roomodes", "Configure Roo Code custom modes")
+
+    roomodes_path = project_path / ".roomodes"
+
+    modes_data = {
+        "customModes": [
+            {
+                "slug": "architect",
+                "name": "System Architect",
+                "roleDefinition": (
+                    "You are a Senior System Architect using Spec-Driven Development. "
+                    "Your primary objective is to execute `/specify` and `/plan` workflows.\n\n"
+                    "RULES:\n"
+                    "1. Never guess the database schema. If needed, request access or output via tools.\n"
+                    "2. Focus entirely on producing the spec.md and plan.md.\n"
+                    "3. De-risk the project by identifying missing contexts before implementation."
+                ),
+                "groups": ["read", ["edit", {"fileRegex": ".*\\.md$"}], "browser", "command"]
+            },
+            {
+                "slug": "rura-coder",
+                "name": "Rura Coder",
+                "roleDefinition": (
+                    "You are the Rura Implementer. You execute implementation tasks based on tasks.md.\n\n"
+                    "RULES:\n"
+                    "1. You MUST ALWAYS create and switch to a new git feature branch based on the current task before writing or modifying any code. For example: `git switch -c feature/your-task-name`.\n"
+                    "2. Never print large query results (over 20 lines) to the terminal. Always output large analysis, DB schemas, or lists to a temporary file in `/tmp/` and use `head` to sample the output.\n"
+                    "3. Adhere strictly to the architectural boundaries declared in plan.md. Make no major architectural changes without escalating to the Architect."
+                ),
+                "groups": ["read", "edit", "command", "browser", "mcp"]
+            }
+        ]
+    }
+
+    try:
+        roomodes_path.write_text(json.dumps(modes_data, indent=2), encoding="utf-8")
+        if tracker:
+            tracker.complete("roomodes", "ok")
+    except Exception as e:
+        if tracker:
+            tracker.error("roomodes", str(e))
+        else:
+            console.print(f"[yellow]Warning: Could not create .roomodes: {e}[/yellow]")
+
+
 AGENT_SKILLS_MIGRATIONS = {
     "agy": {
         "error": "Explicit command support was deprecated in Antigravity version 1.20.5.",
@@ -2191,12 +2239,11 @@ def init(
         tracker.add(key, label)
     if ai_skills:
         tracker.add("ai-skills", "Install agent skills")
-    for key, label in [
-        ("cleanup", "Cleanup"),
-        ("git", "Initialize git repository"),
-        ("final", "Finalize")
-    ]:
-        tracker.add(key, label)
+    tracker.add("cleanup", "Cleanup")
+    tracker.add("git", "Initialize git repository")
+    if selected_ai == "roo" or selected_ai == "roo-code":
+        tracker.add("roomodes", "Configure Roo Code custom modes")
+    tracker.add("final", "Finalize")
 
     # Track git error message outside Live context so it persists
     git_error_message = None
@@ -2388,6 +2435,9 @@ def init(
             if use_integration:
                 init_opts["integration"] = resolved_integration.key
             save_init_options(project_path, init_opts)
+
+            if selected_ai == "roo":
+                _generate_roo_modes(project_path, tracker=tracker)
 
             # Install preset if specified
             if preset:

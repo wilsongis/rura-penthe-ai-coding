@@ -48,6 +48,31 @@ Spec-Driven Development **flips the script** on traditional software development
 
 This fork ("Rura Penthe AI Coding") adds critical safety and optimization gates to Spec Kit. By enforcing the **Power of 11 rules**, strictly validating all outputs through Pyright and Ruff, and employing dynamic Token Optimization via LLMLingua, it eliminates agent hallucination, unverified dependencies, and massive context-window bills.
 
+## 📋 Choose Your Profile
+
+Before getting started, decide which project profile you need:
+
+**Profile A (Vanilla)** — Standard Python best practices for general-purpose applications (web services, utilities, data tools)
+- Default Python best practices (PEP 8, standard linting)
+- Full language flexibility: `pickle`, `eval`, metaprogramming allowed
+- Upstream Specify projects import freely without modification
+- ✅ Use when: Building web apps, data pipelines, typical software
+
+**Profile B (Warden)** — Safety-critical constraints for aerospace, automotive, medical, financial systems
+- Enforces **Power of 11** rules (strict complexity/control flow limits, deterministic execution)
+- Forbidden: `pickle`, `eval`, floating dependency versions, unbounded loops
+- Mandatory: `uv` with cryptographic pinning, Google Style Docstrings, strict Pyright
+- ✅ Use when: Building flight controllers, automotive ECUs, medical devices, high-stakes financial systems
+
+**→ See [WARDEN.md](./WARDEN.md) for detailed profile comparison and migration guide.**
+
+Choose at init time:
+```bash
+specify init my-app --ai claude --profile a    # Vanilla (default)
+# or
+specify init my-app --ai claude --profile b    # Warden (safety-critical)
+```
+
 ## ⚡ Get Started
 
 ### 1. Install Specify CLI
@@ -112,6 +137,8 @@ If your environment blocks access to PyPI or GitHub, see the [Enterprise / Air-G
 
 ### 2. Establish project principles
 
+> **Note:** Steps 2-6 assume you're using **Profile B (Warden)**. For vanilla projects, skip to standard `specify init` workflows. See [WARDEN.md](./WARDEN.md) for Vanilla profile guidance.
+
 Launch your AI assistant in the project directory. Most agents expose this toolkit as **`/warden.*`** slash commands (decoupled to prevent upstream merge failures); Codex CLI in skills mode uses `$warden-*` instead.
 
 Use the **`/warden.constitution`** command to establish the strict Power of 11 governing principles that enforce code safety requirements on the agent:
@@ -163,6 +190,8 @@ This fork includes a suite of **Token-Killer Utilities** designed to drastically
 | Utility | Command | Description |
 |---------|---------|-------------|
 | **STACK.md Centralization** | `specify init` | Bootstraps a `STACK.md` file with explicit **Negative Constraints** (e.g., "Do not use pip", "Do not use Django") to stop LLM dependency drift. |
+| **CLI Progressive Disclosure** | `specify init` | Replaces bloated API/MCP servers with native CLI skills (`psql`, `gh`, `uv`), drastically lowering prompt sizes and preventing JSON serialization bloat. |
+| **Roo Code `.roomodes`** | `specify init` | Automatically scaffolds customized `Architect` and `Rura Coder` roles targeting specific models/phases while enforcing strict `git switch -c` branch branching inside the IDE. |
 | **Wave Execution** | `/warden.execute` | Processes XML `<wave>` blocks one at a time. Each wave is verified and committed before the next unlocks, preventing context rot. |
 | **Cascading Config Loader** | Automatic | Reads the command namespace from `.rura/config.json` → `pyproject.toml [tool.rura]` → `SPEC_COMMAND_NAMESPACE` env var → `"warden"` default. Immune to VS Code environment variable inheritance failures. |
 | **Pre-flight Verify** | `/warden.verify` | Runs `just test && just lint`, auto-commits on success, and archives spec branch files to `.grave/`. |

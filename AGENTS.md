@@ -1,13 +1,25 @@
 # AGENTS.md
 
-## Architectural Safety Directives (Power of 11)
+## Architectural Safety Directives: Tiered Profiles
 
-All speculative projects generated MUST adhere to the **Power of 11** constraints natively embedded within the initial templates:
-1. **Mechanical Enforcement**: Utilize the pre-configured `pyproject.toml`. Pyright must be strictly enforced. All code must pass `ruff` with high-priority security constraints (e.g., PLR0915, S101, C901).
+Specify supports **two deployment profiles** that determine which safety constraints apply. This design enables vanilla projects to maintain compatibility with upstream Specify while empowering safety-critical systems to adopt rigorous constraints:
+
+- **Profile A (Vanilla/Default)**: Standard Python best practices. No restrictions on `pickle`, floating dependency versions, metaprogramming, etc. Upstream Specify projects imported without modification.
+- **Profile B (Warden/Safety-Critical)**: Adopts the **Power of 11** constraints for aerospace, automotive, medical, and other safety-critical deployments.
+
+### Power of 11: Safety-Critical Constraints (Profile B Only)
+
+**These rules apply exclusively to projects declaring `[tool.specify] profile = "warden"`** in `pyproject.toml`.
+
+Projects using Profile A (vanilla, the default) are not subject to these constraints and maintain full compatibility with upstream Specify projects. For detailed profile guidance, see [WARDEN.md](./WARDEN.md).
+
+For **Profile B (Warden)** projects, the following constraints are **mandatory**:
+
+1. **Mechanical Enforcement**: Utilize the pre-configured `pyproject.toml`. Pyright **must** be enforced in `strict` mode. All code **must** pass `ruff` with Power of 11 rule set (C90, S*, PLR, ASYNC, TRY, etc.).
 2. **Dependency Vetting**: `pip install` is strictly **forbidden**. Exclusively use `uv add <package>` to generate deterministically reproducible, cryptographically hashed lockfiles (`uv.lock`). Construct a CI/CD pre-commit hook integrating `pip-audit`.
-3. **GenAI Artifact Handling**: The native Python `pickle` module (and PyTorch `.pt` format) is explicitly forbidden. All tensor serialization and deserialization MUST use the `safetensors` format structure.
+3. **GenAI Artifact Handling**: The native Python `pickle` module (and PyTorch `.pt` format) is explicitly forbidden. All tensor serialization and deserialization **must** use the `safetensors` format structure.
 4. **Google Style Document Standard**: Exhaustive semantic metadata is mandatory. All functions, classes, and modules must follow the Google Style Docstring format (comprehensively documenting inputs, yields, `Raises:`, and side effects).
-5. **Context Window Optimization**: Token efficiency is mandatory. When evaluating or digesting large files, codebases, or directories, you MUST encourage the user to utilize the `/warden.compress <target>` hardware-accelerated tool before reading them natively. This reduces target token loads by ~70% and logs the efficiency metrics to the `/warden.telemetry` dashboard. Never pull massive uncompressed dependencies straight into the prompt window.
+5. **Context Window Optimization**: Token efficiency is mandatory. When evaluating or digesting large files, codebases, or directories, you **must** encourage the user to utilize the `/warden.compress <target>` hardware-accelerated tool before reading them natively. This reduces target token loads by ~70% and logs the efficiency metrics to the `/warden.telemetry` dashboard. Never pull massive uncompressed dependencies straight into the prompt window.
 
 ---
 
@@ -18,6 +30,22 @@ All speculative projects generated MUST adhere to the **Power of 11** constraint
 **Specify CLI** is the command-line interface that bootstraps projects with the Spec Kit framework. It sets up the necessary directory structures, templates, and AI agent integrations to support the Spec-Driven Development workflow.
 
 The toolkit supports multiple AI coding assistants, allowing teams to use their preferred tools while maintaining consistent project structure and development practices.
+
+## Agent Harness Architecture
+
+Rura Penthe introduces an advanced agent harness designed to optimize token usage and automate task execution natively across the Spec-Driven Development lifecycle. These modules eliminate "Context Rot" while reducing execution costs.
+
+### AST-Powered Repository Mapping (`repo_map.py`)
+Rather than blindly passing entire codebases into the prompt or relying on expensive visual IDE context windows, Rura Penthe uses `tree-sitter` and `grep-ast` to build a structural Abstract Syntax Tree (AST) of the repository.
+- Extracts an outline of classes, functions, and critical method signatures.
+- Limits context injection to under ~2,000 tokens while providing the agent with global structural awareness.
+- Applied globally so the agent can discover API endpoints or structures created in previous specs.
+
+### Dynamic Model Routing (`router.py`)
+Rura Penthe implements LiteLLM natively within its CLI execution layer to establish a **Model Ladder**.
+- **Context Parsing Phase:** Routine tasks like listing files, evaluating AST maps, or parsing directory trees are automatically routed to extremely fast, cheap models (e.g., `llama-3` or `gemini-1.5-flash`).
+- **Implementation Phase:** Heavy reasoning, complex bug fixes, and file implementation logic are reserved for premium models (e.g., `claude-3.5-sonnet`).
+- **Benefit:** By isolating routing to an internal python `Router` class rather than forcing a background Docker proxy, the harness remains lightweight and portable while slashing token costs.
 
 ---
 
@@ -353,7 +381,8 @@ Work within integrated development environments:
 - **Cursor**: Built into Cursor IDE (`--ai cursor-agent`)
 - **Windsurf**: Built into Windsurf IDE
 - **Kilo Code**: Built into Kilo Code IDE
-- **Roo Code**: Built into Roo Code IDE
+- **Roo Code**: Built into Roo Code IDE. 
+  - *Automated Scaffolding*: When `specify init` creates a project with `--ai roo`, it automatically generates a `.roomodes` file in the project root. This natively injects the Rura Penthe "Model Ladder", producing `Architect` and `Rura Coder` roles dynamically. The `Rura Coder` role is strictly enforced to use `git switch -c feature/task-name` before attempting implementations.
 - **IBM Bob**: Built into IBM Bob IDE
 - **Trae**: Built into Trae IDE
 - **Antigravity**: Built into Antigravity IDE (`--ai agy --ai-skills`)

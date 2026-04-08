@@ -1,57 +1,123 @@
 [project]
-name = "safety-critical-app"
+name = "my-app"
 version = "0.1.0"
-description = "Safety-Critical Python Project"
+description = "A Spec-Driven Python Application"
 requires-python = ">=3.11"
 dependencies = [
     # Dependencies must be added via `uv add <package>` to generate `uv.lock`.
 ]
 
+# ============================================================================
+# PROFILE SELECTION
+# ============================================================================
+# Choose ONE: "vanilla" (default) or "warden" (safety-critical)
+#
+# Profile A (Vanilla): Standard Python best practices. No Power of 11 constraints.
+# - pip and floating versions permitted
+# - pickle, eval, metaprogramming allowed
+# - Upstream Specify projects freely compatible
+#
+# Profile B (Warden): Safety-critical constraints (aerospace, automotive, medical, etc.)
+# - Mandatory uv + cryptographic pinning
+# - Forbidden: pickle, eval, exec, floating versions
+# - Mandatory: Google Style Docstrings, strict Pyright, aggressive Ruff rules
+# 
+# See WARDEN.md for detailed guidance
+# ============================================================================
+
+[tool.specify]
+profile = "vanilla"  # Change to "warden" for safety-critical projects
+# deployment_environment = "web-service"  # or "flight-controller", "ecu", etc.
+# targets_micropython = false              # Set true if targeting MicroPython
+
+# ============================================================================
+# VANILLA (Profile A) - Standard Python Best Practices
+# ============================================================================
+# Uncomment this section if profile = "vanilla"
 [tool.pyright]
-typeCheckingMode = "strict"
+typeCheckingMode = "standard"  # "strict" recommended but not required
 reportMissingImports = true
-reportMissingTypeStubs = true
 
 [tool.ruff]
-# Target Python version
 target-version = "py311"
 line-length = 100
 
 [tool.ruff.lint]
-# Select specific high-priority security/complexity rule sets (Power of 11)
+# Standard rule set - comprehensive but not aggressive
 select = [
-    "E",       # pycodestyle errors
+    "E",       # pycodestyle errors  
     "F",       # pyflakes
-    "C90",     # mccabe complexity
-    "S",       # flake8-bandit (security checks like banning assert)
-    "PLR",     # Pylint refactor (complexity/function length constraints)
-    "ASYNC",   # flake8-async (concurrency safety)
-    "UP",      # pyupgrade (enforce modern Python syntax)
-    "B",       # flake8-bugbear (common bug patterns)
-    "SIM",     # flake8-simplify (code simplification)
-    "RUF",     # Ruff-specific rules
+    "W",       # pycodestyle warnings
     "I",       # isort (import ordering)
+    "N",       # pep8-naming
+    "D",       # pydocstyle
+    "UP",      # pyupgrade
+    "B",       # flake8-bugbear
+    "C4",      # flake8-comprehensions
 ]
 
-ignore = []
-
 [tool.ruff.lint.per-file-ignores]
-# Allow assert in test files (S101 bans assert globally for production safety)
-"tests/**/*.py" = ["S101"]
-"test_*.py" = ["S101"]
+"tests/**/*.py" = ["D"]
+"test_*.py" = ["D"]
 
-[tool.ruff.lint.mccabe]
-# Strict cyclomatic complexity bound (Power of 11: Rule 4/10)
-max-complexity = 10
+# ============================================================================
+# WARDEN (Profile B) - Safety-Critical Power of 11 Constraints
+# ============================================================================
+# Uncomment this section if profile = "warden"
+# 
+# [tool.pyright]
+# typeCheckingMode = "strict"              # MANDATORY for Warden
+# reportMissingImports = true
+# reportMissingTypeStubs = true
+# reportPrivateImportUsage = true
+#
+# [tool.ruff]
+# target-version = "py311"
+# line-length = 100
+#
+# [tool.ruff.lint]
+# # Aggressive Power of 11 rule set
+# select = [
+#     "E",       # pycodestyle errors
+#     "F",       # pyflakes
+#     "C90",     # mccabe complexity (max 10)
+#     "S",       # flake8-bandit (security)
+#     "PLR",     # pylint refactor (complexity limits)
+#     "ASYNC",   # async safety
+#     "TRY",     # exception handling safety
+#     "UP",      # pyupgrade
+#     "B",       # flake8-bugbear
+#     "SIM",     # code simplification
+#     "RUF",     # ruff-specific
+#     "I",       # isort
+# ]
+#
+# [tool.ruff.lint.per-file-ignores]
+# "tests/**/*.py" = ["S101", "PLR2004"]  # Allow assert, magic numbers in tests
+# "test_*.py" = ["S101", "PLR2004"]
+#
+# [tool.ruff.lint.mccabe]
+# max-complexity = 10                     # MANDATORY strict bound
+#
+# [tool.ruff.lint.pylint]
+# max-statements = 50                     # MANDATORY function length limit
+# max-args = 7                            # MANDATORY parameter limit
+# max-branches = 12                       # MANDATORY branch limit
+# max-locals = 15
 
-[tool.ruff.lint.pylint]
-# Function length and parameter constraints
-max-statements = 50
-max-args = 7
-max-branches = 12
+# ============================================================================
+# SHARED CONFIGURATION
+# ============================================================================
+
+[tool.ruff.lint.isort]
+# Enforce import ordering: future, stdlib, third-party, first-party, local
+known-first-party = ["my_app"]
 
 [tool.rura]
 # Command namespace for the Warden fork (used by the cascading config loader).
 # This ensures the /warden.* commands route correctly regardless of environment.
 command_namespace = "warden"
 
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
